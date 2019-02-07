@@ -100,143 +100,6 @@ map.col<-c("Latitude",
            "Citation")
 
 #####
-###-- Data analysis --###
-# Select study summary data
-summary.data<-data %>% 
-  select(summary.col)
-
-# Select study problem and driver data
-prob.data<-data %>% 
-  select(prob.col)
-
-# Frequency of method
-n_mse<-nrow(data)
-freq.data<-data %>% 
-  select(freq.col) %>% 
-  rename("Process"="ProcessExplicit",
-         "Problem"="ProblemDefinitionExplicit",
-         "Objectives"="ObjectivesExplicit",
-         "Tradeoffs"="TradeOffsExplicit",
-         "Decision"="DecisionExplicit",
-         "Roles"="RoleSpecification",
-         "Open Meetings"="OpenMeetings",
-         "Adopted"="ResultsAdopted") %>% 
-  summarise_all(funs(sum)) %>%
-  gather(Explicit) %>% 
-  mutate(Percent=value/n_mse*100) %>% 
-  mutate(Explicit=factor(Explicit,levels=
-                           c("Process","Problem","Objectives","Tradeoffs","Decision",
-                             "Roles","Open Meetings","Adopted"))) %>% 
-  rename("Number"="value")
-
-# Plot results
-Freq.plot<-ggplot(freq.data,aes(Explicit,Percent))+
-  geom_col()+geom_vline(xintercept=5.5,linetype="dashed")+
-  scale_y_continuous(limits=c(0,100))+xlab(NULL)
-
-# Who participates
-part.data<-data %>% 
-  select(part.col) %>% 
-  rename("Process"="Leader",
-         "Objectives"="ObjElicitationSource",
-         "Alternatives"="ProcedureElicitation")
-part.data2<- part.data %>% 
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
-  purrr::map(unlist) %>%
-  purrr::map(table)
-
-part.data3<-plyr::ldply(part.data2,data.frame)
-part.col2<-names(part.data3)<-c("Stage","Participants","Number")
-
-neworder <- c("Process","Participants","Objectives","Alternatives")
-newlabels <- c("Process Leadership","Participants","Objectives","Alternatives")
-part.data3 <- part.data3 %>% 
-  mutate(Percent=Number/n_mse*100) %>% 
-  mutate(Stage=factor(Stage,levels=neworder,labels=newlabels))
-
-part.plot<-ggplot(part.data3,aes(Participants,y=Percent)) +
-  facet_wrap("Stage",scale="free") + geom_col() + scale_y_continuous(limits=c(0,100)) + 
-  ylab("Percent")
-
-part.data4<-part.data3 %>%
-  as_tibble() %>%
-  select(Stage,Participants,Number) %>% 
-  rename("Participant Group"="Participants") %>% 
-  spread(Stage,Number,fill=0)
-
-# What drivers are considered
-drive.data<-data %>%
-  select(Drivers) %>% 
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
-  purrr::map(unlist) %>%
-  purrr::map(table) %>% 
-  plyr::ldply(data.frame) %>% 
-  select(Var1,Freq) %>% 
-  rename("Driver"="Var1","Frequency"="Freq") %>% 
-  mutate(Percent=Frequency/n_mse*100) %>% 
-  arrange(desc(Frequency))
-
-# What Objective types are considered
-objcat.data<-data %>%
-  select(ObjectiveCategories) %>% 
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
-  purrr::map(unlist) %>%
-  purrr::map(table) %>% 
-  plyr::ldply(data.frame) %>% 
-  select(Var1,Freq) %>% 
-  rename("Objective Category"="Var1","Frequency"="Freq") %>% 
-  mutate(Percent=Frequency/n_mse*100) %>% 
-  arrange(desc(Frequency))
-
-# How were objectives defined
-obj.data2<-obj.data %>%
-  select(obj.col) %>%
-  purrr::map(table)
-
-obj.data3<-plyr::ldply(obj.data2,data.frame)
-names(obj.data3)<-c("Objective","Type","Number")
-
-neworder <- c("ObjCategory","ObjType","ObjDirection","ObjScale")
-newlabels <- c("Category","Type","Direction","Scale")
-obj.data3 <- obj.data3 %>% 
-  mutate(Percent=Number/nrow(obj.data)*100) %>%
-  mutate('Per MSE'=Number/n_mse) %>% 
-  mutate(Objective=factor(Objective,levels=neworder,labels=newlabels))
-
-obj.data4<-obj.data %>%
-  select(obj.col) %>%
-  group_by(ObjType,ObjCategory,ObjDirection,ObjScale) %>%
-  summarize(n())
-
-names(obj.data4)<-c("Type","Category","Direction","Scale","Number")
-
-# What Alternative types are considered
-altcat.data<-data %>%
-  select(ManagementTool) %>% 
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
-  purrr::map(unlist) %>%
-  purrr::map(table) %>% 
-  plyr::ldply(data.frame) %>% 
-  select(Var1,Freq) %>% 
-  rename("Management Tool"="Var1","Number"="Freq") %>% 
-  mutate(Percent=Number/n_mse*100) %>% 
-  mutate('Per MSE'=Number/n_mse) %>%
-  arrange(desc(Number))
-
-# Common components
-
-# Where MSEs have occured
-map.data<-data %>% 
-  select(map.col)
-
-# Get map background
-world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
-# plot MSEs on map
-mse.map <- ggplot(data=map.data,aes(x=Longitude, y=Latitude)) + world +
-  geom_point(color="red",size=1.5)
-
-
-#####
 ###-- Shiny App --###
 
 ui <- fluidPage(
@@ -334,6 +197,149 @@ ui <- fluidPage(
 #####
 # Shiny Server Section
 server <- function(input, output) {   # code to create output using render
+  #####
+  ###-- Data analysis --###
+  data<-reactive({
+    if(input$data_filter=="pub"){
+    data<-filter(data,IncludeInPublication==TRUE)
+    } else{data<-data}
+  })
+  
+  # Select study summary data
+  summary.data<-data() %>% 
+    select(summary.col)
+  
+  # Select study problem and driver data
+  prob.data<-data() %>% 
+    select(prob.col)
+  
+  # Frequency of method
+  n_mse<-nrow(data())
+  freq.data<-data() %>% 
+    select(freq.col) %>% 
+    rename("Process"="ProcessExplicit",
+           "Problem"="ProblemDefinitionExplicit",
+           "Objectives"="ObjectivesExplicit",
+           "Tradeoffs"="TradeOffsExplicit",
+           "Decision"="DecisionExplicit",
+           "Roles"="RoleSpecification",
+           "Open Meetings"="OpenMeetings",
+           "Adopted"="ResultsAdopted") %>% 
+    summarise_all(funs(sum)) %>%
+    gather(Explicit) %>% 
+    mutate(Percent=value/n_mse*100) %>% 
+    mutate(Explicit=factor(Explicit,levels=
+                             c("Process","Problem","Objectives","Tradeoffs","Decision",
+                               "Roles","Open Meetings","Adopted"))) %>% 
+    rename("Number"="value")
+  
+  # Plot results
+  Freq.plot<-ggplot(freq.data,aes(Explicit,Percent))+
+    geom_col()+geom_vline(xintercept=5.5,linetype="dashed")+
+    scale_y_continuous(limits=c(0,100))+xlab(NULL)
+  
+  # Who participates
+  part.data<-data() %>% 
+    select(part.col) %>% 
+    rename("Process"="Leader",
+           "Objectives"="ObjElicitationSource",
+           "Alternatives"="ProcedureElicitation")
+  part.data2<- part.data %>% 
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(unlist) %>%
+    purrr::map(table)
+  
+  part.data3<-plyr::ldply(part.data2,data.frame)
+  part.col2<-names(part.data3)<-c("Stage","Participants","Number")
+  
+  neworder <- c("Process","Participants","Objectives","Alternatives")
+  newlabels <- c("Process Leadership","Participants","Objectives","Alternatives")
+  part.data3 <- part.data3 %>% 
+    mutate(Percent=Number/n_mse*100) %>% 
+    mutate(Stage=factor(Stage,levels=neworder,labels=newlabels))
+  
+  part.plot<-ggplot(part.data3,aes(Participants,y=Percent)) +
+    facet_wrap("Stage",scale="free") + geom_col() + scale_y_continuous(limits=c(0,100)) + 
+    ylab("Percent")
+  
+  part.data4<-part.data3 %>%
+    as_tibble() %>%
+    select(Stage,Participants,Number) %>% 
+    rename("Participant Group"="Participants") %>% 
+    spread(Stage,Number,fill=0)
+  
+  # What drivers are considered
+  drive.data<-data() %>%
+    select(Drivers) %>% 
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(unlist) %>%
+    purrr::map(table) %>% 
+    plyr::ldply(data.frame) %>% 
+    select(Var1,Freq) %>% 
+    rename("Driver"="Var1","Frequency"="Freq") %>% 
+    mutate(Percent=Frequency/n_mse*100) %>% 
+    arrange(desc(Frequency))
+  
+  # What Objective types are considered
+  objcat.data<-data() %>%
+    select(ObjectiveCategories) %>% 
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(unlist) %>%
+    purrr::map(table) %>% 
+    plyr::ldply(data.frame) %>% 
+    select(Var1,Freq) %>% 
+    rename("Objective Category"="Var1","Frequency"="Freq") %>% 
+    mutate(Percent=Frequency/n_mse*100) %>% 
+    arrange(desc(Frequency))
+  
+  # How were objectives defined
+  obj.data2<-obj.data %>%
+    select(obj.col) %>%
+    purrr::map(table)
+  
+  obj.data3<-plyr::ldply(obj.data2,data.frame)
+  names(obj.data3)<-c("Objective","Type","Number")
+  
+  neworder <- c("ObjCategory","ObjType","ObjDirection","ObjScale")
+  newlabels <- c("Category","Type","Direction","Scale")
+  obj.data3 <- obj.data3 %>% 
+    mutate(Percent=Number/nrow(obj.data)*100) %>%
+    mutate('Per MSE'=Number/n_mse) %>% 
+    mutate(Objective=factor(Objective,levels=neworder,labels=newlabels))
+  
+  obj.data4<-obj.data %>%
+    select(obj.col) %>%
+    group_by(ObjType,ObjCategory,ObjDirection,ObjScale) %>%
+    summarize(n())
+  
+  names(obj.data4)<-c("Type","Category","Direction","Scale","Number")
+  
+  # What Alternative types are considered
+  altcat.data<-data() %>%
+    select(ManagementTool) %>% 
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(unlist) %>%
+    purrr::map(table) %>% 
+    plyr::ldply(data.frame) %>% 
+    select(Var1,Freq) %>% 
+    rename("Management Tool"="Var1","Number"="Freq") %>% 
+    mutate(Percent=Number/n_mse*100) %>% 
+    mutate('Per MSE'=Number/n_mse) %>%
+    arrange(desc(Number))
+  
+  # Common components
+  
+  # Where MSEs have occured
+  map.data<-data() %>% 
+    select(map.col)
+  
+  # Get map background
+  world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
+  # plot MSEs on map
+  mse.map <- ggplot(data=map.data,aes(x=Longitude, y=Latitude)) + world +
+    geom_point(color="red",size=1.5)
+  
+  
   # Tab 1 - Filtering
   output$mse.map <- renderPlot({
     mse.map
