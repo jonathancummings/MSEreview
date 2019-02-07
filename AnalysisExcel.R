@@ -1,6 +1,6 @@
 # MSE Problem Framing 
 # Literature Review Data Analysis
-# 1/4/2018, JWC
+# 2/7/2018, JWC
 
 ##### 
 # Meta Data and setup
@@ -10,7 +10,6 @@
 # load libraries
 library(tidyverse) # upgrade to base R
 library(readxl) # read in excel files
-library(RODBC) # connect to databases
 library(shiny) # Shiny App
 library(shinythemes) # web themes for Shiny
 library(DT) # Data Table
