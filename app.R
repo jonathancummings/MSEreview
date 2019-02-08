@@ -72,8 +72,11 @@ summary.col<-c("Citation",
                "System")
 # Get columns for study drivers and problem
 prob.col<-c("Citation",
-            "Drivers",
             "ProblemDefinition",
+            "Drivers",
+            "ConsequencePrediction",
+            "TradeOffMethod_Exp",
+            "TradeOffMethod_Sub",
             "Decision")
 # Get columns for frequency analysis
 freq.col<-c("ProcessExplicit",
@@ -87,8 +90,10 @@ freq.col<-c("ProcessExplicit",
 # Get columns for participant analysis
 part.col<-c("Leader",
             "Participants",
-            "ObjElicitationSource",
-            "ProcedureElicitation")
+            "ObjElicitationSource_Exp",
+            "ProcedureElicitation_Exp",
+            "ObjElicitationSource_Sub",
+            "ProcedureElicitation_Sub")
 obj.col<-c("ObjType",
            "ObjCategory",
            "ObjDirection",
