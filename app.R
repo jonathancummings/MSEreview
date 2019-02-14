@@ -144,8 +144,10 @@ Freq.plot<-ggplot(freq.data,aes(Explicit,Percent))+
 part.data<-data %>% 
   select(part.col) %>% 
   rename("Process"="Leader",
-         "Objectives"="ObjElicitationSource",
-         "Alternatives"="ProcedureElicitation")
+         "Documented Objectives"="ObjElicitationSource_Exp",
+         "Documented Alternatives"="ProcedureElicitation_Exp",
+         "Subjective Objectives"="ObjElicitationSource_Sub",
+         "Subjective Alternatives"="ProcedureElicitation_Sub")
 part.data2<- part.data %>% 
   purrr::map(~ strsplit(as.character(.),split=", ")) %>%
   purrr::map(unlist) %>%
@@ -154,8 +156,11 @@ part.data2<- part.data %>%
 part.data3<-plyr::ldply(part.data2,data.frame)
 part.col2<-names(part.data3)<-c("Stage","Participants","Number")
 
-neworder <- c("Process","Participants","Objectives","Alternatives")
-newlabels <- c("Process Leadership","Participants","Objectives","Alternatives")
+neworder <- c("Process","Participants","Documented Objectives","Subjective Objectives",
+"Documented Alternatives","Subjective Alternatives")
+newlabels <- c("Process Leadership","Participants","Documented Objectives",
+               "Subjective Objectives","Documented Alternatives","Subjective Alternatives")
+
 part.data3 <- part.data3 %>% 
   mutate(Percent=Number/n_mse*100) %>% 
   mutate(Stage=factor(Stage,levels=neworder,labels=newlabels))
