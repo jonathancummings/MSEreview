@@ -252,10 +252,10 @@ server <- function(input, output, session) {   # code to create output using ren
   part.data_reviewed<-reactive({data_reviewed() %>%
     select(part.col) %>%
       rename("Process"="Leader",
-             "Documented Objectives"="ObjElicitationSource_Exp",
-             "Documented Alternatives"="ProcedureElicitation_Exp",
-             "Subjective Objectives"="ObjElicitationSource_Sub",
-             "Subjective Alternatives"="ProcedureElicitation_Sub")
+             "Doc Objectives"="ObjElicitationSource_Exp",
+             "Doc Alternatives"="ProcedureElicitation_Exp",
+             "Sub Objectives"="ObjElicitationSource_Sub",
+             "Sub Alternatives"="ProcedureElicitation_Sub")
   })
   part.data_reviewed2<- reactive({part.data_reviewed() %>%
     purrr::map(~ strsplit(as.character(.),split=", ")) %>%
@@ -270,8 +270,12 @@ server <- function(input, output, session) {   # code to create output using ren
     d
   })
    
-  neworder <- c("Process","Participants","Objectives","Alternatives")
-  newlabels <- c("Process Leadership","Participants","Objectives","Alternatives")
+  neworder <- c("Process","Participants","Doc Objectives",
+                "Sub Objectives","Doc Alternatives",
+                "Sub Alternatives")
+  newlabels <- c("Process","Participants","Documented Objectives",
+                 "Subjective Objectives","Documented Alternatives",
+                 "Subjective Alternatives")
   part.data_reviewed5 <- reactive({part.data_reviewed4() %>%
     mutate(Percent=Number/n_mse()*100) %>%
     mutate(Stage=factor(Stage,levels=neworder,labels=newlabels))
