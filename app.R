@@ -10,7 +10,6 @@
 # load libraries
 library(tidyverse) # upgrade to base R
 library(readxl) # read in excel files
-library(RODBC) # connect to databases
 library(shiny) # Shiny App
 library(shinythemes) # web themes for Shiny
 library(DT) # Data Table
@@ -20,6 +19,10 @@ library(mapdata) # basemap generation
 
 ##### 
 # Script
+
+# Get map background for plotting the map
+world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
+
 
 #####
 ###-- Data Processing --###
@@ -106,148 +109,6 @@ map.col<-c("Latitude",
            "Citation")
 
 #####
-###-- Data analysis --###
-# Select study summary data
-summary.data<-data %>% 
-  select(summary.col)
-
-# Select study problem and driver data
-prob.data<-data %>% 
-  select(prob.col)
-
-# Frequency of method
-n_mse<-nrow(data)
-freq.data<-data %>% 
-  select(freq.col) %>% 
-  rename("Process"="ProcessExplicit",
-         "Problem"="ProblemDefinitionExplicit",
-         "Objectives"="ObjectivesExplicit",
-         "Tradeoffs"="TradeOffsExplicit",
-         "Decision"="DecisionExplicit",
-         "Roles"="RoleSpecification",
-         "Open Meetings"="OpenMeetings",
-         "Adopted"="ResultsAdopted") %>% 
-  summarise_all(funs(sum)) %>%
-  gather(Explicit) %>% 
-  mutate(Percent=value/n_mse*100) %>% 
-  mutate(Explicit=factor(Explicit,levels=
-                           c("Process","Problem","Objectives","Tradeoffs","Decision",
-                             "Roles","Open Meetings","Adopted"))) %>% 
-  rename("Number"="value")
-
-# Plot results
-Freq.plot<-ggplot(freq.data,aes(Explicit,Percent))+
-  geom_col()+geom_vline(xintercept=5.5,linetype="dashed")+
-  scale_y_continuous(limits=c(0,100))+xlab(NULL)
-
-# Who participates
-part.data<-data %>% 
-  select(part.col) %>% 
-  rename("Process"="Leader",
-         "Documented Objectives"="ObjElicitationSource_Exp",
-         "Documented Alternatives"="ProcedureElicitation_Exp",
-         "Subjective Objectives"="ObjElicitationSource_Sub",
-         "Subjective Alternatives"="ProcedureElicitation_Sub")
-part.data2<- part.data %>% 
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
-  purrr::map(unlist) %>%
-  purrr::map(table)
-
-part.data3<-plyr::ldply(part.data2,data.frame)
-part.col2<-names(part.data3)<-c("Stage","Participants","Number")
-
-neworder <- c("Process","Participants","Documented Objectives","Subjective Objectives",
-"Documented Alternatives","Subjective Alternatives")
-newlabels <- c("Process Leadership","Participants","Documented Objectives",
-               "Subjective Objectives","Documented Alternatives","Subjective Alternatives")
-
-part.data3 <- part.data3 %>% 
-  mutate(Percent=Number/n_mse*100) %>% 
-  mutate(Stage=factor(Stage,levels=neworder,labels=newlabels))
-
-part.plot<-ggplot(part.data3,aes(Participants,y=Percent)) +
-  facet_wrap("Stage",scale="free") + geom_col() + scale_y_continuous(limits=c(0,100)) + 
-  ylab("Percent")
-
-part.data4<-part.data3 %>%
-  as_tibble() %>%
-  select(Stage,Participants,Number) %>% 
-  rename("Participant Group"="Participants") %>% 
-  spread(Stage,Number,fill=0)
-
-# What drivers are considered
-drive.data<-data %>%
-  select(Drivers) %>% 
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
-  purrr::map(unlist) %>%
-  purrr::map(table) %>% 
-  plyr::ldply(data.frame) %>% 
-  select(Var1,Freq) %>% 
-  rename("Driver"="Var1","Frequency"="Freq") %>% 
-  mutate(Percent=Frequency/n_mse*100) %>% 
-  arrange(desc(Frequency))
-
-# What Objective types are considered
-objcat.data<-data %>%
-  select(ObjectiveCategories) %>% 
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
-  purrr::map(unlist) %>%
-  purrr::map(table) %>% 
-  plyr::ldply(data.frame) %>% 
-  select(Var1,Freq) %>% 
-  rename("Objective Category"="Var1","Frequency"="Freq") %>% 
-  mutate(Percent=Frequency/n_mse*100) %>% 
-  arrange(desc(Frequency))
-
-# How were objectives defined
-obj.data2<-obj.data %>%
-  select(obj.col) %>%
-  purrr::map(table)
-
-obj.data3<-plyr::ldply(obj.data2,data.frame)
-names(obj.data3)<-c("Objective","Type","Number")
-
-neworder <- c("ObjCategory","ObjType","ObjDirection","ObjScale")
-newlabels <- c("Category","Type","Direction","Scale")
-obj.data3 <- obj.data3 %>% 
-  mutate(Percent=Number/nrow(obj.data)*100) %>%
-  mutate('Per MSE'=Number/n_mse) %>% 
-  mutate(Objective=factor(Objective,levels=neworder,labels=newlabels))
-
-obj.data4<-obj.data %>%
-  select(obj.col) %>%
-  group_by(ObjType,ObjCategory,ObjDirection,ObjScale) %>%
-  summarize(n())
-
-names(obj.data4)<-c("Type","Category","Direction","Scale","Number")
-
-# What Alternative types are considered
-altcat.data<-data %>%
-  select(ManagementTool) %>% 
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
-  purrr::map(unlist) %>%
-  purrr::map(table) %>% 
-  plyr::ldply(data.frame) %>% 
-  select(Var1,Freq) %>% 
-  rename("Management Tool"="Var1","Number"="Freq") %>% 
-  mutate(Percent=Number/n_mse*100) %>% 
-  mutate('Per MSE'=Number/n_mse) %>%
-  arrange(desc(Number))
-
-# Common components
-
-# Where MSEs have occured
-map.data<-data %>% 
-  select(map.col)
-
-# Get map background
-world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
-# plot MSEs on map
-mse.map <- ggplot(data=map.data,aes(x=Longitude, y=Latitude)) + world +
-  geom_point(color="red",size=1.5)
-
-
-#####
 ###-- Shiny App --###
 
 ui <- fluidPage(
@@ -261,6 +122,7 @@ ui <- fluidPage(
                           "Show results from:",
                           choices = c("All MSEs"="all",
                                       "MSEs reviewed for Cummings et. al. Publication"="pub")),
+             textOutput("radio"),
              hr(),
              plotOutput("mse.map",
                         brush = brushOpts(id = "map_brush"),
@@ -322,14 +184,14 @@ ui <- fluidPage(
              ),
     tabPanel("Data - All",
              h1("All of the MSE literature review data"),
-             h2("Field Descriptions"),
-             tableOutput("MSE.Fields"),
-             hr(),
              h2("Study data"),
              DT::dataTableOutput("MSE.Table"),
              hr(),
              h2("Objectives data"),
-             DT::dataTableOutput("MSE.Obj.Table")
+             DT::dataTableOutput("MSE.Obj.Table"),
+             hr(),
+             h2("Field Descriptions"),
+             tableOutput("MSE.Fields")
              ),
     tabPanel("Data Tables - Subsets",
              h1("Selected columns of MSE literature review data"),
@@ -344,59 +206,225 @@ ui <- fluidPage(
 
 #####
 # Shiny Server Section
-server <- function(input, output) {   # code to create output using render
+server <- function(input, output, session) {   # code to create output using render
+  #####
+  ###-- Data analysis --###
+  # Filter data to include only those reviewed for the publication or all MSEs
+  data_reviewed<-reactive({
+    if(input$data_filter=="pub"){
+    filter(data,IncludeInPublication==TRUE)
+    } else if(input$data_filter=="all"){
+      filter(data,IncludeInPublication==TRUE|IncludeInPublication==FALSE)
+    }
+  })
+  
+  # Select study summary data_reviewed
+  summary.data<-reactive({data_reviewed() %>%
+    select(summary.col)
+  })
+
+  # Select study problem and driver data_reviewed
+  prob.data<-reactive({data_reviewed() %>%
+    select(prob.col)
+  })
+  
+  # Frequency of method
+  n_mse<-reactive({nrow(data_reviewed())})
+  freq.data<-reactive({data_reviewed() %>%
+    select(freq.col) %>%
+    rename("Process"="ProcessExplicit",
+           "Problem"="ProblemDefinitionExplicit",
+           "Objectives"="ObjectivesExplicit",
+           "Tradeoffs"="TradeOffsExplicit",
+           "Decision"="DecisionExplicit",
+           "Roles"="RoleSpecification",
+           "Open Meetings"="OpenMeetings",
+           "Adopted"="ResultsAdopted") %>%
+    summarise_all(funs(sum)) %>%
+    gather(Explicit) %>%
+    mutate(Percent=value/n_mse()*100) %>%
+    mutate(Explicit=factor(Explicit,levels=
+                             c("Process","Problem","Objectives","Tradeoffs","Decision",
+                               "Roles","Open Meetings","Adopted"))) %>%
+    rename("Number"="value")
+    })
+
+  # Who participates
+  part.data_reviewed<-reactive({data_reviewed() %>%
+    select(part.col) %>%
+      rename("Process"="Leader",
+             "Doc Objectives"="ObjElicitationSource_Exp",
+             "Doc Alternatives"="ProcedureElicitation_Exp",
+             "Sub Objectives"="ObjElicitationSource_Sub",
+             "Sub Alternatives"="ProcedureElicitation_Sub")
+  })
+  part.data_reviewed2<- reactive({part.data_reviewed() %>%
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(unlist) %>%
+    purrr::map(table)
+  })
+
+  part.data_reviewed3<-reactive({plyr::ldply(part.data_reviewed2(),data.frame)})
+  part.data_reviewed4<-reactive({
+    d<-part.data_reviewed3()
+    colnames(d)<-c("Stage","Participants","Number")
+    d
+  })
+   
+  part.data_reviewed5 <- reactive({
+    neworder <- c("Process","Participants","Doc Objectives",
+                  "Sub Objectives","Doc Alternatives",
+                  "Sub Alternatives")
+    newlabels <- c("Process","Participants","Documented Objectives",
+                   "Subjective Objectives","Documented Alternatives",
+                   "Subjective Alternatives")
+    part.data_reviewed4() %>%
+    mutate(Percent=Number/n_mse()*100) %>%
+    mutate(Stage=factor(Stage,levels=neworder,labels=newlabels))
+  })
+   
+ 
+  part.data_table<-reactive({part.data_reviewed5() %>%
+    as_tibble() %>%
+    select(Stage,Participants,Number) %>%
+    rename("Participant Group"="Participants") %>%
+    spread(Stage,Number,fill=0)
+  })
+
+  # What drivers are considered
+  drive.data<-reactive({data_reviewed() %>%
+    select(Drivers) %>%
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(unlist) %>%
+    purrr::map(table) %>%
+    plyr::ldply(data.frame) %>%
+    select(Var1,Freq) %>%
+    rename("Driver"="Var1","Frequency"="Freq") %>%
+    mutate(Percent=Frequency/n_mse()*100) %>%
+    arrange(desc(Frequency))
+  })
+
+  # What Objective types are considered
+  objcat.data<-reactive({data_reviewed() %>%
+    select(ObjectiveCategories) %>%
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(unlist) %>%
+    purrr::map(table) %>%
+    plyr::ldply(data.frame) %>%
+    select(Var1,Freq) %>%
+    rename("Objective Category"="Var1","Frequency"="Freq") %>%
+    mutate(Percent=Frequency/n_mse()*100) %>%
+    arrange(desc(Frequency))
+  })
+
+  # How were objectives defined
+  obj.data2<-reactive({obj.data %>%
+    select(obj.col) %>%
+    purrr::map(table)
+  })
+  
+  obj.data3<-reactive({
+    d<-plyr::ldply(obj.data2(),data.frame)
+    colnames(d)<-c("Objective","Type","Number")
+    d
+  })
+
+
+  obj.data_table1 <- reactive({neworder <- c("ObjCategory","ObjType","ObjDirection","ObjScale")
+    newlabels <- c("Category","Type","Direction","Scale")
+    obj.data3() %>%
+    mutate(Percent=Number/nrow(obj.data)*100) %>%
+    mutate('Per MSE'=Number/n_mse()) %>%
+    mutate(Objective=factor(Objective,levels=neworder,labels=newlabels))
+  })
+
+  obj.data_table2<-reactive({
+    d<-obj.data %>%
+      select(obj.col) %>%
+      group_by(ObjType,ObjCategory,ObjDirection,ObjScale) %>%
+      summarize(n())
+    colnames(d)<-c("Type","Category","Direction","Scale","Number")
+    d
+  })
+
+  # What Alternative types are considered
+  altcat.data<-reactive({data_reviewed() %>%
+    select(ManagementTool) %>%
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(unlist) %>%
+    purrr::map(table) %>%
+    plyr::ldply(data.frame) %>%
+    select(Var1,Freq) %>%
+    rename("Management Tool"="Var1","Number"="Freq") %>%
+    mutate(Percent=Number/n_mse()*100) %>%
+    mutate('Per MSE'=Number/n_mse()) %>%
+    arrange(desc(Number))
+  })
+
+  # Common components
+
+  # Where MSEs have occured
+  map.data<-reactive({data_reviewed() %>%
+    select(map.col)
+  })
+
   # Tab 1 - Filtering
+  # To test if the reactive works
+  output$radio <-renderText(paste0("Number of MSEs in results: ", nrow(data_reviewed())))
   output$mse.map <- renderPlot({
-    mse.map
+    # plot MSEs on map
+    ggplot(data=map.data(),aes(x=Longitude, y=Latitude)) + world +
+      geom_point(color="red",size=1.5)
   })
   observeEvent(input$map_hover,
                output$hover <- renderTable({
-                 nearPoints(data, input$map_hover,"Longitude","Latitude") %>% 
+                 nearPoints(data_reviewed(), input$map_hover,"Longitude","Latitude") %>% 
                    select(Citation)
                })
   )
   observeEvent(input$map_brush,
                output$brush <- renderTable({
-                 brushedPoints(data, input$map_brush, "Longitude","Latitude")%>% 
+                 brushedPoints(data_reviewed(), input$map_brush, "Longitude","Latitude")%>% 
                    select(Citation)
                })
   )
 
   # Tab 2 - Results - plots
   output$Freq.plot <- renderPlot({
-    Freq.plot
+    ggplot(freq.data(),aes(Explicit,Percent))+
+        geom_col()+geom_vline(xintercept=5.5,linetype="dashed")+
+        scale_y_continuous(limits=c(0,100))+xlab(NULL)
   })
   output$part.plot <- renderPlot({
-    part.plot
+    ggplot(part.data_reviewed5(),aes(Participants,y=Percent)) +
+      facet_wrap("Stage",scale="free") + geom_col() + scale_y_continuous(limits=c(0,100)) +
+      ylab("Percent")
   })
   # Tab 3 - Results - tables
   output$MSE.freq <- renderTable({
-    freq.data
+    freq.data()
   })
   output$MSE.part <- renderTable({
-    part.data4
+    part.data_table()
   })
   output$MSE.drive <- renderTable({
-    drive.data
+    drive.data()
   })
   output$MSE.objcat <- renderTable({
-    objcat.data
+    objcat.data()
   })
   output$MSE.obj <- renderTable({
-    obj.data3
+    obj.data_table1()
   })
   output$MSE.obj2 <- DT::renderDataTable({
-    obj.data4
+    obj.data_table2()
   })
   output$MSE.alt <- renderTable({
-    altcat.data
+    altcat.data()
   })
   # Tab 4
-  output$MSE.Fields <- renderTable({
-    arrange(fields,Order)
-  })
   output$MSE.Table <- DT::renderDataTable({
-    data
+    data_reviewed()
   },  options = list(autoWidth = TRUE,
                      columnDefs = list(list(width = '600px', targets = targets)),
                      scrollX=TRUE
@@ -404,13 +432,18 @@ server <- function(input, output) {   # code to create output using render
   )
   output$MSE.Obj.Table <- DT::renderDataTable({
     obj.data
+  }) # NEED TO FIX THIS TO FILTER BASED ON THE RESULTS RADIO BUTTON, I.E., ALL REVIEWS OR JUST REVIEWS FOR PUBLICATION
+  output$MSE.Fields <- renderTable({
+    mse.fields<-arrange(fields,Order) %>% 
+      select(-Order)
+    mse.fields
   })
-  # Tab 5
+    # Tab 5
   output$MSE.summary <- DT::renderDataTable({
-    arrange(summary.data,Citation)
+    arrange(summary.data(),Citation)
   })
   output$MSE.problem <- DT::renderDataTable({
-    arrange(prob.data,Citation)
+    arrange(prob.data(),Citation)
   })
 }
 
