@@ -214,9 +214,6 @@ server <- function(input, output, session) {   # code to create output using ren
     }
   })
   
-  # To test if the reactive works
-  output$radio <-renderText(nrow(data_reviewed()))
-  
   # Select study summary data_reviewed
   summary.data_reviewed<-reactive({data_reviewed() %>%
     select(summary.col)
@@ -282,12 +279,13 @@ server <- function(input, output, session) {   # code to create output using ren
   })
    
  
-  # part.data_reviewed4<-part.data_reviewed4 %>%
-  #   as_tibble() %>%
-  #   select(Stage,Participants,Number) %>%
-  #   rename("Participant Group"="Participants") %>%
-  #   spread(Stage,Number,fill=0)
-  # 
+  part.data_table<-reactive({part.data_reviewed5() %>%
+    as_tibble() %>%
+    select(Stage,Participants,Number) %>%
+    rename("Participant Group"="Participants") %>%
+    spread(Stage,Number,fill=0)
+  })
+
   # # What drivers are considered
   # drive.data_reviewed<-data_reviewed() %>%
   #   select(Drivers) %>%
@@ -361,6 +359,8 @@ server <- function(input, output, session) {   # code to create output using ren
   
   
   # Tab 1 - Filtering
+  # To test if the reactive works
+  output$radio <-renderText(paste0("Number of MSEs in results: ", nrow(data_reviewed())))
   output$mse.map <- renderPlot({
     mse.map
   })
@@ -390,10 +390,10 @@ server <- function(input, output, session) {   # code to create output using ren
   })
   # Tab 3 - Results - tables
   output$MSE.freq <- renderTable({
-    freq.data
+    freq.data_reviewed()
   })
   output$MSE.part <- renderTable({
-    part.data4
+    part.data_table()
   })
   output$MSE.drive <- renderTable({
     drive.data
