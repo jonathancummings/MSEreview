@@ -184,14 +184,14 @@ ui <- fluidPage(
              ),
     tabPanel("Data - All",
              h1("All of the MSE literature review data"),
-             h2("Field Descriptions"),
-             tableOutput("MSE.Fields"),
-             hr(),
              h2("Study data"),
              DT::dataTableOutput("MSE.Table"),
              hr(),
              h2("Objectives data"),
-             DT::dataTableOutput("MSE.Obj.Table")
+             DT::dataTableOutput("MSE.Obj.Table"),
+             hr(),
+             h2("Field Descriptions"),
+             tableOutput("MSE.Fields")
              ),
     tabPanel("Data Tables - Subsets",
              h1("Selected columns of MSE literature review data"),
@@ -230,7 +230,7 @@ server <- function(input, output, session) {   # code to create output using ren
   
   # Frequency of method
   n_mse<-reactive({nrow(data_reviewed())})
-  freq.data_reviewed<-reactive({data_reviewed() %>%
+  freq.data<-reactive({data_reviewed() %>%
     select(freq.col) %>%
     rename("Process"="ProcessExplicit",
            "Problem"="ProblemDefinitionExplicit",
@@ -300,7 +300,7 @@ server <- function(input, output, session) {   # code to create output using ren
     plyr::ldply(data.frame) %>%
     select(Var1,Freq) %>%
     rename("Driver"="Var1","Frequency"="Freq") %>%
-    mutate(Percent=Frequency/n_mse*100) %>%
+    mutate(Percent=Frequency/n_mse()*100) %>%
     arrange(desc(Frequency))
   })
 
@@ -313,18 +313,18 @@ server <- function(input, output, session) {   # code to create output using ren
     plyr::ldply(data.frame) %>%
     select(Var1,Freq) %>%
     rename("Objective Category"="Var1","Frequency"="Freq") %>%
-    mutate(Percent=Frequency/n_mse*100) %>%
+    mutate(Percent=Frequency/n_mse()*100) %>%
     arrange(desc(Frequency))
   })
 
   # How were objectives defined
-  obj.data_reviewed2<-reactive({obj.data_reviewed() %>%
+  obj.data2<-reactive({obj.data %>%
     select(obj.col) %>%
     purrr::map(table)
   })
   
-  obj.data_reviewed3<-reactive({
-    d<-plyr::ldply(obj.data_reviewed2(),data.frame)
+  obj.data3<-reactive({
+    d<-plyr::ldply(obj.data2(),data.frame)
     colnames(d)<-c("Objective","Type","Number")
     d
   })
@@ -332,14 +332,14 @@ server <- function(input, output, session) {   # code to create output using ren
 
   obj.data_table1 <- reactive({neworder <- c("ObjCategory","ObjType","ObjDirection","ObjScale")
     newlabels <- c("Category","Type","Direction","Scale")
-    obj.data_reviewed3() %>%
-    mutate(Percent=Number/nrow(obj.data_reviewed)*100) %>%
-    mutate('Per MSE'=Number/n_mse) %>%
+    obj.data3() %>%
+    mutate(Percent=Number/nrow(obj.data)*100) %>%
+    mutate('Per MSE'=Number/n_mse()) %>%
     mutate(Objective=factor(Objective,levels=neworder,labels=newlabels))
   })
 
   obj.data_table2<-reactive({
-    d<-obj.data_reviewed %>%
+    d<-obj.data %>%
       select(obj.col) %>%
       group_by(ObjType,ObjCategory,ObjDirection,ObjScale) %>%
       summarize(n())
@@ -356,15 +356,15 @@ server <- function(input, output, session) {   # code to create output using ren
     plyr::ldply(data.frame) %>%
     select(Var1,Freq) %>%
     rename("Management Tool"="Var1","Number"="Freq") %>%
-    mutate(Percent=Number/n_mse*100) %>%
-    mutate('Per MSE'=Number/n_mse) %>%
+    mutate(Percent=Number/n_mse()*100) %>%
+    mutate('Per MSE'=Number/n_mse()) %>%
     arrange(desc(Number))
   })
 
   # Common components
 
   # Where MSEs have occured
-  map.data_reviewed<-reactive({data_reviewed() %>%
+  map.data<-reactive({data_reviewed() %>%
     select(map.col)
   })
 
@@ -373,7 +373,7 @@ server <- function(input, output, session) {   # code to create output using ren
   output$radio <-renderText(paste0("Number of MSEs in results: ", nrow(data_reviewed())))
   output$mse.map <- renderPlot({
     # plot MSEs on map
-    ggplot(data_reviewed=map.data_reviewed(),aes(x=Longitude, y=Latitude)) + world +
+    ggplot(data=map.data(),aes(x=Longitude, y=Latitude)) + world +
       geom_point(color="red",size=1.5)
   })
   observeEvent(input$map_hover,
@@ -391,7 +391,7 @@ server <- function(input, output, session) {   # code to create output using ren
 
   # Tab 2 - Results - plots
   output$Freq.plot <- renderPlot({
-    ggplot(freq.data_reviewed(),aes(Explicit,Percent))+
+    ggplot(freq.data(),aes(Explicit,Percent))+
         geom_col()+geom_vline(xintercept=5.5,linetype="dashed")+
         scale_y_continuous(limits=c(0,100))+xlab(NULL)
   })
@@ -402,7 +402,7 @@ server <- function(input, output, session) {   # code to create output using ren
   })
   # Tab 3 - Results - tables
   output$MSE.freq <- renderTable({
-    freq.data_reviewed()
+    freq.data()
   })
   output$MSE.part <- renderTable({
     part.data_table()
@@ -423,9 +423,6 @@ server <- function(input, output, session) {   # code to create output using ren
     altcat.data()
   })
   # Tab 4
-  output$MSE.Fields <- renderTable({
-    arrange(fields,Order)
-  })
   output$MSE.Table <- DT::renderDataTable({
     data_reviewed()
   },  options = list(autoWidth = TRUE,
@@ -435,8 +432,13 @@ server <- function(input, output, session) {   # code to create output using ren
   )
   output$MSE.Obj.Table <- DT::renderDataTable({
     obj.data
+  }) # NEED TO FIX THIS TO FILTER BASED ON THE RESULTS RADIO BUTTON, I.E., ALL REVIEWS OR JUST REVIEWS FOR PUBLICATION
+  output$MSE.Fields <- renderTable({
+    mse.fields<-arrange(fields,Order) %>% 
+      select(-Order)
+    mse.fields
   })
-  # Tab 5
+    # Tab 5
   output$MSE.summary <- DT::renderDataTable({
     arrange(summary.data(),Citation)
   })
