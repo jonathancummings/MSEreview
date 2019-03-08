@@ -1,0 +1,13 @@
+name: MSEreview
+title: MSEreview
+username:
+account: jonathancummings
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 717612
+bundleId: 1878814
+url: https://jonathancummings.shinyapps.io/MSEreview/
+when: 1550263055.38351
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Analysis.R|AnalysisExcel.R|MSE Review Database Documentation.docx|MSE WOS search.xlsx|DB files - Access/MSE Problem Framing.accdb|DB files - Access/MSE Problem Framing_Backup.accdb|DB files - Access/MSE Problem Framing_be.accdb|DB files - Access/MSE Problem Framing_front.accde|MSE Articles
