@@ -74,8 +74,8 @@ study.join<-study %>%
 
 mgmt.join<-mgmt %>% 
   group_by(fkStudyID) %>%
-  summarise(ManagementTool = toString(sort(unique(MPManagementTool))),
-            AlternativesEvaluated = toString(sort(unique(MPAlternativesEvaluated))))
+  summarise(ManagementType = toString(sort(unique(ManagementType))),
+            AlternativesEvaluated = toString(sort(unique(AlternativesEvaluated))))
 
 obj.join<-obj %>% 
   group_by(fkStudyID) %>%
@@ -114,9 +114,10 @@ prob.col<-c("Citation",
 freq.col<-c("ProcessExplicit",
             "ProblemDefinitionExplicit",
             "ObjectivesExplicit",
+            "AlternativesExplicit"
             "TradeOffsExplicit",
             "DecisionExplicit",
-            "RoleSpecification",
+            "RolesExplicit",
             "OpenMeetings",
             "ResultsAdopted")
 # Get columns for participant analysis
@@ -130,7 +131,7 @@ obj.col<-c("ObjType",
            "ObjCategory",
            "ObjDirection",
            "ObjScale")
-alt.col<-c("ManagementTool",
+alt.col<-c("ManagementType",
            "AlternativesEvaluated")
 # Get columns for map
 map.col<-c("Latitude",
@@ -266,7 +267,7 @@ server <- function(input, output, session) {   # code to create output using ren
            "Objectives"="ObjectivesExplicit",
            "Tradeoffs"="TradeOffsExplicit",
            "Decision"="DecisionExplicit",
-           "Roles"="RoleSpecification",
+           "Roles"="RolesExplicit",
            "Open Meetings"="OpenMeetings",
            "Adopted"="ResultsAdopted") %>%
     summarise_all(funs(sum)) %>%
@@ -378,13 +379,13 @@ server <- function(input, output, session) {   # code to create output using ren
 
   # What Alternative types are considered
   altcat.data<-reactive({data_reviewed() %>%
-    select(ManagementTool) %>%
+    select(ManagementType) %>%
     purrr::map(~ strsplit(as.character(.),split=", ")) %>%
     purrr::map(unlist) %>%
     purrr::map(table) %>%
     plyr::ldply(data.frame) %>%
     select(Var1,Freq) %>%
-    rename("Management Tool"="Var1","Number"="Freq") %>%
+    rename("Management Type"="Var1","Number"="Freq") %>%
     mutate(Percent=Number/n_mse()*100) %>%
     mutate('Per MSE'=Number/n_mse()) %>%
     arrange(desc(Number))
