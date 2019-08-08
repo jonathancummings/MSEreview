@@ -1,0 +1,71 @@
+ID,fkStudyID,MPManagementTool,MPAlternativesEvaluated
+1,1,Catch Limit,
+2,2,Catch Limit,
+3,3,Catch Limit,
+4,4,Catch Limit,
+5,5,Catch Limit,
+6,6,Catch Limit,
+7,6,Share Allocation,
+8,7,Effort Limit,
+13,11,Effort Limit,"Four effort levels. Low, Moderate, High, and Very High effort equivalent to 80t, 110t, 140t, and 170t harvests."
+14,11,Closure,Two seasonal closures. Seasonal closure for 2 months or no closure.
+15,11,Closure,Two spatial closures. Spatial closure of 10 nautical miles around island or no closure.
+16,11,Size Limit,"Three minimum size limits. 35, 38, and 40 cm TL."
+17,12,Catch Limit,Levels of adjustement to the catch limit to account for uncertainty
+18,13,Closure,"Three levels of area closure. Reef perimeter closed to fishing. 16%, 32%, 50% closed."
+19,13,Effort Limit,"Three levels of annual fishing effort. 0.5, 1, and 1.5 times 1996 effort."
+20,14,Catch Limit,"Harvest Control Rule sets target F, fishery mortality level.  HCR implementation method not specified."
+21,15,Catch Limit,"Potential Biological Removal levels set as limit reference points, e.g. catch levels"
+22,16,Catch Limit,Two harvest control rules were evaluated in three uncertainty scenarios each.
+23,17,Catch Limit,"Harvest Control Rule with TAC adjusted based on stock assessment output, specified by zone or region (zone area > region area)"
+24,18,Closure,"Spatial Closures, of three types.  Marine protected areas, species risk based closures, and triggered closures based on effort"
+25,19,Catch Limit,"four Landing regulations:  landing obligation, 5% discard limit, year-to-year quota transfer, both"
+26,20,Effort Limit,"None, the current method is used in all simulations"
+27,21,Catch Limit,"Status quo, 2x, Profit max, Broken stick control rule, Spatial broken stick control rule"
+28,21,Closure,Spatial closures.  Closure trigger by zone or species with 20% or 30% triggers
+29,22,Catch Limit,8 approaches to setting P* buffer relative to F(lim).
+30,23,Catch Limit,5 harvest quotas options
+31,23,Closure,"Seasonal and area closures exist, but were constant across alternatives"
+32,24,Catch Limit,Catch limits set by HCR derived from monitoring methodology alternatives
+33,25,Catch Limit,10% reduction annually until recovery achieved or no change
+34,25,Effort Limit,10% reduction annually until recovery achieved or no change
+35,25,Closure,"Area closures, open or closed evaulated"
+36,26,Catch Limit,Limits set by a set of 4 Stock Assessment methodologies.
+37,27,Other,"Lamprey trapping options: Traps located in 14 or 16 streams, baited or unbaited."
+39,27,Other,Lamprey baiting options: Used fixed bait amount or achieve a target in-water concentration.
+40,28,"Closure, Size Limit","Not evaluated by analysis, single alternative is a sex, size, and season regulation system"
+41,29,Catch Limit,Two TACC decision rule alternatives.
+42,30,Effort Limit,"3 F based control rules.  Constant F, Reduced F when SSB<0.4B(0), Reduced F when SSB<0.7B(0),"
+43,30,Effort Limit,"7 baseline F levels.  0.1, 0.3, 0.5, 0.7, 1.0, 1.5, 2.0"
+44,41,Access Control,Constant across alternatives
+45,41,Closure,"4 temporal closure alternatives.  Base case, add May closure, add October closure, closure rule - if sample below threshold catch close"
+46,42,Catch Limit,"Two HCRs, based on a static or a dynamic B(0) used as a BRP."
+47,43,Catch Limit,"Two HCRs, one with a constant F, and one with a variable F based on BRPs"
+48,43,Catch Limit,"Two additional HCRs, which correspond to the first two, but are adjusted based on environmental conditions."
+49,44,Catch Limit,4 management procedures covering different approaches to developing a rebuilding plan based on the acceptable recovery probability or inclusion of climate effects in the plan.
+50,45,Catch Limit,"This is a TAC based fishery.  The TACs weren't the focus, but would be altered by reference point changes."
+51,45,Other,"Two reference point options, one that shifts to account for climate change, and one that does not."
+52,46,Catch Limit,TAC implemented or not
+53,46,Size Limit,Size limit implemented or not
+54,46,Closure,marine protected areas implemented or not
+55,46,Other,Pollution reduction implemented or not
+56,47,Other,"Note, not applicable to fishery management.  There are three approaches to beach replenishment, fixed amount and interval, fixed amount, and fixed interval, as well as no action."
+57,48,Closure,Not cleared provided.
+58,31,Closure,"Spatial closures: No closures, 3 closure durations, 2 closure location rules"
+59,31,Other,Size based closure rules: 4 options
+60,49,Closure,"Spatial closures: No closures, 3 closure durations, 2 closure location rules"
+61,49,Other,Size based closure rules: 4 options
+62,50,Catch Limit,6 alternative methods for adjusting the catch limit.
+63,32,"Access Control, Catch Limit","Quota system, accompanied by location and gear restrictions, combined into 4 strategy"
+64,33,Size Limit,# of size limits utilized and areas to which they are applied
+65,34,"Catch Limit, Effort Limit","22 MPs available in the DLMtoolkit package in R, 11 output control MPs and 11 input control MPs"
+66,35,Catch Limit,TAC=ABC set based on ICES F based proceedures (with and without uncertainty) and a constant F
+67,36,Catch Limit,"4 HCRs.  2 based on BRPs and 2 proportional harvest rules, the difference in each category is whether there is an annual TAC change limit."
+68,36,Other,"3 stock assessment methods.  XSA, Schaefer, Difference"
+69,37,Effort Limit,"2 levels, Status quo and reduction from 9000 to 5000 boat days"
+70,37,Closure,"4 options, status quo, reef buffer area closure, Masig area closure, moon cycle calendar closure"
+71,38,Catch Limit,"No alternatives, a single Harvest quota accompanied by a season duration"
+72,39,Catch Limit,"4 TACs; 750 t, 1000 t, 1250 t, and 1500 t; competitave TAC vs ITQ"
+73,39,Effort Limit,constant effort limit
+74,39,Closure,four spatially explicit no-take extents: an extent consistent with that from the mid-1980s to mid-2004 (approximately 16% of coral trout habitat in the park); an extent implemented during rezoning in 2004 (32%); a hypothetical extent of 50% (Little et al. 2009a); and a hypothetical extent of 0%.
+75,40,Catch Limit,"6 HCRs combining timeline and precaution:  a reactive decision interval with no additional ACL reduction, and five HCRs consisting of a fixed decision interval with precautionary ACL reductions of 0 (i.e., no reduction), 10, 20, 30, and 40%."

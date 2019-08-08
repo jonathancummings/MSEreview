@@ -1,0 +1,273 @@
+ID,fkStudyID,ObjName,ObjCategory,ObjDescription,ObjDirection,ObjType,ObjScale,ObjMetric
+1,1,Median average depletion,Conservation,Median average depletion where depletion is reported as the SSB relative to the unfished biomass as a percentage,Minimize,Means,Natural,% of B.zero
+2,1,Biomass below lower limit,Conservation,Probability biomass is below 10% of the unfished biomass,Minimize,Means,Natural,Pr(B < B.10%)
+3,1,Biomass above limit and below target,Conservation,Probability biomass is between 10% and 40% of the unfished biomass,Minimize,Means,Natural,Pr(B.10% < B < B.40%)
+4,1,Biomass above target,Conservation,Probability biomass is above 40% of the unfished biomass,Maximize,Means,Natural,Pr(B > B.40%)
+5,1,Median average catch,Yield,Median average catch in 1000 metric tons,Maximize,Means,Natural,1000 mt
+6,1,Median average annual variation in catch,Yield,The variability in year to year catch (Cox and Kronlund 2008),Minimize,Means,Natural,AAV (Cox and Kronlund 2008)
+7,1,Probality of fishery closure,Yield,Probability that the fishery is closed and no catch occurs,Minimize,Fundamental,Natural,Pr(catch = 0)
+8,1,Probability catch below lower limit,Yield,"Probability that the annual catch is less than the lower limit of 180,000mt",Minimize,Means,Natural,Pr(catch < 180)
+9,1,Probability catch between lower and upper limits,Yield,Probability that the annual catch is within the target region between the lower and upper limits,Maximize,Means,Natural,Pr(180 < catch < 375)
+10,1,Probability catch above upper limit,Yield,"Probability that the annual catch is greater than the upper limit of 375,000 mt",Minimize,Means,Natural,Pr(catch > 375)
+11,2,Biomass above limit,Conservation,Probability the biomass is greater than 40% of the biomass at maximum sustainable yield,Maximize,Means,Natural,Pr(B > 0.4 B.msy)
+12,2,Probability of biomass decline,Conservation,Probability the biomass is declining over a 10 year period,Minimize,Means,Natural,Pr(decline)
+13,2,Biomass above target,Conservation,Probability the biomass is greater than the biomass at maximum sustainable yield,Maximize,Fundamental,Natural,Pr(B > B.msy)
+14,2,Biomass above lower target,Conservation,Probability the biomass is greater than 80% of the biomass at maximum sustainable yield,Maximize,Means,Natural,Pr(B > 0.8 B.msy)
+15,2,Mean annual catch,Yield,Mean annual landed catch,Maximize,Means,Natural,1000t
+16,2,Minimum catch,Yield,Minimum annual catch over a 10 year period,Maximize,Means,Natural,min(catch)
+17,2,Maximum catch,Yield,Maximum annual catch over a 10 year period,,Means,Natural,max(catch)
+18,2,Median average annual variation in catch,Yield,The variability in year to year catch (Cox and Kronlund 2008),Minimize,Means,Natural,AAV (Cox and Kronlund 2008)
+19,3,Average catch,Yield,Average annual catch in tonnes,Maximize,Means,Natural,tonnes
+20,3,Average catch per unit effort,Economic,Average catch in kiligrams per pot,Maximize,Means,Natural,kg/pot
+21,3,Average recreational catch,Yield,Average catch in the recreational fishery in tonnes,Maximize,Fundamental,Natural,tonnes
+22,3,Average annual variation in catch,Yield,The variability in year to year catch (Cox and Kronlund 2008),Minimize,Means,Natural,AAV (Cox and Kronlund 2008)
+23,3,Catch per unit effort,Yield,Catch per unit effort relative to limit thresholds of 0.8 and 1.2,Target,Means,Natural,CPUE
+24,3,Biomass,Conservation,"Biomass relative to MSY, reference value, and a limit",Maximize,Means,Natural,tonnes
+25,4,Yield,Yield,Yield,Maximize,Means,Natural,mean median yield in 1000 tonnes
+26,4,Probability of overfished biomass,Conservation,Probability that the biomass is less that the limit biomass,Minimize,Means,Natural,Pr(MMB < MMB.lim)
+27,4,Probability of overfishing,Conservation,Probability that the harvest rate is greater than target rate,Minimize,Means,Natural,Pr(F > F.35%)
+28,4,Variation in Yield,Yield,Standard deviation of the median yield,Minimize,Means,Natural,st.dev median yield in 1000 tonnes
+29,5,Meet a biomass target,Conservation,Rebuild the stock to recover to 20% of the unfished spawning biomass,Maximize,Fundamental,Natural,Pr(B > 0.2 B.zero)
+30,5,Catch,Yield,Mean catch,Maximize,Means,Natural,tonnes
+31,5,Variation in catch,Yield,average annual variation in catch,Minimize,Means,Natural,AAV (Cox and Kronlund)
+32,6,Biomass,Conservation,Spawner biomass,Maximize,Fundamental,Natural,million kg
+33,6,Commercial yield,Yield,Yield from the commercial harvest,Maximize,Means,Natural,million lbs
+34,6,Recreational catch per hour,Yield,Catch rate from the recreational fishery,Maximize,Fundamental,Natural,catch/hour
+35,6,Probability catch below limit,Social,Probability that the annual harvest from the commercial fishery is less than a lower limit (4 million lbs).  Proxy for viability of the commercial fishery,Minimize,Means,Natural,Pr(harvest < 4 mil lbs)
+36,6,Probabilty catch rate below limit,Social,Probability that the recreational harvest rate is less than a lower limit (0.4/hr).  Proxy for viability of the recreational fishery,Minimize,Means,Natural,Pr(catch/hour < 0.4)
+37,7,Biomass relative to biological target,Conservation,Ratio of biomass to biomass at maximum sustainable yield,Maximize,Fundamental,Natural,B/B.msy
+38,7,Biomass relative to economic target,Economic,Ratio of biomass to biomass at maximum economic yield,Maximize,Fundamental,Natural,B/B.mey
+39,7,Short-term profit,Economic,Profit over the next two years,Maximize,Fundamental,Natural,$
+40,7,Long-term profit,Economic,Cumulative profit,Maximize,Fundamental,Natural,S
+41,7,Bethic biomass,Conservation,Benthic biomass retention,Maximize,Fundamental,Natural,B.benthic/B.zero.benthic
+42,7,Gastropod biomass,Conservation,Gastropod biomass retention,Maximize,Fundamental,Natural,B.gastropod/B.zero.gastropod
+51,11,Maintain SB on closed reefs,Conservation,"p(SB(y)/SB(0) > 0.9)> 0.5. Spawning biomass (SB) achieved on reefs without fishing, measured as a constraint defined as p(SB(y)/SB(0) > 0.9)> 0.5, i.e., SB in a given year is greater than 90% of SB in year zero, in 50% of forecasted years.",Constraint,Means,Natural,"SB(y)/SB(0), closed reefs"
+52,11,Maintain SB on closed reefs,Conservation,"p(SB(y)/SB(0) > 0.9)> 0.9. Spawning biomass (SB) achieved on reefs without fishing, measured as a constraint defined as p(SB(y)/SB(0) > 0.9)> 0.9, i.e., SB in a given year is greater than 90% of SB in year zero, in 90% of forecasted years.",Constraint,Means,Natural,"SB(y)/SB(0), closed reefs"
+53,11,Maintain SB on open reefs,Conservation,"p(SB(y)/SB(0) > 0.9)> 0.5. Spawning biomass (SB) achieved on reefs with fishing, measured as a constraint defined as p(SB(y)/SB(0) > 0.9)> 0.5, i.e., SB in a given year is greater than 90% of SB in year zero, in 50% of forecasted years.",Constraint,Means,Natural,"SB(y)/SB(0), open reefs"
+54,11,Maintain SB on open reefs,Conservation,"p(SB(y)/SB(0) > 0.4)> 0.8. Spawning biomass (SB) achieved on reefs with fishing, measured as a constraint defined as p(SB(y)/SB(0) > 0.4)> 0.8, i.e., SB in a given year is greater than 40% of SB in year zero, in 80% of forecasted years.",Constraint,Means,Natural,"SB(y)/SB(0), open reefs"
+55,11,Maintain economically viable indigenous cpue,Economic,"p(cpue(y)/cpue(2000-2004) > 1.2) > 0.9.  CPUE for the indigenous fishery, defined as probability that the CPUE is 1.2 times the CPUE experienced from 2000-2004 in 90% of forecasted years.",Constraint,Fundamental,Natural,"cpue(y)/cpue(2000-2004), indigenous fishery"
+56,11,Maintain economically viable non-indigenous cpue,Economic,"p(cpue(y)/cpue(2000-2004) > 1) > 0.9. CPUE for the indigenous fishery, defined as probability that the CPUE is 1 times the CPUE experienced from 2000-2004 in 90% of forecasted years.",Constraint,Fundamental,Natural,"cpue(y)/cpue(2000-2004), non-indigenous fishery"
+57,11,Maintain indigenous harvest,Yield,"p(H(y)/H(2000-2004) > 0.95) = 1.  Achieve a harvest over the forecasted years that is at least 95% of the harvest from 2000-2004, in the indigenous fishery.",Constraint,Means,Natural,"H(y)/H(2000-2004), indigenous fishery"
+58,11,Maintain non-indigenous harvest,Yield,"p(H(y)/H(2000-2004) > 0.95) = 1.  Achieve a harvest over the forecasted years that is at least 95% of the harvest from 2000-2004, in the non-indigenous fishery.",Constraint,Means,Natural,"H(y)/H(2000-2004), non-indigenous fishery"
+59,11,Catch the available indigenous quota,Yield,p(H(y)/Q(y) = 1) = 1.  Harvest the total available quota in the indigenous fishery.,Constraint,Means,Natural,"H(y)/Q(y), indigenous fishery"
+60,11,Catch the available non-indigenous quota,Yield,p(H(y)/Q(y) = 1) = 1. Harvest the total available quota in the non-indigenous fishery.,Constraint,Means,Natural,"H(y)/Q(y), indigenous fishery"
+61,11,Maintain acceptable proportion of high-value fish,Economic,p(H<1.2kg/H(y) > 0.5) = 1.  Achieved a desired proportion (50% or more) of harvested fish smaller than 1.2kg.,Constraint,Means,Natural,H<1.2kg/H(y)
+62,11,Maintain acceptable proportion of high-value fish,Economic,p(H<1.5kg/H(y) < 0.5) = 1.  Achieved a desired proportion (50% or more) of harvested fish smaller than 1.5kg.,Constraint,Means,Natural,H<1.5kg/H(y)
+63,12,Stock status,Conservation,MMB/MMB(msy). Mature male biomass relative to mature male biomass at msy (B35%).,Maximize,Fundamental,Natural,MMB/MMB(msy)
+64,12,Probability of overfishing,Conservation,p(total catch/true OFL).  Probability the catch is greater than the overfishing limit.,Minimize,Fundamental,Natural,p(total catch>true OFL)
+65,12,Probability of stock becoming overfished,Conservation,p(B < 0.5 B(35%). Probability the biomass is less tha 50% of the biomass at 35% of unfished biomass.,Minimize,Fundamental,Natural,p(B < 0.5 B(35%))
+66,12,Catch,Yield,Catch,Maximize,Fundamental,Natural,Catch
+67,12,Total present value,Economic,Total present value. Calculated as the discounted revenue over the 30 year projection period.,Maximize,Fundamental,Natural,TPV
+68,13,Available biomass open reefs,Conservation,"The biomass that would be selected by fishing gear if subject to fishing pressure, and if caught, legally retained, by species, relative to status quo management procedure.",Maximize,Fundamental,Natural,B(species)/B(status quo)-1
+69,13,Available biomass closed reefs,Conservation,"The biomass that would be selected by fishing gear if subject to fishing pressure, and if caught, legally retained, by species, relative to status quo management procedure.",Maximize,Fundamental,Natural,B(species)/B(status quo)-1
+70,13,Commercial harvest,Yield,"The commerical harvest, by species, relative to status quo management procedure.",Maximize,Means,Natural,H(species)/H(status quo)-1
+71,13,Commercial CPUE,Economic,"The commerical catch per unit effort, by species, relative to status quo management procedure.",Maximize,Means,Natural,CPUE(species)/CPUE(status quo)-1
+72,14,Average annual catch,Yield,catch/year(all). Average annual catch over the evaluation period.,Maximize,Fundamental,Natural,catch/year(all)
+73,14,"Average annual catch, first five years",Yield,catch/year(1st 5). Average annual catch over the first five years of the evaluation period.,Maximize,Fundamental,Natural,catch/year(1st 5)
+74,14,Spawning stock biomass,Conservation,SSB/SSB(0). Spawning stock biomass in final year relative to the unfished biomass.,Maximize,Fundamental,Natural,SSB/SSB(0)
+75,14,Minimum spawning stock biomass,Conservation,SSB(min)/SSB(0). Minimum spawning stock biomassover the evaluation period relative to the unfished biomass.,Maximize,Fundamental,Natural,SSB(min)/SSB(0)
+76,14,Catch Variability,Economic,%AAV. Average absolute percentage inter-annual change in catch over the evaluation period.,Minimize,Means,Natural,%AAV
+77,14,spawning stock biomass below limit,Conservation,p(SSB<B(20)).  Probability of spawning stock biomass declining below the limit reference point,Minimize,Means,Natural,p(SSB<B(20))
+78,15,Threshold N(mnp) probability,Conservation,p(N<N(mnp)) Probability that the abundance is below the abundance at maximum net productivity (MNP) is less than 5%.,Constraint,Means,Proxy,p(N<N(mnp))<5%
+79,15,Threshold N(collapse) probability,Conservation,p(N<N(collapse)) Probability that the abundance is below 10% of virgin abundance (collapse) is less than 2.5%.,Constraint,Means,Proxy,p(N<N(collapse))<2.5%
+80,15,Rebuilding time,Conservation,Probability the time required by a population to rebuild to the NMNP threshold to no more than 10% longer than the time it would take without human-caused mortality,Constraint,Means,Natural,p(T(human)>T(w/o human)*1.1)
+81,16,SSB(limit),Conservation,"Maintain spawning stock biomass above LRP = 0.4B(msy) in 95% of years measured over two sablefish generations (i.e. 36 years), where BMSY is defined by operating model scenario",Constraint,Means,Natural,p(SSB>=0.4B(msy))>=95%
+82,16,Minimize long-term decline,Conservation,"When the spawning stock biomass falls within the cautious zone (0.4BMSY < B < 0.8BMSY), limit the probability of decline over the subsequent 10 years from very low (5%) when at the LRP to moderate (50%) when at BMSY. At stock status levels between these two points, define the tolerance for decline by linear interpolation (Fig. 1a). Biological reference points defining stock status zones are defined by the operating model scenario",Constraint,Means,Natural,p(decline)
+83,16,SSB(target),Conservation,"Maintain spawning biomass above the target reference point BMSY in 50% of the projection years measured over two sablefish generations, where BMSY is defined by operating model scenario",Constraint,Fundamental,Natural,p(SSB>=B(msy))>=50%
+84,16,average annual variability in catch,Economic,Maintain 10-year average annual variability in catch (AAV) of less than 15%,Constraint,Means,Natural,AAV
+85,16,Catch,Yield,Maximize the median average catch over the first 10 projection years,Maximize,Fundamental,Natural,Catch
+86,17,Spawning Biomass,Conservation,"p(SB(2025)>0.4SB(1951)). Probability that the egg production (spawning biomass, SB) in 2025 exceeds 40% of the egg production in 1951.",Constraint,Fundamental,Natural,p(SB(2025)>0.4SB(1951))
+87,17,Exploitable Biomass limit,Conservation,p(EB(2025)>0.2EB(1951)). Probability that the exploitable biomass (EB) in 2025 exceeds 20% of the exploitable biomass in 1951.,Constraint,Fundamental,Natural,p(EB(2025)>0.2EB(1951))
+88,17,Exploitable Biomass target,Conservation,p(EB(2025)>0.4EB(1951)). Probability that the exploitable biomass (EB) in 2025 exceeds 40% of the exploitable biomass in 1951.,Constraint,Means,Natural,p(EB(2025)>0.4EB(1951))
+89,17,Catch,Yield,Median average catch from 2005-14,Maximize,Fundamental,Natural,median(C(2005-2014))
+90,17,Catch limit,Yield,5th percential of average catch from 2005-14,Maximize,Means,Natural,5th%(C(2005-2014))
+91,17,TAC reduction,Yield,"Trend in Catch, measured as p(reduction in TAC between 2005 and 2014)",Minimize,Fundamental,Natural,p(TAC(y+1)<TAC(y))
+92,17,Variation in catch,Yield,Absolute annual variation in catch (2005-2014),Minimize,Means,Natural,AAV
+93,18,Stock relative to MSY,Yield,"S(y)/S(msy)*100.  The stock status as a percentage of the stock status at MSY, by species",Target,Fundamental,Natural,S(y)/S(msy)*100
+94,18,Stock relative to maximum economic yield,Economic,"S(y)/S(mey)*100.  The stock status as a percentage of the stock status at MEY, by species",Target,Fundamental,Natural,S(y)/S(mey)*100
+95,18,Stock relative to limit reference point,Conservation,S(y)/S(msy)*100.  5-year moving average of stock size ratio - the limit reference point that causes fishery closure,Constraint,Means,Natural,S(y)/S(msy)*100
+96,18,Effort,Economic,Annual effort targeted towards either grooved tiger or brown tiger prawns.,Unknown,Means,Natural,E(y)
+97,18,Biomass per area,Conservation,Spatial biomass (kg) distribution which can then be summed over functional group or habitat or converted to density (kg/ha). The biomass (kg) in 6-minute grid cell g for functional group f in the year y.,Maximize,Means,Natural,"B(y,a)"
+98,18,Biomass functional group,Conservation,"B(f)/B(f,BC)*100 Percentage change in functional group biomass  relative to Base Case. The total biomass in functional group relative to the median over all simulations of the total biomass under the Base Case.",Maximize,Fundamental,Natural,"B(f)/B(f,BC)*100"
+99,18,Biomass functional group by habitat,Conservation,"B(f,h)/B(f,h,BC)*100 Percentage change in functional group biomass by habitat relative to Base Case. The total biomass in functional group by habitat relative to the median over all simulations of the total biomass by habitat under the Base Case.",Maximize,Fundamental,Natural,"B(f,h)/B(f,h,BC)*100"
+100,18,Percentage change in ecosystem biomass relative to end of historical period,Conservation,"B(2016)/B(2008)*100 The total ecosystem biomass at the beginning of year y, the summation being over all functional groups or all non-producer groups.",Maximize,Fundamental,Natural,B(2016)/B(2008)*100
+101,18,Effects of trawling indicator,Conservation,"The EoT indicator at time t for species s in habitat h. The summation is over all cells g within the habitat. B(t,s,g) is the long-term relative biomass under E(MEY) calculated at time t.",Unknown,Means,Proxy,I
+102,18,Percentage area closed to fishing,Economic,Percentage area closed to fishing,Minimize,Fundamental,Natural,A*100
+103,18,Displaced effort (boat days),Economic,Effort relocated based on closures.,Minimize,Fundamental,Natural,E
+104,18,Number of species at risk,Conservation,u(s)>u(msm)  where u-s is the fishing mortality for species s and T is the set of TEP species. The species is defined to be 'at risk' if,Minimize,Fundamental,Natural,u(s)>u(msm)
+105,18,Probability of species at risk,Conservation,p(u(s)>u(msm)) stimated as the proportion of simulations for which species s is at risk.,Minimize,Fundamental,Natural,p(u(s)>u(msm))
+106,19,Spawning stock biomass,Conservation,SSB Spawning stock biomass,Unknown,Fundamental,Natural,SSB
+107,19,Fishing mortality,Yield,"F, Fishing mortality",Unknown,Fundamental,Natural,F
+108,19,Effort,Economic,"E(y)/E(2013), Relative change in effort",Unknown,Fundamental,Natural,E(y)/E(2013)
+109,19,Catch,Yield,"C, Catch in tonnes",Maximize,Fundamental,Natural,C
+110,20,Stock at MSY,Conservation,"P(S(2010)>S(msy)), Probability stock size is at or above the stock size at maximum sustainable yield",Maximize,Fundamental,Natural,P(S(2010)>S(msy))
+111,20,Relative stock status,Conservation,"S(2010)/S(msy), Stock Size relative to maximum sustainable yield",Target,Fundamental,Natural,S(2010)/S(msy)
+112,20,Discounted Catch,Economic,total discounted annual catch,Maximize,Fundamental,Natural,C
+113,20,Catch below limit,Economic,"P(C(y)>C(limit)), Percentage of years that catch is less than the critical limit",Minimize,Means,Proxy,P(C(y)>C(limit))
+114,20,Minimum catch,Economic,Lowest catch taken over evaluation period,Maximize,Means,Proxy,C(low)
+115,20,Stability of catch,Economic,"The stability of the catches is measured
+by the average absolute (percentage) change in landed
+catches from year to year, AAV",Maximize,Fundamental,Natural,AAV
+116,21,Spawning Biomass,Conservation,"SSB(2030)/SSB(1995). The expected spawning biomass at the end of the projection period, relative to the starting (1995) level (used as a proxy for K, the unfished biomass), for each species averaged across the entire area and separately for each zone",Maximize,Fundamental,Natural,P(SSB(2030)/SSB(1995))
+117,21,Relative Spawning Biomass,Conservation,"SSB(2030)/SSB(2030 SQ). the expected spawning biomass at the end of the projection period, relative to the comparable simulation no-fishing trial with no
+climate-change effects, for each species averaged across entire area. The same set of random numbers was used to generate sets of 480 no-fishing projections for each species and zone, as a baseline for comparisons with the range of projections with
+fishing and climate change.",Maximize,Fundamental,Natural,
+118,21,Biomass below limit,Conservation,"Risk of falling below limit biomass level of 20 % unfished biomass during the projection period for each species across all simulations and replicates, and for all spatial areas combined as well as for individual zones",Minimize,Means,Natural,"P(SSB<SSB(20%)), P(SSB<SSB(30%)),
+P(SSB<SSB(target))"
+119,21,Average Catch,Yield,"Average Catch over 2011 to 2030 (for each zone as well as the entire area, and for four groups of species: very high (sandfish), high (black teatfish and white
+teatfish), medium (surf redfish, prickly redfish, deepwater redfish and hairy blackfish) and low value (leopardfish).",Maximize,Fundamental,Natural,
+120,21,Species Composition,Economic,Species composition computed as the relative abundance (in 2030) of each species compared with the species composition from a no-fishing no-climate-change scenario. This takes into account the sometimes large historic catches (Plagányi et al. 2011c) as well as allowing for a 20-year recovery period.,Unknown,Means,Natural,
+121,21,Average annual profit,Economic,the landed weight of each species multiplied by current average market prices.,Maximize,Fundamental,Natural,$
+122,22,Long-term biomass,Conservation,Mean spawning biomass relative to SMSY,Maximize,Fundamental,Natural,S/S(msy)
+123,22,Probability of being overfished,Conservation,Proportion of years overfished (S < 0.5Starg),Minimize,Means,Natural,P(S<0.5*S(target))
+124,22,Initial catch,Yield,Mean catch in first 5 years relative to MSY,Maximize,Fundamental,Natural,C
+125,22,Long-term catch,Yield,Mean catch over final 20 years relative to MSY,Maximize,Fundamental,Natural,C
+126,22,Catch AAV,Economic,Relative interannual variation in catch,Minimize,Means,Natural,AAV
+127,22,Overfishing magnitude,Conservation,"Mean fishing mortality rate relative to
+F(lim) when overfishing occurs",Minimize,Means,Natural,F/F(lim)
+128,22,Probability of overfishing,Conservation,P(of) Proportion of years when F > Flim,Minimize,Means,Natural,P(F>F(lim))
+129,22,Rebuilding years,Economic,"No. of years to rebuild (heavily exploited
+runs only)",Minimize,Means,Natural,T(rebuild)
+130,23,Objective Function,Utility,"R=v(F)2H(F)+v(M)H(M). R is the reward H(F) and H(M) are number of female and male horseshoe crabs harvested, and v(F)t and v(M) are value functions determined by the level of female and male horseshoe crab harvest. The value function for females takes the value of one if red knot abundance exceeds 45 000 (i.e. 22 500 female red knot) or female horseshoe crab abundance exceeds 80% of carrying capacity (i.e. 11 million) and takes the value of zero otherwise. The value function for males is related to sex ratio, so that the function takes the value of zero when operational sex ratio (sex ratio on the spawning beach, expressed as males : females) is below 2 : 1, takes the value of one when operational sex ratio exceeds 3 : 1, and changes linearly in between those thresholds.",Maximize,Fundamental,Natural,R
+131,23,Red Knot abundance,Utility,takes the value of one if red knot abundance exceeds 45 000 (i.e. 22 500 female red knot),Constraint,Fundamental,Natural,Red knot abundance
+132,23,Horseshoe crab abundance,Utility,female horseshoe crab abundance exceeds 80% of carrying capacity (i.e. 11 million),Constraint,Means,Natural,Horseshoe crab abundance
+133,24,Biomass relative to targets,Conservation,Relative biomass at the end of the projection period (relative to management targets). relative biomass target (25%),Unknown,Fundamental,Natural,B
+134,24,Probability of overfishing,Conservation,P(ABC>OFL(true)). Probability that the allowable biological catch was set at a level greater than the overfishing limit,Minimize,Means,Natural,P(ABC>OFL(true))
+135,24,Probability stock is overfished,Conservation,"The probability of being overfished (flatfish: < 0.125B0, rock-fish: < 0.25B0) at the end of the projection period.",Minimize,Means,Natural,P(B<[0.125/0.25]B(0))
+136,24,Catch relative to precautionary target,Conservation,The percent of the estimated catch realized over the projection period relative to the operating model OFL by each estimation.A perfect performance for the catch-only estimation methodswould be 69% (ABC = 69% OFL) and 83% (ABC = 83% OFL) for thedata-moderate estimation methods.,Target,Fundamental,Natural,% of OFL
+137,24,Variability in available catch,Economic,The average annual variability of ABC catches (abbreviation AAV)over the projection period,Minimize,Fundamental,Natural,AAV
+138,25,Spawning Stock Biomass,Conservation,Ability to achieve the limit reference point Blim for SSB (Blim = 160 000 t),Constraint,Fundamental,Natural,SSB
+139,25,Fishing Rate,Conservation,Ability to achieve target F (F = 0.3),Constraint,Means,Natural,F
+140,26,Rebuild spawning stock biomass,Conservation,Rebuilding the spawning biomass (SSB) to 1980 levels by 2020),Constraint,Fundamental,Natural,SSB
+141,26,Catch reduction,Economic,Minimize short term catch reduction,Minimize,Means,Natural,C
+142,26,Average Catch,Yield,Maximize long term average catch,Maximize,Fundamental,Natural,C
+143,26,Catch variability,Economic,Minimize variability in annual catch,Minimize,Means,Natural,AAV
+144,27,Cost,Economic,Total cost,Minimize,Fundamental,Natural,$
+145,27,Trap effectiveness,Conservation,Increase in trap effectiveness (TE) required to achieve status quo management results,Minimize,Means,Proxy,TE
+146,27,Trap effectiveness increase,Conservation,Increase in trap effectiveness (TE) required to achieve a 10% improvement in status quo management results,Minimize,Means,Proxy,TE
+147,27,Lamprey abundance,Conservation,Percent of simulations with reduced lamprey abundance relative to status quo management results,Maximize,Fundamental,Natural,p(N<N(sq))
+148,28,Legal Catch,Yield,Legal catch in number of crabs caught,Maximize,Fundamental,Natural,C
+149,28,Abundance,Conservation,Crab abundance,Maximize,Fundamental,Natural,N
+150,28,Population CV,Conservation,population coefficient of variation,Minimize,Means,Natural,CV(N)
+151,28,Catch CV,Yield,catch coefficient of variation,Minimize,Fundamental,Natural,CV(C)
+152,28,Catch shock,Yield,P(delta C>70k) probability of catch declines greater than 70 000 crabs per year,Minimize,Fundamental,Natural,P(delta C>70k)
+153,28,Catch minimum,Yield,absolute minimum catch,Maximize,Fundamental,Natural,C(min)
+154,29,Catch,Yield,"Average annual catch.  Median, and 90% CL",Maximize,Fundamental,Natural,C
+155,29,Egg production,Conservation,P(mat) the probability that the egg production drops below the egg production in 2009/2010.,Minimize,Means,Proxy,P(mat)
+156,29,Biomass,Conservation,P(expl) the probability that the exploitable biomass in the middle of November drops below the corresponding exploitable biomass in 2009/2010,Minimize,Fundamental,Natural,P(expl)
+157,29,Variation in catch,Economic,AAV average annual variation in catch,Minimize,Means,Natural,AAV
+158,30,Biomass,Conservation,Average percentage of B(0) remaining in the system,Maximize,Fundamental,Natural,B
+159,30,Harvest,Yield,Average recreational harvest,Maximize,Fundamental,Natural,H
+160,30,Size of catch,Social,Average length of yellow perch harvested in recreational fishery,Maximize,Fundamental,Natural,TL (cm)
+161,30,Spawning stock biomass above threshold,Conservation,Percentage of years with SSB below 20% B(0),Minimize,Means,Natural,p(SSB < 0.2 B(0))
+162,30,Harvest above threshold,Social,Percentage of years with harvest below 1.5 million fish,Minimize,Fundamental,Natural,p(H<1.5M)
+163,30,Length above threshold,Social,Percentage of years with TL below 21.59cm,Minimize,Fundamental,Natural,p(TL < 21.59)
+164,41,OPT Catch,Yield,Ocean Prawn Trawl catch,Maximize,Fundamental,Natural,C (tonnes)
+165,41,EPT Catch,Yield,Estuary Prawn Trawl catch,Maximize,Fundamental,Natural,C (tonnes)
+166,41,Depletion Ratio,Conservation,Estimated Biomass 2015/Estimated Biomass 1985,Maximize,Fundamental,Natural,B
+167,42,Spawning Biomass,Conservation,spawning biomass relative to the reference level SB40%,Maximize,Fundamental,Natural,SB/SB(40%)
+168,42,Spawning Biomass below limit,Conservation,the probability that the spawning biomass fell below SB20%,Minimize,Means,Natural,p(SB<SB(20%))
+169,42,Catch above limit,Conservation,the probability that the catch was higher than OFL,Minimize,Means,Natural,p(C>C(OFL))
+170,42,Catch,Yield,Catch over the projection period,Maximize,Fundamental,Natural,C
+171,43,Yield,Yield,"Yield, the sum of the annual yields taken from the stock for each run over the 50 years of the simulation (in tonnes)",Maximize,Fundamental,Natural,C
+172,43,Fishing mortality,Economic,"Fbar, the average fishing mortality over the 50 years of simulation",Minimize,Means,Natural,F
+173,43,Biomass below limit,Conservation,percentages of the years in each run for which the stock was below the limit,Minimize,Means,Natural,B(lim)
+174,43,Biomass below target,Conservation,percentages of the years in each run for which the stock was below the target,Minimize,Means,Natural,B(pa)
+175,44,Recovery probability,Conservation,a high probability of the stock recovering by the T(MAX) selected when the rebuilding plan was originally developed,Maximize,Fundamental,Natural,p(recovery)
+176,44,Catch,Yield,high catches during rebuilding,Maximize,Fundamental,Natural,C
+177,44,Catch variability,Economic,low interannual variation in catches,Minimize,Means,Natural,AAV
+178,44,Number of rebuilding plans,Economic,"stability in the rebuilding plan (i.e., minimizing the number of rebuilding plan failures)",Minimize,Means,Natural,# of plans
+179,44,Rebuilding ratio,Conservation,"R. The ""rebuilding ratio,"" the ratio of the difference in the number of years between the actual and perceived number of years to recovery (yTrue
+rec and yPerc rec ) to the difference between the actual number of years to recovery and 2048 [the year that recovery to BMSY is predicted to occur based on the reference management procedure when the rebuilding plan is first implemented]",,,,R
+180,45,Stock Status,Conservation,B/B(0).  Biomass relative to unfished biomass over final ten years,Maximize,Fundamental,Natural,B/B(0)
+181,45,TAC,Yield,Average TAC over final ten years,Maximize,Means,Natural,TAC
+182,45,Minimum Stock Status,Conservation,min(B/B(0)).  Minimum biomass relative to unfished biomass over final ten years,Maximize,Means,Natural,min(B/B(0))
+183,45,Below Limit Biomass,Conservation,p(B<B(20)). Probablility biomass is less than limit of 20% of unfished biomass over final ten years,Minimize,Means,Natural,p(B<B(20))
+184,46,Improved water quality,Conservation,The metric used to assess the performance of this goal was the ratio of benthic calcifiers to non-calcifiers with calcifiers defined as corals and crustose-coralline algae (CCA) and non-calcifiers as turf and macroalgae,Maximize,Means,Proxy,calcifiers/non-calcifiers
+185,46,Increased reef resilience,Conservation,"Performance metrics for this goal were biomass of different ecologically important herbivorous fishes, as these groups are critical for maintaining coral-reef habitat and reversing macroalgal strands to cropped states",Maximize,Fundamental,Natural,B(herbs)
+186,46,Enhanced fish biomass,Conservation,Modeled outcome of total fish biomass was used as the metric for the performance of this goal,Maximize,Fundamental,Natural,B
+187,46,fishery landings,Yield,landings of reef fish,Maximize,Fundamental,Natural,C
+188,46,fishery explotation,Conservation,the number of functional fish groups that are not overexploited,Maximize,Means,Proxy,B>B(exploited)
+189,47,Frequency of management interventions,Economic,"each management intervention has a specific financial cost, and this cost compounds as the number of interventions increases. Reducing the number of interventions will help keep costs low. The performance indicator used to capture this objective is the number of interventions over a 90-year forecast period (between 2010 and 2100)",Minimize,Means,Proxy,# of interventions
+190,47,Shoreline recession,Conservation,"local councils, residents, and stakeholders generally desire to keep shoreline position as close to a reference level as possible in order to provide this amenity for local communities as well as to attract tourism and the economic benefits of tourism in the local area. This objective desires to keep shoreline position as close to 2010 levels as possible, with the performance indicator measuring the average beach recession between 2010 and 2100",Minimize,Fundamental,Natural,Recession
+191,47,Relative shoreline recession,Conservation,"given that shoreline position will vary according to stochastic fluctuations, trends in recession, and management intervention, this objective requires as low variability in shoreline position as possible over the time period of 2010 to 2100 to ensure that local communities and tourists are able take advantage of this natural amenity continuously. The performance indicator for this objective measured the maximum amount of recession between 2010 and 2100.",Minimize,Fundamental,Natural,Max(recession)
+192,31,Clam density,Conservation,"clam whole-stock density, which is the number of clams ?120 mm SL per square meter (the fishable stock is defined as clams ?120 SL mm [NEFSC2])",Maximize,Means,Natural,Density
+193,31,Clams per bushel,Yield,Number of clams per bushel,Maximize,Means,Natural,# of clams
+194,31,Landings per unit effort,Yield,"LPUE, which is the number of bushels fished per hour",Maximize,Fundamental,Natural,LPUE
+195,31,Areas fished,Economic,the number of 10? squares fished,Maximize,Means,Natural,# of areas
+196,31,Distance per trip,Economic,the total distance traveled per fishing trip (in kilometers),Minimize,Means,Natural,km
+197,49,Clam density,Conservation,"clam whole-stock density, which is the number of clams ?120 mm SL per square meter (the fishable stock is defined as clams ?120 SL mm [NEFSC2])",Maximize,Means,Natural,Density
+198,49,Distance per trip,Economic,the total distance traveled per fishing trip (in kilometers),Minimize,Means,Natural,km
+199,49,Areas fished,Economic,the number of 10? squares fished,Maximize,Means,Natural,# of areas
+200,49,Landings per unit effort,Yield,"LPUE, which is the number of bushels fished per hour",Maximize,Fundamental,Natural,LPUE
+201,49,Clams per bushel,Yield,Number of clams per bushel,Maximize,Means,Natural,# of clams
+202,50,Spawning Stock Biomass,Conservation,"Spawning stock level, weight = 2",Maximize,Fundamental,Natural,SSB
+203,50,Stock below limit,Conservation,"Number of years stock falls below B20%, weight = 1",Minimize,Means,Natural,count(B(y)<B(20%))
+204,50,Catch,Yield,"Mean catch, weight = 1.5",Maximize,Fundamental,Natural,C
+205,50,Fishery Closure,Economic,"Number of years that fishery closes, weight = 3",Minimize,Means,Natural,count(C=0)
+206,50,Catch Variability,Economic,Interannual catch variability,Minimize,Means,Natural,var(C)
+207,50,Catch variability,Economic,Catch variability,Minimize,Means,Natural,var(C)
+208,32,Overall discards,Yield,minimize total discards across species,Minimize,Means,Natural,Discard
+209,32,Habitat impact,Conservation,minimize total area impacted,Minimize,Fundamental,Natural,area
+210,32,TEP interactions,Conservation,TEP interactions,Minimize,Fundamental,Natural,NA
+211,32,Effort,Economic,Total effort,Minimize,Means,Natural,effort
+212,32,Landings,Yield,Total landings,Maximize,Fundamental,Natural,landings
+213,32,CPUE,Economic,Catch per unit effort,Maximize,Means,Natural,CPUE
+214,32,Catch size,Yield,average size of the catch,Maximize,Means,Natural,cm
+215,32,Catch composition,Conservation,Proportion of catch due to one species,Minimize,Means,Natural,max(proportion)
+216,32,Access to fishery,Social,maximiize access to fishery.  Reflects spatial or other regulatory constraints,Maximize,Fundamental,Natural,NA
+217,32,Stability of management,Economic,Year-to-year stability of management,Maximize,Means,Natural,NA
+218,32,Volume of quota trading,Economic,Volume of quota trading,Maximize,Means,Natural,NA
+219,32,Overall management costs,Economic,General administration,Minimize,Means,Natural,$
+220,32,Research costs,Economic,Ecological data for assessments,Minimize,Means,Natural,$
+221,32,Enforcement costs,Economic,Patrolling; VMS costs,Minimize,Means,Natural,$
+222,32,Costs of monitoring,Economic,Surveys and observers,Minimize,Means,Natural,$
+223,32,Assessment costs,Economic,Assessment costs,Minimize,Means,Natural,$
+224,32,Public Image,Social,"Based on the relative state of the ecological system, port population size and profitability of the system",Maximize,Fundamental,Constructed,NA
+225,32,Frequency of gear conflict,Social,Count of adverse gear interactions,Minimize,Means,Natural,# of interactions
+226,32,Level of port activity,Social,Function of landings,Maximize,Means,Natural,NA
+227,32,Gross value of landed catch,Economic,Gross value of landed catch,Maximize,Means,Natural,$
+228,32,Total operating costs,Economic,"Summed over fuel, gear, refrigeration & transport, unloading, capital & fixed costs.",Minimize,Means,Natural,$
+229,32,Total profits,Economic,With a penalty function for losses,Maximize,Fundamental,Natural,$
+230,32,Profit per tonne landed,Economic,Across all species,Maximize,Fundamental,Natural,$
+231,32,Profit per effort,Economic,Profit per effort,Maximize,Fundamental,Natural,$
+232,32,Biomass of target species,Conservation,Biomass of target species,Maximize,Fundamental,Natural,Biomass
+233,32,Biomass of bycatch species,Conservation,Biomass of bycatch species,Maximize,Fundamental,Natural,Biomass
+234,32,Microfaunal biomass,Conservation,Microfaunal biomass,Minimize,Means,Natural,Biomass
+235,32,"Biomass of threatened, endangered & protected species",Conservation,"Biomass of threatened, endangered & protected species",Maximize,Means,Natural,biomass
+236,32,Biomass of higher trophic level species,Conservation,"Sea birds, marine mammals, large sharks",Maximize,Fundamental,Natural,biomass
+237,32,Habitat cover,Conservation,Proportional Per habitat type,Maximize,Fundamental,Natural,% by type
+238,32,Demersal:pelagic biomass ratio,Conservation,Of finfish,Maximize,Fundamental,Natural,ratio
+239,32,Piscivore:planktivore biomass ratio,Conservation,Of finfish,Maximize,Fundamental,Natural,ratio
+240,32,Change in slope of biomass size spectra,Conservation,Change in slope of biomass size spectra,Minimize,Means,Natural,Change in slope
+241,33,proportion of biomass protected,Conservation,"maximizing the
+proportion of the mature biomass protected",Maximize,Fundamental,Natural,%
+242,33,TAC,Yield,maximizing the TAC,Maximize,Means,Natural,TAC
+243,33,catch efficiency,Economic,"minimizing the
+numbers of abalone required to take a given catch",Minimize,Means,Natural,#/C
+244,34,Yield,Yield,Median yield (last 5 years) relative to current,Maximize,Fundamental,Natural,C/C(t0)
+245,34,Biomass,Conservation,Median biomass (last 5 years) relative to current,Maximize,Fundamental,Natural,B/B(t0)
+246,34,p(Biomass below target),Conservation,B50%: likelihood of biomass dropping below 50 percent BMSY,Minimize,Means,Natural,p(B<0.5*B(msy))
+247,34,p(overfishing),Conservation,PNOF: probability of not overfishing,Minimize,Means,Natural,1-p(overfishing)
+248,34,Yeild relative to F(msy),Yield,LTY: fraction of simulations getting over half FMSY yield in the last ten years of the projection,Maximize,Means,Natural,p(C>0.5*F(msy))
+249,34,variability in yeild,Economic,AAVY: fraction of simulations where average annual variability in yield is less than 10 percent,Maximize,Means,Natural,p(AAV<1.0)
+250,35,SSB,Conservation,SSB,Maximize,Fundamental,Natural,SSB
+251,35,Yield,Yield,Yield,Maximize,Fundamental,Natural,Yield
+252,36,minimize assessment error,Economic,"The root mean square relative error (RMSE) of the SSBs assessed in the first 20 years, i.e., 2005-2024",Minimize,Means,Natural,RMSE
+253,36,minimize forecasting error,Economic,"The root mean square relative error of the estimated terminal SSBs in the next seven prediction years, i.e., 20252031",Minimize,Means,Natural,RMSE
+254,36,Spawning stock biomass above limit,Conservation,"The probability of the resultant (""true"") SSB being above the ""true"" reference point Blim in each of seven years of the projection",Maximize,Fundamental,Natural,p(B>B(lim))
+255,36,Variability of spawning stock biomass,Conservation,"The variability of the resultant (""true"") SSB in the seven prediction years",Minimize,Means,Natural,cv(SSB)
+256,36,Catch,Yield,The average value of the predicted catch (TAC) in the seven prediction years,Maximize,Fundamental,Natural,C
+257,36,AAV,Yield,The variability of the predicted catch in the seven prediction years,Minimize,Means,Natural,AAV
+258,37,Effort,Economic,Total effort,Minimize,Fundamental,Natural,effort
+259,37,Catch,Yield,Total Catch,Maximize,Fundamental,Natural,C
+260,37,CPUE,Economic,Catch per unit effort,Maximize,Means,Natural,CPUE
+261,37,Biomass,Conservation,Mean species biomass across 12 bentic groups as % of unfished biomass,Maximize,Fundamental,Natural,mean(B/B(0))
+262,38,Minimize implementation error,Economic,Only a performance metric of % of quota used was provided,Maximize,Means,Natural,C/Quota
+263,39,Biomass,Conservation,Proportion of biomass relative to start of simulation,Maximize,Fundamental,Natural,B/B(0)
+264,39,Economic Return,Economic,Sum of discounted net economic return,Maximize,Fundamental,Natural,net $
+265,40,Overfishing,Conservation,"propensity for overfishing; Overfishing was calculated as the percentage of simulation runs in which ACLs that were specified via the management strategy exceeded the simulated ""true"" OFLs in at least 50%
+of years over a 25-year duration",Minimize,Means,Natural,p(ACL>ACL(true))
+266,40,Overfished,Conservation,"propensity for the stock to become overfished; ""overfished"" metric was calculated as the percentage of simulation runs during which spawning biomass in the 25th year was below the simulated target threshold of 0.5 × the biomass producing MSY",Minimize,Means,Natural,p(B<0.5*B(MSY))
+267,40,Catch,Yield,the ratio of catches to true simulated MSY,Target,Fundamental,Natural,C/C(MSY)
+268,40,Biomass,Conservation,the ratio of spawning biomass to BMSY,Target,Fundamental,Natural,B/B(MSY)

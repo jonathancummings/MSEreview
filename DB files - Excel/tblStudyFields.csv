@@ -1,0 +1,39 @@
+Order,Field Name,Field Category,Field Type,Description
+1,Authors,Documentation,Description,Names of the authors of the study
+2,YearPub,Documentation,Description,The year of publication
+3,Species,System,Description,Target species
+4,Location,System,Description,Geographic area the fishery occurs in
+5,Latitude,Documentation,Lat.,Center point of the geographic are the MSE applies to (latitude)
+6,Longitude,Documentation,Long.,Center point of the geographic are the MSE applies to (longitude)
+7,System,System,Description,"A short description of the study system.  For example, the species and it's location"
+8,Drivers,System,List,"System drivers included in the operating model, e.g., climate change, environmental conditions, predation, species interactions, etc."
+9,ProcessExplicit,Decision Analysis,Yes/No,Was the decision process methodology documented clearly?
+10,ProblemDefinitionExplicit,Decision Analysis,Yes/No,Was a problem defintion completed and documented?
+11,ObjectivesExplicit,Decision Analysis,Yes/No,Were objectives elicited and documented clearly?
+12,AlternativesExplicit,Decision Analysis,Yes/No,Were alternatives elicited and documented clearly?
+13,TradeOffsExplicit,Decision Analysis,Yes/No,Was a tradeoff analysis conducted and documented?
+14,Optimal Alternative Documented,Decision Analysis,Yes/No,"Was the best management procedure, aka optimal alternative, documented?"
+15,DecisionDocumented,Decision Analysis,Yes/No,Was the decision of the process documented?
+16,RoleSpecification,Decision Process,Yes/No,Were roles assigned and documented?
+17,OpenMeetings,Decision Process,Yes/No,Were open meetings held?
+18,ResultsAdopted,Decision Process,Yes/No,Did the MSE influence subsequent management?
+19,ProblemDefinition,Decision Analysis,Description,A problem definition taken from the documentation (Reader interpretation)
+20,ObjElicitationMethod,Decision Analysis,Description,"If documented, how were objectives elicited?"
+21,ConsequencePrediction,Decision Process,Description,How were consequences predicted?
+22,TradeOffMethod,Decision Analysis,Description,What form of tradeoff analysis occured?
+23,Decision,Result,Description,"If documented, the management procedure that was selected for implementation"
+24,Leader,Decision Process,List,What organization initiated and directed the MSE?
+25,Participants,Decision Process,List,Who participated in the MSE process?
+26,ObjElicitationSource,Decision Process,List,The groups from which objectives were elicited
+27,ProcedureElicitation,Decision Process,List,The groups from which alternative management procedures were elicited
+28,FullCitation,Documentation,Description,The full citation for the study
+29,Comments,Comments,Description,Additional notes and comments about the study
+30,ObjName,Objectives,Description,Text description of the objective
+31,ObjCategory,Objectives,List,"The objective category (conservation, yield, economic, social)"
+32,ObjDescription,Objectives,Description,Description of the objective
+33,ObjDirection,Objectives,List,The desired state of the objective
+34,ObjType,Objectives,List,"The type of objective.  E.g., strategic, process, fundamental, or means"
+35,ObjScale,Objectives,Description,"The scale on which the objective is measures (natural, proxy, or constructed)"
+36,ObjMetric,Objectives,Description,The units used to measure the objective
+37,MPManagementTool,Alternatives,List,Management alternatives evaluated in the study
+38,MPAlternativesEvaluated,Alternatives,List,Types of alternatives evaluated
