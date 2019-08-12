@@ -39,6 +39,8 @@ con <- getSqlConnection()
 
 res <- dbListTables(con)
 
+dbReadTable(con, "tblTesting")
+
 dbSendQuery(con, "DELETE FROM tblStudyFields")
 print(res)
 
