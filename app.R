@@ -114,7 +114,7 @@ prob.col<-c("Citation",
 freq.col<-c("ProcessExplicit",
             "ProblemDefinitionExplicit",
             "ObjectivesExplicit",
-            "AlternativesExplicit"
+            "AlternativesExplicit",
             "TradeOffsExplicit",
             "DecisionExplicit",
             "RolesExplicit",
