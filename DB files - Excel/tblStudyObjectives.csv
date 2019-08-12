@@ -1,4 +1,3 @@
-ID,fkStudyID,ObjName,ObjCategory,ObjDescription,ObjDirection,ObjType,ObjScale,ObjMetric
 1,1,Median average depletion,Conservation,Median average depletion where depletion is reported as the SSB relative to the unfished biomass as a percentage,Minimize,Means,Natural,% of B.zero
 2,1,Biomass below lower limit,Conservation,Probability biomass is below 10% of the unfished biomass,Minimize,Means,Natural,Pr(B < B.10%)
 3,1,Biomass above limit and below target,Conservation,Probability biomass is between 10% and 40% of the unfished biomass,Minimize,Means,Natural,Pr(B.10% < B < B.40%)
