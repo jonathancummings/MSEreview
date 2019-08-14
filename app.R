@@ -64,6 +64,9 @@ obj<-dbReadTable(con,"tblStudyObjectives")
 fields<-dbReadTable(con,"tblStudyFields")
 # fields<-read_xlsx("DB files - Excel/tblStudyFields.xlsx")
 
+# To close the connection
+dbDisconnect(con)
+
 #####
 # Edit tables for joining
 study<-study %>% 
@@ -151,7 +154,8 @@ ui <- fluidPage(
              radioButtons("data_filter",
                           "Show results from:",
                           choices = c("All MSEs"="all",
-                                      "MSEs reviewed for Cummings et. al. Publication"="pub")),
+                                      "MSEs reviewed for Cummings et. al. Publication"="pub",
+                                      "MSE included climate change as a driver"="CC")),
              textOutput("radio"),
              hr(),
              plotOutput("mse.map",
@@ -242,9 +246,15 @@ server <- function(input, output, session) {   # code to create output using ren
   # Filter data to include only those reviewed for the publication or all MSEs
   data_reviewed<-reactive({
     if(input$data_filter=="pub"){
-    filter(data,IncludeInPublication==TRUE)
-    } else if(input$data_filter=="all"){
-      filter(data,IncludeInPublication==TRUE|IncludeInPublication==FALSE)
+      filter(data,IncludeInPublication==TRUE)
+    } 
+    else 
+      if(input$data_filter=="CC"){
+        filter(data,Drivers=="Climate Change")
+      }
+    else 
+      if(input$data_filter=="all"){
+        filter(data,IncludeInPublication==TRUE|IncludeInPublication==FALSE)
     }
   })
   
