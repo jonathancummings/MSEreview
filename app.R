@@ -153,9 +153,10 @@ ui <- fluidPage(
              hr(),
              radioButtons("data_filter",
                           "Show results from:",
-                          choices = c("All MSEs"="all",
+                          choices = c(
                                       "MSEs reviewed for Cummings et. al. Publication"="pub",
-                                      "MSE included climate change as a driver"="CC")),
+                                      "MSE included climate change as a driver"="CC",
+                                      "All MSEs"="all")),
              textOutput("radio"),
              hr(),
              plotOutput("mse.map",
@@ -433,12 +434,12 @@ server <- function(input, output, session) {   # code to create output using ren
   output$Freq.plot <- renderPlot({
     ggplot(freq.data(),aes(Explicit,Percent))+
         geom_col()+geom_vline(xintercept=5.5,linetype="dashed")+
-        scale_y_continuous(limits=c(0,100))+xlab(NULL)
+        scale_y_continuous(limits=c(0,100))+xlab(NULL)+coord_flip()
   })
   output$part.plot <- renderPlot({
     ggplot(part.data_reviewed5(),aes(Participants,y=Percent)) +
       facet_wrap("Stage",scale="free") + geom_col() + scale_y_continuous(limits=c(0,100)) +
-      ylab("Percent")
+      ylab("Percent")+coord_flip()
   })
   # Tab 3 - Results - tables
   output$MSE.freq <- renderTable({
