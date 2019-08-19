@@ -321,7 +321,14 @@ server <- function(input, output, session) {   # code to create output using ren
                    "Subjective Alternatives")
     part.data_reviewed4() %>%
     mutate(Percent=Number/n_mse()*100) %>%
-    mutate(Stage=factor(Stage,levels=neworder,labels=newlabels))
+    mutate(Stage=factor(Stage,levels=neworder,labels=newlabels)) %>% 
+    ungroup() %>%
+      # 2. Arrange by
+      #   i.  facet group =Stage
+      #   ii. bar height
+    arrange(Stage, Percent) %>%
+      # 3. Add order column of row numbers
+    mutate(order = row_number())
   })
    
  
@@ -433,12 +440,22 @@ server <- function(input, output, session) {   # code to create output using ren
   # Tab 2 - Results - plots
   output$Freq.plot <- renderPlot({
     ggplot(freq.data(),aes(Explicit,Percent))+
-        geom_col()+geom_vline(xintercept=5.5,linetype="dashed")+
-        scale_y_continuous(limits=c(0,100))+xlab(NULL)+coord_flip()
+      geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
+      coord_flip()+scale_y_continuous(limits=c(0,100))+xlab(NULL)+
+      scale_x_discrete(
+          limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
+                   "Objectives","Problem","Process"), 
+          labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
+                   "Objectives","Problem","Process"))
   })
   output$part.plot <- renderPlot({
-    ggplot(part.data_reviewed5(),aes(Participants,y=Percent)) +
-      facet_wrap("Stage",scale="free") + geom_col() + scale_y_continuous(limits=c(0,100)) +
+    ggplot(part.data_reviewed5(),aes(x=order,y=Percent)) +
+      facet_wrap(~Stage,scale="free") + geom_col() +  
+      scale_x_continuous(
+        breaks = part.data_reviewed5()$order,
+        labels = part.data_reviewed5()$Participants,
+        expand = c(0,0)
+      )+scale_y_continuous(limits=c(0,100)) +
       ylab("Percent")+coord_flip()
   })
   # Tab 3 - Results - tables
