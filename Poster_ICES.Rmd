@@ -2,35 +2,26 @@
 main_topsize: 0.2 #percent coverage of the poster
 main_bottomsize: 0.1
 #ESSENTIALS
-title: '**A Better Reproducible Poster Title**'
+title: 'Use of management strategy evaluation to inform in fisheries management in a changing climate'
 author:
-  - name: '**W. Brent Thorne**'
+  - name: '**Jonathan W. Cummings**'
     affil: 1
     main: true
-    orcid: '0000-0002-1099-3857'
-    twitter: brentthorne18 
-    email: bthorne2@brocku.ca
-  - name: Another G. Contributor
-    affil: 2
+    orcid: '0000-0001-8028-5787'
+    twitter: jonwcummings 
+    email: 'jcummings@umassd.edu'
+  - name: Amanda Hart
+    affil: 1
     main: true
-    email: 'ag.con@posterdown.net'
-  - name: Person Three
-    affil: 3
-  - name: Person Four
-    affil: 2
-  - name: Person Five
-    affil: 3
-  - name: Person Six
-    affil: 3
-  - name: A. Seventh Author
-    affil: 2
+    orcid: '0000-0002-6449-9328'
+    email: 'ahart2@umassd.edu'
+  - name: Gavin Fay
+    main: true
+    affil: 1
+    email: 'gfay@umassd.edu'
 affiliation:
   - num: 1
-    address: Department of Earth Science, Brock University
-  - num: 2
-    address: Department of Graphics and Layouts, University of Posters; Canada
-  - num: 3
-    address: Another Institute of a place where work gets done, Earth, Milky Way
+    address: School for Marine Science and Technology, University of Massachusetts - Dartmouth 836 South Rodney French Blvd,New Bedford, MA, USA 02744
 main_findings:
   - "Make **better posters** with RMarkdown + **posterdown**."
 logoleft_name: https&#58;//raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png
@@ -57,7 +48,10 @@ options(knitr.table.format = "html")
 
 # Introduction
 
-This is the `posterdown_betterport` template for the {posterdown} package! I was inspired by the twitter thread of [Mike Morrison](https://mobile.twitter.com/mikemorrison/status/1110191245035479041) and wanted to apply the `#betterposter` concept to the reproducible (yet simple to use) functionality of the {posterdown} package [@R-posterdown]. If you're not an R user don't sweat as you do **NOT** need to use it at all! Feel free to use only the Markdown functionality of this package :)
+For most of its history fisheries management has taken place against the backdrop of ecosystem status with fishing impacts occupying center stage.  However, the increased rate and degree of ecosystem climatic change is also bringing ecosystem status to the forefront of fisheries management.
+Management strategy evaluation (MSE) is commonly considered the gold standard of fisheries management approaches, and is "widely considered to be the most appropriate way to evaluate the trade‐offs achieved by alternative management strategies and to assess the consequences of uncertainty for achieving management goals” (citation). Thus, MSE is a compelling tool to address the impact of climate change on fisheries management.
+Despite numerous applications of MSE, the application that include climate change are limited, leaving uncertainty about the best approach to applying MSEs that account for a changing environment.
+
 
 ```{r, include=FALSE}
 knitr::write_bib(c('posterdown', 'rmarkdown','pagedown'), 'packages.bib')
