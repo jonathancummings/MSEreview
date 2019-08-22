@@ -59,9 +59,17 @@ knitr::write_bib(c('posterdown', 'rmarkdown','pagedown'), 'packages.bib')
 
 ## Objectives
 
-1. Pick a template layout.
-2. Write/ create your poster content distraction free.
-3. Let posterdown do its thing!
+Adaptive management arose to address uncertainties and accelerate progress towards meeting management objectives. With an eye towards adaptive management, we seek to note the lessons learned from successful MSEs to:
+
+* Highlight unique aspects of MSEs that model climate change as a driver
+* Identify shortcomings in MSE documentation that delays learning
+* Identify aspects of successful MSEs that can be adopted to inform fisheries management in a changing climate
+
+Need climate change imagery
+
+Need MSE imagery
+
+Need learning and adaptive management imagery
 
 # Methods
 
