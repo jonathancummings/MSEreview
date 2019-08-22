@@ -276,6 +276,7 @@ server <- function(input, output, session) {   # code to create output using ren
     rename("Process"="ProcessExplicit",
            "Problem"="ProblemDefinitionExplicit",
            "Objectives"="ObjectivesExplicit",
+           "Alternatives"="AlternativesExplicit",
            "Tradeoffs"="TradeOffsExplicit",
            "Decision"="DecisionExplicit",
            "Roles"="RolesExplicit",
@@ -285,8 +286,8 @@ server <- function(input, output, session) {   # code to create output using ren
     gather(Explicit) %>%
     mutate(Percent=value/n_mse()*100) %>%
     mutate(Explicit=factor(Explicit,levels=
-                             c("Process","Problem","Objectives","Tradeoffs","Decision",
-                               "Roles","Open Meetings","Adopted"))) %>%
+                             c("Process","Problem","Objectives","Alternatives","Tradeoffs",
+                               "Decision","Roles","Open Meetings","Adopted"))) %>%
     rename("Number"="value")
     })
 
