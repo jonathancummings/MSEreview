@@ -389,7 +389,9 @@ freq.data_CC<-mutate(freq.data_CC,Analysis="Climate Change")
 freq.data<-rbind(freq.data_pub,freq.data_CC)
 part.data_pub<-mutate(part.data_pub,Analysis="Publication")
 part.data_CC<-mutate(part.data_CC,Analysis="Climate Change")
-part.data<-rbind(part.data_pub,part.data_CC)
+part.data<-rbind(part.data_pub,part.data_CC) %>% 
+  arrange(Stage, Percent) %>% 
+  mutate(order = row_number())
 
   
 ##### Data Analysis Outputs #####
@@ -453,8 +455,9 @@ Part.plot<-ggplot(part.data,aes(x=order,y=Percent,fill=Analysis)) +
   scale_x_continuous(breaks = part.data$order,
                      labels = part.data$Participants)+
   scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
-  ylab("Percent")+coord_flip() + 
-  guides(fill = guide_legend(reverse=T)) + theme_bw()
+  ylab("Percent")+xlab(NULL)+coord_flip() + 
+  guides(fill = guide_legend(reverse=T)) + theme_bw() +
+  theme(legend.position = c(0.875,0.085),legend.title = element_blank())
 
 as_tibble(summary.data_pub)
 as_tibble(summary.data_CC)
@@ -628,3 +631,6 @@ dbExecute(con, "UPDATE tblStudyObjectives
 dbExecute(con, "DELETE FROM tblStudyManagement")
 # 
 dbGetQuery(con, "SELECT * FROM tblStudyObjectives WHERE ID = 51")
+
+part.data$order<-c(1,2,3,3,4,4,5,6,7,8,6,9,10,8,9,11,12,10,13,12,13,14,14,15,16,17,18,19,20,16,17,18,20,21,22,23,24,25,21,23,
+26,25,26,27,27,28,29,30,31,29,32,30,33,32,33,34,35,36,37,38,39,39)
