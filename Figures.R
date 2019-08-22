@@ -262,13 +262,13 @@ part.data_CC <- part.data_CC %>%
   # 3. Add order column of row numbers
   mutate(order = row_number())
 
-part.data.table_pub<-part.data_pub %>%
+part.dataTable_pub<-part.data_pub %>%
     as_tibble() %>%
     select(Stage,Participants,Number) %>%
     rename("Participant Group"="Participants") %>%
     spread(Stage,Number,fill=0)
 
-part.data.table_CC<-part.data_CC %>%
+part.dataTable_CC<-part.data_CC %>%
   as_tibble() %>%
   select(Stage,Participants,Number) %>%
   rename("Participant Group"="Participants") %>%
@@ -277,7 +277,7 @@ part.data.table_CC<-part.data_CC %>%
 # What drivers are considered
 drive.data_pub<-data_pub %>%
     select(Drivers) %>%
-    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(~ strsplit(as.character(.),split=",")) %>%
     purrr::map(unlist) %>%
     purrr::map(table) %>%
     plyr::ldply(data.frame) %>%
@@ -288,7 +288,7 @@ drive.data_pub<-data_pub %>%
 
 drive.data_CC<-data_CC %>%
   select(Drivers) %>%
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+  purrr::map(~ strsplit(as.character(.),split=",")) %>%
   purrr::map(unlist) %>%
   purrr::map(table) %>%
   plyr::ldply(data.frame) %>%
@@ -391,7 +391,9 @@ part.data_pub<-mutate(part.data_pub,Analysis="Publication")
 part.data_CC<-mutate(part.data_CC,Analysis="Climate Change")
 part.data<-rbind(part.data_pub,part.data_CC) %>% 
   arrange(Stage, Percent) %>% 
-  mutate(order = row_number())
+  mutate(order = row_number()) %>% 
+  part.data$order<-c(1,2,3,3,4,4,5,6,7,8,6,9,10,8,9,11,12,10,13,12,13,14,14,15,16,17,18,19,20,16,17,18,20,21,22,23,24,25,21,23,
+                   26,25,26,27,27,28,29,30,31,29,32,30,33,32,33,34,35,36,37,38,39,39)
 
   
 ##### Data Analysis Outputs #####
@@ -462,166 +464,26 @@ Part.plot<-ggplot(part.data,aes(x=order,y=Percent,fill=Analysis)) +
 as_tibble(summary.data_pub)
 as_tibble(summary.data_CC)
 
+#Show poster results
+n_mse
+n_CC
+MSE.map
+Freq.plot
+Part.plot
+as_tibble(drive.data_pub)
+as_tibble(drive.data_CC)
+as_tibble(objcat.data_pub)
+as_tibble(objcat.data_CC)
+as_tibble(obj.dataTable_pub)
+as_tibble(obj.dataTable_CC)
+as_tibble(altcat.data_pub)
+as_tibble(altcat.data_CC)
+
 devtools::install_github("odeleongt/postr")
 library(postr)
 
 devtools::install_github("brentthorne/posterdown")
 library(posterdown)
-
-
-#####
-###-- Shiny App --###
-
-ui <- fluidPage(
-  theme = shinytheme("readable"),
-  tabsetPanel(
-    tabPanel("Filter Results", 
-             headerPanel("An Assessment of Management Strategy Evaluations"),# title of the page
-             h2("MSE literature review results"),
-             hr(),
-             radioButtons("data_filter",
-                          "Show results from:",
-                          choices = c(
-                            "MSEs reviewed for Cummings et. al. Publication"="pub",
-                            "MSE included climate change as a driver"="CC",
-                            "All MSEs"="all")),
-             textOutput("radio"),
-             hr(),
-             plotOutput("mse.map",
-                        brush = brushOpts(id = "map_brush"),
-                        hover = hoverOpts("map_hover")
-             ),
-             p("Figure 1. Map of MSE locations. Points represent the approximate 
-               center point of the fishery the MSE evaluated."),
-             hr(),
-             p("Hovering over a point will give the associated citation below, 
-               while selected an area will give all citations in the 'brushed' area."),
-             fluidRow(
-               column(width = 6,
-                      h4("Hovered points"),
-                      tableOutput("hover")
-               ),
-               column(width = 6,
-                      h4("Brushed points"),
-                      tableOutput("brush")
-               )
-             )
-             ),
-    tabPanel("Results - Plots", 
-             headerPanel("An Assessment of Management Strategy Evaluations"),# title of the page
-             h2("MSE literature review results"),
-             hr(),
-             plotOutput("Freq.plot"),
-             p("Figure 2. Percentage of MSEs that included: "),
-             p("'Decision' - Documentation of the alternative selected and implemented as the management procedure going forward,"),
-             p("'Objectives' - Explicit documentation of the process used to produce objectives and performance metrics to evaluate the management procedures,"),
-             p("'Open Meetings' - Meetings open to the public or those outside of the MSE participants,"),
-             p("'Problem' - Explicit documentation of the problem the MSE is attempting to address,"),
-             p("'Process' - Explicit documentation of the decision making process used to conduct the MSE,"),
-             p("'Roles' - Explicit documentation of the MSE participants roles,"),
-             p("'Tradeoffs' - Explicit documentation of the tradeoff evaluation process."),
-             plotOutput("part.plot"),
-             p("Figure 3. Participation at different stages of the MSE process")
-    ),
-    tabPanel("Results - Tables", 
-             h2("Explict Process Documentation"),
-             p("Table 1. The number and percentage of MSE processes that explicitly included each step in the process"),
-             tableOutput("MSE.freq"),
-             h2("Participation"),
-             p("Table 2. Number of MSEs in which each participant group participated by process stage"),
-             tableOutput("MSE.part"),
-             h2("System Drivers"),
-             p("Table 3. Number of MSEs that included consideration of the following drivers in the system model"),
-             tableOutput("MSE.drive"),
-             h2("Objective Categories"),
-             p("Table 4. Number of MSEs that included consideration of the following category of objectives in the evaluation"),
-             tableOutput("MSE.objcat"),
-             h2("How were objectives defined?"),
-             p("Table 5. Number of, percentage of objectives, and Frequency per MSE of objective usage"),
-             tableOutput("MSE.obj"),
-             p("Table 6. Frequency of objective usage combinations"),
-             DT::dataTableOutput("MSE.obj2"),
-             h2("What management procedures were evaluated?"),
-             p("Table 5. Number of, percentage of objectives, and Frequency per MSE of objective usage"),
-             tableOutput("MSE.alt")
-    ),
-    tabPanel("Data - All",
-             h1("All of the MSE literature review data"),
-             h2("Study data"),
-             DT::dataTableOutput("MSE.Table"),
-             hr(),
-             h2("Objectives data"),
-             DT::dataTableOutput("MSE.Obj.Table"),
-             hr(),
-             h2("Field Descriptions"),
-             tableOutput("MSE.Fields")
-    ),
-    tabPanel("Data Tables - Subsets",
-             h1("Selected columns of MSE literature review data"),
-             h2("Study Summaries"),
-             DT::dataTableOutput("MSE.summary"),
-             hr(),
-             h2("Problem Components"),
-             DT::dataTableOutput("MSE.problem")
-    )
-  )
-  )
-
-#####
-# Shiny Server Section
-  # Tab 1 - Filtering
-
-  
-  # Tab 2 - Results - plots
-
-
-  # Tab 3 - Results - tables
-  output$MSE.freq <- renderTable({
-    freq.data()
-  })
-  output$MSE.part <- renderTable({
-    part.data_table()
-  })
-  output$MSE.drive <- renderTable({
-    drive.data()
-  })
-  output$MSE.objcat <- renderTable({
-    objcat.data()
-  })
-  output$MSE.obj <- renderTable({
-    obj.data_table1()
-  })
-  output$MSE.obj2 <- DT::renderDataTable({
-    obj.data_table2()
-  })
-  output$MSE.alt <- renderTable({
-    altcat.data()
-  })
-  # Tab 4
-  output$MSE.Table <- DT::renderDataTable({
-    data_reviewed()
-  },  options = list(autoWidth = TRUE,
-                     columnDefs = list(list(width = '600px', targets = targets)),
-                     scrollX=TRUE
-  )
-  )
-  output$MSE.Obj.Table <- DT::renderDataTable({
-    obj.data
-  }) # NEED TO FIX THIS TO FILTER BASED ON THE RESULTS RADIO BUTTON, I.E., ALL REVIEWS OR JUST REVIEWS FOR PUBLICATION
-  output$MSE.Fields <- renderTable({
-    mse.fields<-arrange(fields,Order) %>% 
-      select(-Order)
-    mse.fields
-  })
-  # Tab 5
-
-  })
-  output$MSE.problem <- DT::renderDataTable({
-    arrange(prob.data(),Citation)
-  })
-}
-
-shinyApp(ui, server)
 
 ##### Example SQL update and select syntax #####
 dbExecute(con, "UPDATE tblStudyObjectives 
@@ -631,6 +493,3 @@ dbExecute(con, "UPDATE tblStudyObjectives
 dbExecute(con, "DELETE FROM tblStudyManagement")
 # 
 dbGetQuery(con, "SELECT * FROM tblStudyObjectives WHERE ID = 51")
-
-part.data$order<-c(1,2,3,3,4,4,5,6,7,8,6,9,10,8,9,11,12,10,13,12,13,14,14,15,16,17,18,19,20,16,17,18,20,21,22,23,24,25,21,23,
-26,25,26,27,27,28,29,30,31,29,32,30,33,32,33,34,35,36,37,38,39,39)
