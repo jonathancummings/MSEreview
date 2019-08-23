@@ -391,14 +391,13 @@ part.data_pub<-mutate(part.data_pub,Analysis="Publication")
 part.data_CC<-mutate(part.data_CC,Analysis="Climate Change")
 part.data<-rbind(part.data_pub,part.data_CC) %>% 
   arrange(Stage, Percent) %>% 
-  mutate(order = row_number()) %>% 
-  part.data$order<-c(1,2,3,3,4,4,5,6,7,8,6,9,10,8,9,11,12,10,13,12,13,14,14,15,16,17,18,19,20,16,17,18,20,21,22,23,24,25,21,23,
+  mutate(order = row_number())
+part.data$order<-c(1,2,3,3,4,4,5,6,7,8,6,9,10,8,9,11,12,10,13,12,13,14,14,15,16,17,18,19,20,16,17,18,20,21,22,23,24,25,21,23,
                    26,25,26,27,27,28,29,30,31,29,32,30,33,32,33,34,35,36,37,38,39,39)
 
-  
 ##### Data Analysis Outputs #####
 # number of climate change MSE articles
-n_CC
+# n_CC
 
 # plot MSEs on map
 MSE.map<-ggplot(data=map.data,aes(x=Longitude, y=Latitude,color=Drivers)) + world +
