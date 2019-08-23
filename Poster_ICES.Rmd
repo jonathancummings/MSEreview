@@ -397,108 +397,109 @@ part.data<-rbind(part.data_pub,part.data_CC) %>%
 part.data$order<-c(1,2,3,3,4,4,5,6,7,8,6,9,10,8,9,11,12,10,13,12,13,14,14,15,16,17,18,19,20,16,17,18,20,21,22,23,24,25,21,23,26,25,26,27,27,28,29,30,31,29,32,30,33,32,33,34,35,36,37,38,39,39)
 
 
-# ##### Data Analysis Outputs #####
-# # number of climate change MSE articles
-# # n_CC
-# 
-# # plot MSEs on map
-# MSE.map<-ggplot(data=map.data,aes(x=Longitude, y=Latitude,color=Drivers)) + world +
-#   geom_point(size=2) + scale_color_manual(values=c("#FF0033","#0000FF")) +  theme_void() +
-#   theme(legend.position = c(0.15, 0.25))
-# 
-# # plot explicit documentation of steps or components of MSE processes 
-# # Publication MSEs
-# Freq.plot_pub<-ggplot(freq.data_pub,aes(Explicit,Percent))+
-#     geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
-#     coord_flip()+scale_y_continuous(limits=c(0,100),expand = c(0,0))+xlab(NULL)+
-#     scale_x_discrete(
-#       limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-#                "Alternatives","Objectives","Problem","Process"), 
-#       labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-#                "Alternatives","Objectives","Problem","Process"))
-# 
-# #Climate Change MSEs
-# Freq.plot_CC<-ggplot(freq.data_CC,aes(Explicit,Percent))+
-#   geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
-#   coord_flip()+scale_y_continuous(limits=c(0,100),expand = c(0,0))+xlab(NULL)+
-#   scale_x_discrete(
-#     limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-#              "Alternatives","Objectives","Problem","Process"), 
-#     labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-#              "Alternatives","Objectives","Problem","Process"))
-# 
-# Freq.plot<-ggplot(freq.data,aes(Explicit,Percent,fill=Analysis))+
-#   geom_col(position="dodge")+geom_vline(xintercept=3.5,linetype="dashed")+
-#   coord_flip()+scale_fill_manual(values=c("#FF0033","#0000FF")) +
-#   scale_y_continuous(limits=c(0,100),expand = c(0,0))+xlab(NULL)+
-#   scale_x_discrete(
-#     limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-#              "Alternatives","Objectives","Problem","Process"), 
-#     labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-#              "Alternatives","Objectives","Problem","Process")) +
-#   guides(fill = guide_legend(reverse=T)) + theme_bw()
-# 
-# Part.plot_pub<-ggplot(part.data_pub,aes(x=order,y=Percent)) +
-#     facet_wrap(~Stage,scale="free",ncol=2) + geom_col() +  
-#     scale_x_continuous(breaks = part.data_pub$order,
-#       labels = part.data_pub$Participants)+
-#   scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
-#     ylab("Percent")+coord_flip()
-# 
-# Part.plot_CC<-ggplot(part.data_CC,aes(x=order,y=Percent)) +
-#   facet_wrap(~Stage,scale="free",ncol=2) + geom_col() +  
-#   scale_x_continuous(breaks = part.data_CC$order,
-#                      labels = part.data_CC$Participants)+
-#   scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
-#   ylab("Percent")+coord_flip()
-# 
-# Part.plot<-ggplot(part.data,aes(x=order,y=Percent,fill=Analysis)) +
-#   facet_wrap(~Stage,scale="free",ncol=2) + geom_col(position="dodge") +  
-#   scale_fill_manual(values=c("#FF0033","#0000FF")) +
-#   scale_x_continuous(breaks = part.data$order,
-#                      labels = part.data$Participants)+
-#   scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
-#   ylab("Percent")+xlab(NULL)+coord_flip() + 
-#   guides(fill = guide_legend(reverse=T)) + theme_bw() +
-#   theme(legend.position = c(0.875,0.085),legend.title = element_blank())
-# 
-# as_tibble(summary.data_pub)
-# as_tibble(summary.data_CC)
+##### Data Analysis Outputs #####
+# number of climate change MSE articles
+# n_CC
+
+# plot MSEs on map
+MSE.map<-ggplot(data=map.data,aes(x=Longitude, y=Latitude,color=Drivers)) + world +
+  geom_point(size=2) + scale_color_manual(values=c("#FF0033","#0000FF")) +  theme_void() +
+  theme(legend.position = c(0.15, 0.25))
+
+# plot explicit documentation of steps or components of MSE processes
+# Publication MSEs
+Freq.plot_pub<-ggplot(freq.data_pub,aes(Explicit,Percent))+
+    geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
+    coord_flip()+scale_y_continuous(limits=c(0,100),expand = c(0,0))+xlab(NULL)+
+    scale_x_discrete(
+      limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
+               "Alternatives","Objectives","Problem","Process"),
+      labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
+               "Alternatives","Objectives","Problem","Process"))
+
+#Climate Change MSEs
+Freq.plot_CC<-ggplot(freq.data_CC,aes(Explicit,Percent))+
+  geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
+  coord_flip()+scale_y_continuous(limits=c(0,100),expand = c(0,0))+xlab(NULL)+
+  scale_x_discrete(
+    limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
+             "Alternatives","Objectives","Problem","Process"),
+    labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
+             "Alternatives","Objectives","Problem","Process"))
+
+Freq.plot<-ggplot(freq.data,aes(Explicit,Percent,fill=Analysis))+
+  geom_col(position="dodge")+geom_vline(xintercept=3.5,linetype="dashed")+
+  coord_flip()+scale_fill_manual(values=c("#FF0033","#0000FF")) +
+  scale_y_continuous(limits=c(0,100),expand = c(0,0))+xlab(NULL)+
+  scale_x_discrete(
+    limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
+             "Alternatives","Objectives","Problem","Process"),
+    labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
+             "Alternatives","Objectives","Problem","Process")) +
+  guides(fill = guide_legend(reverse=T)) + theme_bw()
+
+Part.plot_pub<-ggplot(part.data_pub,aes(x=order,y=Percent)) +
+    facet_wrap(~Stage,scale="free",ncol=2) + geom_col() +
+    scale_x_continuous(breaks = part.data_pub$order,
+      labels = part.data_pub$Participants)+
+  scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
+    ylab("Percent")+coord_flip()
+
+Part.plot_CC<-ggplot(part.data_CC,aes(x=order,y=Percent)) +
+  facet_wrap(~Stage,scale="free",ncol=2) + geom_col() +
+  scale_x_continuous(breaks = part.data_CC$order,
+                     labels = part.data_CC$Participants)+
+  scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
+  ylab("Percent")+coord_flip()
+
+Part.plot<-ggplot(part.data,aes(x=order,y=Percent,fill=Analysis)) +
+  facet_wrap(~Stage,scale="free",ncol=2) + geom_col(position="dodge") +
+  scale_fill_manual(values=c("#FF0033","#0000FF")) +
+  scale_x_continuous(breaks = part.data$order,
+                     labels = part.data$Participants)+
+  scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
+  ylab("Percent")+xlab(NULL)+coord_flip() +
+  guides(fill = guide_legend(reverse=T)) + theme_bw() +
+  theme(legend.position = c(0.875,0.085),legend.title = element_blank())
+
+as_tibble(summary.data_pub)
+as_tibble(summary.data_CC)
 ```
 
 # Introduction
+For most of its history fisheries management has prodominately focused on fishing impacts with ecosystem status viewed as a background constant. The increasing rate and degree of ecosystem climatic change is changing this dynamic, bringing ecosystem status to the forefront of fisheries management.
 
-For most of its history fisheries management has taken place against the backdrop of ecosystem status with fishing impacts occupying center stage.  However, the increased rate and degree of ecosystem climatic change is also bringing ecosystem status to the forefront of fisheries management.
 Management strategy evaluation (MSE) is commonly considered the gold standard of fisheries management approaches, and is "widely considered to be the most appropriate way to evaluate the trade‐offs achieved by alternative management strategies and to assess the consequences of uncertainty for achieving management goals” (citation). Thus, MSE is a compelling tool to address the impact of climate change on fisheries management.
-Despite numerous applications of MSE, the application that include climate change are limited, leaving uncertainty about the best approach to applying MSEs that account for a changing environment.
 
+Despite numerous applications of MSE, the applications that include climate change are limited, leaving uncertainty about the best approach to MSE use for fisheries management that accounts for a changing environment.
+
+Adaptive management arose to address uncertainties and accelerate progress towards meeting management objectives. Using the structured decision making (SDM) process- the decision making framework in which adaptive management occurs - as our framework, how do published MSE projects utilize standard SDM components?  
 
 ```{r, include=FALSE}
 knitr::write_bib(c('posterdown', 'rmarkdown','pagedown'), 'packages.bib')
 ```
 
 ## Objectives
+We review published management strategy evaluations (MSEs) against the steps of a structured decision making (SDM) framework to note how the literature accelerates or delays learning. 
 
-Adaptive management arose to address uncertainties and accelerate progress towards meeting management objectives. With an eye towards adaptive management, we seek to note the lessons learned from successful MSEs to:
-
+* Identify explicit documentation and use (or disuse) of SDM steps in MSEs that enable or limit adaptation in future MSEs.
+* Identify participants in MSE processes that enable or limit adaptation in future MSEs.
 * Highlight unique aspects of MSEs that model climate change as a driver
-* Identify shortcomings in MSE documentation that delays learning
-* Identify aspects of successful MSEs that can be adopted to inform fisheries management in a changing climate
-
-Need climate change imagery
-
-Need MSE imagery
-
-Need learning and adaptive management imagery
+* Identify aspects of successful MSEs that can be adopted to inform fisheries management in a changing climate  
+* Provide insights about MSE processes and documentation that can further learning to improve future MSEs
 
 # Methods
+#### Published MSE article selection
+We conducted our search for management strategy evaluations (MSEs) in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 253 results.  
 
-MSE articles Reviewed
-We conducted our search for management strategy evaluation documents using the Web of Science database.  We searched in topic for “management strategy evaluation” on January 8th, 2019 in the SCI-EXPANDED index with a timespan of all years.  This search returned 253 results.  We sampled this list of 253 potential management strategy evaluations without replacement to produce an ordered list of articles for potential review.  We reviewed the first 30 articles in this randomly ordered list that document a management strategy evaluation.  Not all articles in the potential pool of 253 articles were management strategy evaluations.  For example, once published the article would be returned by our Web of Science search, but as this is a review it is not documenting a management strategy evaluation.
+We took a random sample of these 253 articles and reviewed 30 that document a management strategy evaluation.  Not all articles in the potential pool of 253 articles were management strategy evaluations due to articles that are reviews, meta-analyses, etc., or simply cite other MSE articles.  Of the 253 articles ### documented a management strategy evaluation, and 11 included climate change as a driver of fishery status.
 
-Identify management strategy evaluations that include climate change:
-Web of science  
-details  
+| MSE type | Count |
+|:--:|:--:|
+| Published | ### |
+| Reviewed | 30 |
+| Climate Change | 11 |
+
 Score the MSE documentation:  
 Steps  
 Problem  
@@ -511,19 +512,6 @@ Participants
 Roles  
 
 We highlight lessons learned from these exercises and unique aspects of MSEs that model climate change as a driver relative to a sample of MSEs that do not consider climate change.
-
-
-I will show here how to include poster elements that may be useful, such as an equation using mathjax:
-
-$$
-E = mc^2
-$$
-
-To reference a citation you can add your `.bib` file to the working directory and name it in the YAML metadata or generate an automated one as done here, then you only need to reference the label value in the `.bib` file. For example this package is built on top of the wonderful {pagedown} package and I will cite it at the end of this sentance using this in the rmd `[@R-pagedown]` [@R-pagedown].
-
-To get a better understanding of how to include features like these please refer to the {posterdown} [wiki](https://github.com/posterdown/wiki).
-
-**_Now on to the results!_**
 
 # Results
 
@@ -567,3 +555,10 @@ knitr::kable(
 ```
 
 # References
+To reference a citation you can add your `.bib` file to the working directory and name it in the YAML metadata or generate an automated one as done here, then you only need to reference the label value in the `.bib` file. For example this package is built on top of the wonderful {pagedown} package and I will cite it at the end of this sentance using this in the rmd `[@R-pagedown]` [@R-pagedown].
+
+How to include an equation using mathjax:
+
+$$ E = mc^2 $$
+
+To get a better understanding of how to include features like these please refer to the {posterdown} [wiki](https://github.com/posterdown/wiki).
