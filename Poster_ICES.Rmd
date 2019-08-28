@@ -1,7 +1,8 @@
 ---
 main_topsize: 0.2 #percent coverage of the poster
-main_bottomsize: 0.1
+main_bottomsize: 0
 #ESSENTIALS
+title:
 author:
   - name: '**Jonathan W. Cummings**'
     affil: 1
@@ -404,8 +405,50 @@ drive.data_CC<-mutate(drive.data_CC,Analysis="Climate Change")%>%
   mutate(Percent=round(Percent,0)) %>% 
   select(Analysis,Driver,Percent,Frequency)
 drive.data<-rbind(drive.data_pub,drive.data_CC) %>% 
-  select(Analysis,Driver,Percent,Frequency) %>% 
-  arrange(desc(Percent),Driver)
+  arrange(Percent) %>%
+  mutate(order = row_number())
+drive.data$order<-c(6,5,4,3,2,1,8,7,12,9,3,15,14,13,12,11,10,14,16,15,
+                   16,6)
+# Wrangle objective category data by reviewed, climate change, and combined
+objcat.data_pub<-mutate(objcat.data_pub,Analysis="Reviewed") %>% 
+  mutate(Percent=round(Percent,0)) %>% 
+  select(Analysis,'Objective Category',Percent,Frequency)
+objcat.data_CC<-mutate(objcat.data_CC,Analysis="Climate Change")%>% 
+  mutate(Percent=round(Percent,0)) %>% 
+  select(Analysis,'Objective Category',Percent,Frequency)
+objcat.data<-rbind(objcat.data_pub,objcat.data_CC) %>% 
+  rename(OC='Objective Category') %>% 
+  arrange(OC) %>% 
+  rename('Objective Category'=OC)
+
+# Wrangle objective data by reviewed, climate change, and combined
+obj.dataTable_pub<-mutate(obj.dataTable_pub,Analysis="Reviewed") %>% 
+  mutate(Percent=round(Percent,0))
+obj.dataTable_CC<-mutate(obj.dataTable_CC,Analysis="Climate Change")%>% 
+  mutate(Percent=round(Percent,0))
+obj.dataTable<-rbind(obj.dataTable_pub,obj.dataTable_CC) %>% 
+  filter(Objective=="Category") %>%
+  group_by(Analysis) %>% 
+  summarise('AVG'=sum(Number)) %>% 
+  mutate(count=c(11,30)) %>% 
+  mutate('Per MSE'=round(AVG/count,1)) %>% 
+  mutate('Type'=c("Objectives","Objectives"))
+
+altcat.data_pub<-mutate(altcat.data_pub,Analysis="Reviewed") %>% 
+  mutate(Percent=round(Percent,0))
+altcat.data_CC<-mutate(altcat.data_CC,Analysis="Climate Change")%>% 
+  mutate(Percent=round(Percent,0))
+altcat.data<-rbind(altcat.data_pub,altcat.data_CC) %>%
+  group_by(Analysis) %>% 
+  summarise('AVG'=sum(Number)) %>% 
+  mutate(count=c(11,30)) %>% 
+  mutate('Per MSE'=round(AVG/count,1)) %>% 
+  mutate('Type'=c("Alternatives","Alternatives"))
+
+per.MSE<-rbind(obj.dataTable,altcat.data) %>% 
+  mutate(order=c(2,1,4,3)) %>% 
+  arrange(order) %>% 
+  select(Type,Analysis,'Per MSE')
 
 ##### Data Analysis Outputs #####
 # number of climate change MSE articles
@@ -441,15 +484,19 @@ Part.plot<-ggplot(part.data,aes(x=order,y=Percent,fill=Analysis)) +
   guides(fill = guide_legend(reverse=T)) + theme_bw() +
   theme(legend.position = c(0.875,0.085),legend.title = element_blank())
 
-as_tibble(summary.data_pub)
-as_tibble(summary.data_CC)
+Driver.plot<-ggplot(drive.data,aes(x=order,y=Percent,fill=Analysis)) +
+  geom_col(position="dodge") +
+  scale_fill_manual(values=c("#FF0033","#0000FF")) +
+  scale_x_continuous(breaks = drive.data$order,
+                     labels = drive.data$Driver)+
+  scale_y_continuous(limits=c(0,100),expand = c(0,0))+
+  ylab("Percent")+xlab(NULL)+coord_flip() +
+  guides(fill = guide_legend(reverse=T)) + theme_bw() +
+  theme(legend.position = c(0.85,0.085),legend.title = element_blank())
 ```
----
-title: Use of management strategy evaluation to inform in fisheries management in a changing climate
----
 
 # Introduction
-For most of its history fisheries management has prodominately focused on fishing impacts with ecosystem status viewed as a background constant. The increasing rate and degree of ecosystem climatic change is changing this dynamic, bringing ecosystem status to the forefront of fisheries management.
+For most of its history fisheries management has focused on fishing impacts with ecosystem status viewed as a background constant. The increasing rate and degree of climate change is changing this dynamic, bringing ecosystem status to the forefront of fisheries management.
 
 Management strategy evaluation (MSE) is commonly considered the gold standard of fisheries management approaches, and is "widely considered to be the most appropriate way to evaluate the trade‐offs achieved by alternative management strategies and to assess the consequences of uncertainty for achieving management goals” (citation). Thus, MSE is a compelling tool to address the impact of climate change on fisheries management.
 
@@ -482,17 +529,6 @@ We took a random sample of these 253 articles and reviewed 30 that document a ma
 | Reviewed Sample | 30 |
 | Climate Change | 11 |
 
-Score the MSE documentation:  
-Steps  
-Problem  
-Objectives  
-Alternatives  
-Consequences  
-Trade-offs  
-Decision  
-Participants  
-Roles  
-
 We highlight lessons learned from these exercises and unique aspects of MSEs that model climate change as a driver relative to a sample of MSEs that do not consider climate change.
 
 # Results
@@ -502,11 +538,11 @@ Less likely to include stakeholders
 
 Map of where reviewed MSEs and climate change focues MSEs occurred: Figure \@ref(fig:mapfigure).
 
-```{r, mapfigure, fig.cap='Here is a caption for the figure. This can be added by using the "fig.cap" option in the r code chunk options, see this [link](https://yihui.name/knitr/options/#plots) from the legend himself, [Yihui Xie](https://twitter.com/xieyihui).', out.width="100%"}
+```{r, mapfigure, fig.cap='Map of MSE study locations. Here is a caption for the figure. This can be added by using the "fig.cap" option in the r code chunk options, see this [link](https://yihui.name/knitr/options/#plots) from the legend himself, [Yihui Xie](https://twitter.com/xieyihui).', out.width="100%"}
 MSE.map
 ```
 
-Figure \@ref(fig:explicit)!
+Figure \@ref(fig:explicit)
 
 ```{r explicit, fig.cap='Percentage of MSEs that included explicit documentation of these SDM process steps!', fig.height=6, out.width="100%"}
 text1<-expression(paste("Absent or \nInexplicit"))
@@ -517,40 +553,40 @@ Freq.plot + annotate("text", x = 5, y = 55, label = text1, size=25) +
   annotate("text", x = 1, y = 50, label = text3, size=12)
 ```
 
-Figure \@ref(fig:participants)!
+Figure \@ref(fig:participants)
 
 ```{r participants, fig.cap='Who participated during these stages of the SDM process', fig.height=6, out.width="100%"}
 Part.plot
 ```
 
-The drivers modeled in the reviewed MSEs Table \@ref(tab:driversPub) and the climate change MSEs Table \@ref(tab:driversCC) [description of results].
+Figure \@ref(fig:driversPlot)
 
-```{r, drivers}
-color_Pub <- which(drive.data$Analysis=='Reviewed')
-color_CC <- which(drive.data$Analysis=='Climate Change')
-
-
-drive.data %>% 
-  kable(align = "c") %>%
-  row_spec(color_CC, color = "#FF0033", background = "white") %>% 
-  row_spec(color_Pub, color = "#0000FF", background = "white") 
-
-knitr::kable(
-  as_tibble(drive.data), format = "html",
-  caption = "Drivers modeled in management strategy evaluations",
-  align = "c", escape = FALSE)
+```{r driversPlot, fig.cap='text', fig.height=6, out.width="100%"}
+Driver.plot
 ```
 
-```{r, iristable}
-knitr::kable(
-  iris[1:15,1:5], format = "html",
-  caption = "A table made with the **knitr::kable** function.",
-  align = "c", col.names = c("Sepal <br> Length",
-                             "Sepal <br> Width",
-                             "Petal <br> Length",
-                             "Petal <br> Width",
-                             "Species"),
-  escape = FALSE)
+The categories of objectives considered in MSEs, Table \@ref(tab:objectiveCategories)
+
+```{r, objectiveCategories}
+color_Pub <- which(objcat.data$Analysis=='Reviewed')
+color_CC <- which(objcat.data$Analysis=='Climate Change')
+
+objcat.data %>%
+  kable(align = "c", caption = "Objective categories considered in management strategy evaluations") %>%
+  row_spec(color_CC, color = "#FF0033", background = "white") %>%
+  row_spec(color_Pub, color = "#0000FF", background = "white")
+```
+
+A greater number of objectives were considered per MSE in the random sample of reviewed MSEs than in the climate change MSEs (Table \@ref(tab:PerMSE))
+
+```{r, PerMSE}
+color_Pub <- which(per.MSE$Analysis=='Reviewed')
+color_CC <- which(per.MSE$Analysis=='Climate Change')
+
+per.MSE %>%
+  kable(align = "c", caption = "Objective data reviewed") %>%  
+  row_spec(color_CC, color = "#FF0033", background = "white") %>%
+  row_spec(color_Pub, color = "#0000FF", background = "white")
 ```
 
 # References
