@@ -2,7 +2,6 @@
 main_topsize: 0.2 #percent coverage of the poster
 main_bottomsize: 0.1
 #ESSENTIALS
-title: Use of management strategy evaluation to inform in fisheries management in a changing climate
 author:
   - name: '**Jonathan W. Cummings**'
     affil: 1
@@ -56,6 +55,7 @@ library(mapdata) # basemap generation
 library(odbc) # database connection 
 library(RMySQL) # MySQL scripting in R
 library(DBI) # database interface
+library(kableExtra) # extra formating of the tables
 
 load("C:/Users/jcummings/OneDrive - UMASS Dartmouth/SMAST/Research/MSE Problem Framing/MSEreview/MSEreview.RData")
 
@@ -386,16 +386,26 @@ map.data<-rbind(data_pub,data_CC) %>%
   mutate(Drivers=replace_na(Drivers, "Other"))
 
 # label MSEs articles by analysis for ploting
-freq.data_pub<-mutate(freq.data_pub,Analysis="Publication")
+freq.data_pub<-mutate(freq.data_pub,Analysis="Reviewed")
 freq.data_CC<-mutate(freq.data_CC,Analysis="Climate Change")
 freq.data<-rbind(freq.data_pub,freq.data_CC)
-part.data_pub<-mutate(part.data_pub,Analysis="Publication")
+part.data_pub<-mutate(part.data_pub,Analysis="Reviewed")
 part.data_CC<-mutate(part.data_CC,Analysis="Climate Change")
 part.data<-rbind(part.data_pub,part.data_CC) %>% 
-  arrange(Stage, Percent) %>%
+  arrange(Stage, Percent) %>% 
   mutate(order = row_number())
-part.data$order<-c(1,2,3,3,4,4,5,6,7,8,6,9,10,8,9,11,12,10,13,12,13,14,14,15,16,17,18,19,20,16,17,18,20,21,22,23,24,25,21,23,26,25,26,27,27,28,29,30,31,29,32,30,33,32,33,34,35,36,37,38,39,39)
-
+part.data$order<-c(1,2,3,3,4,4,5,6,7,8,6,9,10,8,9,11,12,10,13,12,13,14,14,15,16,17,18,19,20,
+                   16,17,18,20,21,22,23,24,25,21,23,26,25,26,27,27,28,29,30,31,29,32,30,33,
+                   32,33,34,35,36,37,38,39,39)
+drive.data_pub<-mutate(drive.data_pub,Analysis="Reviewed") %>% 
+  mutate(Percent=round(Percent,0)) %>% 
+  select(Analysis,Driver,Percent,Frequency)
+drive.data_CC<-mutate(drive.data_CC,Analysis="Climate Change")%>% 
+  mutate(Percent=round(Percent,0)) %>% 
+  select(Analysis,Driver,Percent,Frequency)
+drive.data<-rbind(drive.data_pub,drive.data_CC) %>% 
+  select(Analysis,Driver,Percent,Frequency) %>% 
+  arrange(desc(Percent),Driver)
 
 ##### Data Analysis Outputs #####
 # number of climate change MSE articles
@@ -407,28 +417,10 @@ MSE.map<-ggplot(data=map.data,aes(x=Longitude, y=Latitude,color=Drivers)) + worl
   theme(legend.position = c(0.15, 0.25))
 
 # plot explicit documentation of steps or components of MSE processes
-# Publication MSEs
-Freq.plot_pub<-ggplot(freq.data_pub,aes(Explicit,Percent))+
-    geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
-    coord_flip()+scale_y_continuous(limits=c(0,100),expand = c(0,0))+xlab(NULL)+
-    scale_x_discrete(
-      limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-               "Alternatives","Objectives","Problem","Process"),
-      labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-               "Alternatives","Objectives","Problem","Process"))
-
-#Climate Change MSEs
-Freq.plot_CC<-ggplot(freq.data_CC,aes(Explicit,Percent))+
-  geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
-  coord_flip()+scale_y_continuous(limits=c(0,100),expand = c(0,0))+xlab(NULL)+
-  scale_x_discrete(
-    limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-             "Alternatives","Objectives","Problem","Process"),
-    labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-             "Alternatives","Objectives","Problem","Process"))
-
+# Reviewed MSEs
 Freq.plot<-ggplot(freq.data,aes(Explicit,Percent,fill=Analysis))+
   geom_col(position="dodge")+geom_vline(xintercept=3.5,linetype="dashed")+
+  geom_vline(xintercept=1.5,linetype="dashed")+
   coord_flip()+scale_fill_manual(values=c("#FF0033","#0000FF")) +
   scale_y_continuous(limits=c(0,100),expand = c(0,0))+xlab(NULL)+
   scale_x_discrete(
@@ -436,21 +428,8 @@ Freq.plot<-ggplot(freq.data,aes(Explicit,Percent,fill=Analysis))+
              "Alternatives","Objectives","Problem","Process"),
     labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
              "Alternatives","Objectives","Problem","Process")) +
-  guides(fill = guide_legend(reverse=T)) + theme_bw()
-
-Part.plot_pub<-ggplot(part.data_pub,aes(x=order,y=Percent)) +
-    facet_wrap(~Stage,scale="free",ncol=2) + geom_col() +
-    scale_x_continuous(breaks = part.data_pub$order,
-      labels = part.data_pub$Participants)+
-  scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
-    ylab("Percent")+coord_flip()
-
-Part.plot_CC<-ggplot(part.data_CC,aes(x=order,y=Percent)) +
-  facet_wrap(~Stage,scale="free",ncol=2) + geom_col() +
-  scale_x_continuous(breaks = part.data_CC$order,
-                     labels = part.data_CC$Participants)+
-  scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
-  ylab("Percent")+coord_flip()
+  guides(fill = guide_legend(reverse=T)) + theme_bw() +
+  theme(legend.position = c(0.875,0.085),legend.title = element_blank())
 
 Part.plot<-ggplot(part.data,aes(x=order,y=Percent,fill=Analysis)) +
   facet_wrap(~Stage,scale="free",ncol=2) + geom_col(position="dodge") +
@@ -465,6 +444,9 @@ Part.plot<-ggplot(part.data,aes(x=order,y=Percent,fill=Analysis)) +
 as_tibble(summary.data_pub)
 as_tibble(summary.data_CC)
 ```
+---
+title: Use of management strategy evaluation to inform in fisheries management in a changing climate
+---
 
 # Introduction
 For most of its history fisheries management has prodominately focused on fishing impacts with ecosystem status viewed as a background constant. The increasing rate and degree of ecosystem climatic change is changing this dynamic, bringing ecosystem status to the forefront of fisheries management.
@@ -497,7 +479,7 @@ We took a random sample of these 253 articles and reviewed 30 that document a ma
 | MSE type | Count |
 |:--:|:--:|
 | Published | ### |
-| Reviewed | 30 |
+| Reviewed Sample | 30 |
 | Climate Change | 11 |
 
 Score the MSE documentation:  
@@ -518,29 +500,46 @@ We highlight lessons learned from these exercises and unique aspects of MSEs tha
 Relatively few cases of climate change MSEs  
 Less likely to include stakeholders  
 
-Here you may have some figures to show off, bellow I have made a scatterplot with the infamous Iris dataset and I can even reference to the figure automatically like this, `Figure \@ref(fig:irisfigure)`, Figure \@ref(fig:irisfigure).
+Map of where reviewed MSEs and climate change focues MSEs occurred: Figure \@ref(fig:mapfigure).
 
-```{r, irisfigure, fig.cap='Here is a caption for the figure. This can be added by using the "fig.cap" option in the r code chunk options, see this [link](https://yihui.name/knitr/options/#plots) from the legend himself, [Yihui Xie](https://twitter.com/xieyihui).', out.width="80%"}
-par(mar=c(2,2,0,1))
-plot(x = iris$Sepal.Length, y = iris$Sepal.Width,
-     col = iris$Species, pch = 19, xlab = "Sepal Length",
-     ylab = "Sepal Width")
+```{r, mapfigure, fig.cap='Here is a caption for the figure. This can be added by using the "fig.cap" option in the r code chunk options, see this [link](https://yihui.name/knitr/options/#plots) from the legend himself, [Yihui Xie](https://twitter.com/xieyihui).', out.width="100%"}
+MSE.map
 ```
 
-Maybe you want to show off some of that fancy code you spent so much time on to make that figure, well you can do that too! Just use the `echo=TRUE` option in the r code chunk options, Figure \@ref(fig:myprettycode)!
+Figure \@ref(fig:explicit)!
 
-```{r myprettycode, echo=TRUE, fig.cap='Boxplots, so hot right now!', fig.height=6, out.width="80%"}
-#trim whitespace
-par(mar=c(2,2,0,0))
-#plot boxplots
-boxplot(iris$Sepal.Width~iris$Species,
-        col = "#008080", 
-        border = "#0b4545",
-        ylab = "Sepal Width (cm)",
-        xlab = "Species")
+```{r explicit, fig.cap='Percentage of MSEs that included explicit documentation of these SDM process steps!', fig.height=6, out.width="100%"}
+text1<-expression(paste("Absent or \nInexplicit"))
+text2<-paste("Absent")
+text3<-paste("Unknown")
+Freq.plot + annotate("text", x = 5, y = 55, label = text1, size=25) + 
+  annotate("text", x = 2.6, y = 50, label = text2, size=20) + 
+  annotate("text", x = 1, y = 50, label = text3, size=12)
 ```
 
-How about a neat table of data? See, Table \@ref(tab:iristable):
+Figure \@ref(fig:participants)!
+
+```{r participants, fig.cap='Who participated during these stages of the SDM process', fig.height=6, out.width="100%"}
+Part.plot
+```
+
+The drivers modeled in the reviewed MSEs Table \@ref(tab:driversPub) and the climate change MSEs Table \@ref(tab:driversCC) [description of results].
+
+```{r, drivers}
+color_Pub <- which(drive.data$Analysis=='Reviewed')
+color_CC <- which(drive.data$Analysis=='Climate Change')
+
+
+drive.data %>% 
+  kable(align = "c") %>%
+  row_spec(color_CC, color = "#FF0033", background = "white") %>% 
+  row_spec(color_Pub, color = "#0000FF", background = "white") 
+
+knitr::kable(
+  as_tibble(drive.data), format = "html",
+  caption = "Drivers modeled in management strategy evaluations",
+  align = "c", escape = FALSE)
+```
 
 ```{r, iristable}
 knitr::kable(
