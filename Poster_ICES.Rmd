@@ -1,8 +1,8 @@
 ---
-main_topsize: 0.2 #percent coverage of the poster
+main_topsize: 0.25 #percent coverage of the poster
 main_bottomsize: 0
 #ESSENTIALS
-title:
+title: Use of management strategy evaluation to inform fisheries management in a changing climate
 author:
   - name: '**Jonathan W. Cummings**'
     affil: 1
@@ -22,19 +22,18 @@ author:
 affiliation:
   - num: 1
     address: School for Marine Science and Technology, University of Massachusetts - Dartmouth 836 South Rodney French Blvd,New Bedford, MA, USA 02744
-main_findings:
-  - "Make **better posters** with RMarkdown + **posterdown**.
-  Use of management strategy evaluation to inform in fisheries management in a changing climate"
-logoleft_name: https&#58;//raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png
-logoright_name: https&#58;//raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png
-logocenter_name: https&#58;//raw.githubusercontent.com/brentthorne/posterdown/master/images/qr-code-black.png
+main_findings: "Explicit documentation of MSE processes is limited. <br> Climate change MSEs have been less explict, more scientist driven, included fewer objectives -- with less consideration of economic or social objectives -- and fewer drivers."
 output: 
   posterdown::posterdown_betterport:
     self_contained: false
     pandoc_args: --mathjax
     number_sections: false
-bibliography: packages.bib
+bibliography: MSEreview.bib
 link-citations: true
+nocite: '@*'
+title_textsize: "50pt"
+column_numbers: 4
+#body_textsize: "20pt"
 ---
 ```{r, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
@@ -445,10 +444,10 @@ altcat.data<-rbind(altcat.data_pub,altcat.data_CC) %>%
   mutate('Per MSE'=round(AVG/count,1)) %>% 
   mutate('Type'=c("Alternatives","Alternatives"))
 
-per.MSE<-rbind(obj.dataTable,altcat.data) %>% 
-  mutate(order=c(2,1,4,3)) %>% 
+per.MSE<-obj.dataTable %>% 
+  mutate(order=c(2,1)) %>% 
   arrange(order) %>% 
-  select(Type,Analysis,'Per MSE')
+  select(Analysis,'Per MSE')
 
 ##### Data Analysis Outputs #####
 # number of climate change MSE articles
@@ -498,30 +497,30 @@ Driver.plot<-ggplot(drive.data,aes(x=order,y=Percent,fill=Analysis)) +
 # Introduction
 For most of its history fisheries management has focused on fishing impacts with ecosystem status viewed as a background constant. The increasing rate and degree of climate change is changing this dynamic, bringing ecosystem status to the forefront of fisheries management.
 
-Management strategy evaluation (MSE) is commonly considered the gold standard of fisheries management approaches, and is "widely considered to be the most appropriate way to evaluate the trade‐offs achieved by alternative management strategies and to assess the consequences of uncertainty for achieving management goals” (citation). Thus, MSE is a compelling tool to address the impact of climate change on fisheries management.
+Management strategy evaluation (MSE) is commonly considered the gold standard of fisheries management approaches, and is "widely considered to be the most appropriate way to evaluate the trade‐offs achieved by alternative management strategies and to assess the consequences of uncertainty for achieving management goals” [@R-Punt]. Thus, MSE is a compelling tool to address the impact of climate change on fisheries management.
 
 Despite numerous applications of MSE, the applications that include climate change are limited, leaving uncertainty about the best approach to MSE use for fisheries management that accounts for a changing environment.
 
-Adaptive management arose to address uncertainties and accelerate progress towards meeting management objectives. Using the structured decision making (SDM) process- the decision making framework in which adaptive management occurs - as our framework, how do published MSE projects utilize standard SDM components?  
+Adaptive management arose to address uncertainties and accelerate progress towards meeting management objectives. Using the structured decision making (SDM) process -- the decision making framework in which adaptive management occurs -- as our framework, how do published MSE projects utilize standard SDM components and support learning within the MSE practitioner community?  
 
 ```{r, include=FALSE}
 knitr::write_bib(c('posterdown', 'rmarkdown','pagedown'), 'packages.bib')
 ```
 
 ## Objectives
-We review published management strategy evaluations (MSEs) against the steps of a structured decision making (SDM) framework to note how the literature accelerates or delays learning. 
+We review published MSEs against the steps of the SDM framework to: 
 
-* Identify explicit documentation and use (or disuse) of SDM steps in MSEs that enable or limit adaptation in future MSEs.
-* Identify participants in MSE processes that enable or limit adaptation in future MSEs.
-* Highlight unique aspects of MSEs that model climate change as a driver
+* Determine the rate of documentation and use of steps in the SDM process.
+* Identify participants in MSE processes.
+* Highlight unique aspects of MSEs that model climate change as a driver.
 * Identify aspects of successful MSEs that can be adopted to inform fisheries management in a changing climate  
 * Provide insights about MSE processes and documentation that can further learning to improve future MSEs
 
 # Methods
 #### Published MSE article selection
-We conducted our search for management strategy evaluations (MSEs) in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 253 results.  
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 253 results.  
 
-We took a random sample of these 253 articles and reviewed 30 that document a management strategy evaluation.  Not all articles in the potential pool of 253 articles were management strategy evaluations due to articles that are reviews, meta-analyses, etc., or simply cite other MSE articles.  Of the 253 articles ### documented a management strategy evaluation, and 11 included climate change as a driver of fishery status.
+We took a random sample of these 253 articles and reviewed 30 that document a MSE.  Not all articles in the potential pool of 253 articles were MSEs due to articles that are reviews, meta-analyses, etc., or simply cite other MSE articles.  Of the 253 articles, ### documented a MSE, and 11 included climate change as a driver of fishery status.
 
 | MSE type | Count |
 |:--:|:--:|
@@ -529,20 +528,14 @@ We took a random sample of these 253 articles and reviewed 30 that document a ma
 | Reviewed Sample | 30 |
 | Climate Change | 11 |
 
-We highlight lessons learned from these exercises and unique aspects of MSEs that model climate change as a driver relative to a sample of MSEs that do not consider climate change.
-
 # Results
+Apart from one each in Europe and the Western Pacific, to date MSEs modeling climate change have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)).
 
-Relatively few cases of climate change MSEs  
-Less likely to include stakeholders  
-
-Map of where reviewed MSEs and climate change focues MSEs occurred: Figure \@ref(fig:mapfigure).
-
-```{r, mapfigure, fig.cap='Map of MSE study locations. Here is a caption for the figure. This can be added by using the "fig.cap" option in the r code chunk options, see this [link](https://yihui.name/knitr/options/#plots) from the legend himself, [Yihui Xie](https://twitter.com/xieyihui).', out.width="100%"}
+```{r, mapfigure, fig.cap='Map of MSE study locations.', out.width="100%"}
 MSE.map
 ```
 
-Figure \@ref(fig:explicit)
+The vast majority of MSEs did not explicitly document how the stages of the MSE process -- defined using the SDM framework -- were completed (Figure \@ref(fig:explicit)).
 
 ```{r explicit, fig.cap='Percentage of MSEs that included explicit documentation of these SDM process steps!', fig.height=6, out.width="100%"}
 text1<-expression(paste("Absent or \nInexplicit"))
@@ -553,19 +546,29 @@ Freq.plot + annotate("text", x = 5, y = 55, label = text1, size=25) +
   annotate("text", x = 1, y = 50, label = text3, size=12)
 ```
 
-Figure \@ref(fig:participants)
+The primary participants and leaders of the MSE processes were scientists, while some processes were lead by governments and management agencies (Figure \@ref(fig:participants)).  Where explicit documentation occurred objectives and alternatives were elicited from a variety of participants, with scientists seemingly selecting these components in the inexplicit cases.
 
 ```{r participants, fig.cap='Who participated during these stages of the SDM process', fig.height=6, out.width="100%"}
 Part.plot
 ```
 
-Figure \@ref(fig:driversPlot)
+General uncertainty in system parameters was the main driver of the system state, but a variety of drivers were considered across the reviewed MSEs (Figure \@ref(fig:driversPlot)).
 
 ```{r driversPlot, fig.cap='text', fig.height=6, out.width="100%"}
 Driver.plot
 ```
 
-The categories of objectives considered in MSEs, Table \@ref(tab:objectiveCategories)
+A greater number of objectives were considered per MSE in the random sample of reviewed MSEs than in the climate change MSEs (Table \@ref(tab:PerMSE)).  Climate change MSEs were less likely to consider economic and social objectives than the MSEs sample for review (Table \@ref(tab:objectiveCategories)).
+
+```{r, PerMSE}
+color_Pub <- which(per.MSE$Analysis=='Reviewed')
+color_CC <- which(per.MSE$Analysis=='Climate Change')
+
+per.MSE %>%
+  kable(align = "c", caption = "Number of objectives considered per management strategy evaluation") %>%  
+  row_spec(color_CC, color = "#FF0033", background = "white") %>%
+  row_spec(color_Pub, color = "#0000FF", background = "white")
+```
 
 ```{r, objectiveCategories}
 color_Pub <- which(objcat.data$Analysis=='Reviewed')
@@ -577,23 +580,12 @@ objcat.data %>%
   row_spec(color_Pub, color = "#0000FF", background = "white")
 ```
 
-A greater number of objectives were considered per MSE in the random sample of reviewed MSEs than in the climate change MSEs (Table \@ref(tab:PerMSE))
+# Conclusions
+The picture painted by MSE documentation is one of scientist driven simulation studies rather than management driven decision processes. While documentation about the modeling conducted in a MSE was explicit, documentation about the process used to make decision about the MSE model were limited. Scientists participated in, or seemingly directly selected the objectives and alternatives to evaluate in most MSEs. Facilitators and decision analysts -- participants focused on the decision making process -- were rarely participants in MSE processes.  Conservation, Economic, and Yield focused objectives were commonly considered, while broader social objectives were rarely considered.
 
-```{r, PerMSE}
-color_Pub <- which(per.MSE$Analysis=='Reviewed')
-color_CC <- which(per.MSE$Analysis=='Climate Change')
+To date climate change has not been considered in many MSEs.  MSEs modeling climate change have been less explicitly documented, more likely to be scientist driven, and included fewer system drivers and fewer objectives, with less consideration of economic or social objectives.
 
-per.MSE %>%
-  kable(align = "c", caption = "Objective data reviewed") %>%  
-  row_spec(color_CC, color = "#FF0033", background = "white") %>%
-  row_spec(color_Pub, color = "#0000FF", background = "white")
-```
+# More Details
+Check out our shiny app (<https://jonathancummings.shinyapps.io/MSEreview/>) and keep an eye out for the forthcoming publication.
 
 # References
-To reference a citation you can add your `.bib` file to the working directory and name it in the YAML metadata or generate an automated one as done here, then you only need to reference the label value in the `.bib` file. For example this package is built on top of the wonderful {pagedown} package and I will cite it at the end of this sentance using this in the rmd `[@R-pagedown]` [@R-pagedown].
-
-How to include an equation using mathjax:
-
-$$ E = mc^2 $$
-
-To get a better understanding of how to include features like these please refer to the {posterdown} [wiki](https://github.com/posterdown/wiki).
