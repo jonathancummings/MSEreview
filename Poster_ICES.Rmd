@@ -1,5 +1,5 @@
 ---
-main_topsize: 0.25 #percent coverage of the poster
+main_topsize: 0.2 #percent coverage of the poster
 main_bottomsize: 0
 #ESSENTIALS
 title: Use of management strategy evaluation to inform fisheries management in a changing climate
@@ -22,7 +22,7 @@ author:
 affiliation:
   - num: 1
     address: School for Marine Science and Technology, University of Massachusetts - Dartmouth 836 South Rodney French Blvd,New Bedford, MA, USA 02744
-main_findings: "Explicit documentation of MSE processes is limited. <br> Climate change MSEs have been less explict, more scientist driven, included fewer objectives -- with less consideration of economic or social objectives -- and fewer drivers."
+main_findings: "Explicit documentation of MSE processes is limited. <br> <br> Climate change MSEs have been less explict, more scientist driven, included fewer objectives -- with less consideration of economic or social objectives -- and fewer drivers."
 output: 
   posterdown::posterdown_betterport:
     self_contained: false
@@ -32,8 +32,9 @@ bibliography: MSEreview.bib
 link-citations: true
 nocite: '@*'
 title_textsize: "50pt"
-column_numbers: 4
-#body_textsize: "20pt"
+main_textsize: "90pt"
+column_numbers: 3
+body_textsize: "29.5pt"
 ---
 ```{r, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
@@ -526,7 +527,10 @@ We took a random sample of these 253 articles and reviewed 30 that document a MS
 |:--:|:--:|
 | Published | ### |
 | Reviewed Sample | 30 |
-| Climate Change | 11 |
+| Climate Change | 11 |  
+
+</br>
+</br>
 
 # Results
 Apart from one each in Europe and the Western Pacific, to date MSEs modeling climate change have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)).
