@@ -22,7 +22,7 @@ author:
 affiliation:
   - num: 1
     address: School for Marine Science and Technology, University of Massachusetts - Dartmouth 836 South Rodney French Blvd,New Bedford, MA, USA 02744
-main_findings: "Explicit documentation of MSE processes is limited. <br> <br> Climate change MSEs have been less explict, more scientist driven, included fewer objectives -- with less consideration of economic or social objectives -- and fewer drivers."
+main_findings: "Explicit documentation of management strategy evaluation processes is limited. <br> <br> Climate change MSEs have been less explicit, more scientist driven, included fewer objectives -- with less consideration of economic or social objectives -- and fewer drivers."
 output: 
   posterdown::posterdown_betterport:
     self_contained: false
@@ -502,7 +502,7 @@ Management strategy evaluation (MSE) is commonly considered the gold standard of
 
 Despite numerous applications of MSE, the applications that include climate change are limited, leaving uncertainty about the best approach to MSE use for fisheries management that accounts for a changing environment.
 
-Adaptive management arose to address uncertainties and accelerate progress towards meeting management objectives. Using the structured decision making (SDM) process -- the decision making framework in which adaptive management occurs -- as our framework, how do published MSE projects utilize standard SDM components and support learning within the MSE practitioner community?  
+Adaptive management arose to address uncertainties and accelerate progress towards meeting management objectives. Using the structured decision making (SDM) process [@R-SDM] -- the decision making framework in which adaptive management occurs -- as our framework, how do published MSE projects utilize standard SDM components and support learning within the MSE practitioner community?  
 
 ```{r, include=FALSE}
 knitr::write_bib(c('posterdown', 'rmarkdown','pagedown'), 'packages.bib')
@@ -541,8 +541,8 @@ MSE.map
 
 The vast majority of MSEs did not explicitly document how the stages of the MSE process -- defined using the SDM framework -- were completed (Figure \@ref(fig:explicit)).
 
-```{r explicit, fig.cap='Percentage of MSEs that included explicit documentation of these SDM process steps!', fig.height=6, out.width="100%"}
-text1<-expression(paste("Absent or \nInexplicit"))
+```{r explicit, fig.cap='Percentage of MSEs that included explicit documentation (colored bars) of SDM process steps --- Roles and meetings --- and adoption of results. In the remaining MSEs was documentation was inexplicit, or absent, and whether the results were adopted was unknown.', fig.height=6, out.width="100%"}
+text1<-expression(paste("Inexplicit \nor Absent"))
 text2<-paste("Absent")
 text3<-paste("Unknown")
 Freq.plot + annotate("text", x = 5, y = 55, label = text1, size=25) + 
@@ -552,13 +552,13 @@ Freq.plot + annotate("text", x = 5, y = 55, label = text1, size=25) +
 
 The primary participants and leaders of the MSE processes were scientists, while some processes were lead by governments and management agencies (Figure \@ref(fig:participants)).  Where explicit documentation occurred objectives and alternatives were elicited from a variety of participants, with scientists seemingly selecting these components in the inexplicit cases.
 
-```{r participants, fig.cap='Who participated during these stages of the SDM process', fig.height=6, out.width="100%"}
+```{r participants, fig.cap='Who guided, participated in, or provided input during the specified steps of the MSE process', fig.height=6, out.width="100%"}
 Part.plot
 ```
 
 General uncertainty in system parameters was the main driver of the system state, but a variety of drivers were considered across the reviewed MSEs (Figure \@ref(fig:driversPlot)).
 
-```{r driversPlot, fig.cap='text', fig.height=6, out.width="100%"}
+```{r driversPlot, fig.cap='Drivers included in MSE models', fig.height=6, out.width="100%"}
 Driver.plot
 ```
 
