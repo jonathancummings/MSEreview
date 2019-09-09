@@ -25,22 +25,24 @@ library(DBI) # database interface
 ## cloud_sql_proxy -instances=alpine-tracker-230222:us-east1:mse-review=tcp:3306
 
 # Create connection function
-getSqlConnection <- function(){
-  cn <-
-    dbConnect(
-      RMySQL::MySQL(),
-      dbname = 'MSEreview',
-      host = '127.0.0.1',
-      port=3306,
-      username = 'root',
-      password = 'tLenKdQCs9M2pqK')
-  return(cn)
-}
-# Open connection
-con <- getSqlConnection()
+# getSqlConnection <- function(){
+#   cn <-
+#     dbConnect(
+#       RMySQL::MySQL(),
+#       dbname = 'MSEreview',
+#       host = '127.0.0.1',
+#       port=3306,
+#       username = 'root',
+#       password = 'tLenKdQCs9M2pqK')
+#   return(cn)
+# }
+# # Open connection
+# con <- getSqlConnection()
 
 # To close the connection
 # dbDisconnect(con)
+
+load("MSEreview.RData")
 
 ##### 
 # Script
@@ -52,20 +54,20 @@ world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a
 #####
 ###-- Data Processing --###
 
-# Obtain data tables
-study<-dbReadTable(con,"tblStudy")
-# study<-read_xlsx("DB files - Excel/tblStudy.xlsx")
-mgmt<-dbReadTable(con,"tblStudyManagement")
-# mgmt<-read_xlsx("DB files - Excel/tblStudyManagementTools.xlsx")
-# mgmt$fkStudyID<-parse_integer(mgmt$fkStudyID)
-obj<-dbReadTable(con,"tblStudyObjectives")
-# obj<-read_xlsx("DB files - Excel/tblStudyObjectives.xlsx")
-# obj$fkStudyID<-parse_integer(obj$fkStudyID)
-fields<-dbReadTable(con,"tblStudyFields")
-# fields<-read_xlsx("DB files - Excel/tblStudyFields.xlsx")
-
-# To close the connection
-dbDisconnect(con)
+# # Obtain data tables
+# study<-dbReadTable(con,"tblStudy")
+# # study<-read_xlsx("DB files - Excel/tblStudy.xlsx")
+# mgmt<-dbReadTable(con,"tblStudyManagement")
+# # mgmt<-read_xlsx("DB files - Excel/tblStudyManagementTools.xlsx")
+# # mgmt$fkStudyID<-parse_integer(mgmt$fkStudyID)
+# obj<-dbReadTable(con,"tblStudyObjectives")
+# # obj<-read_xlsx("DB files - Excel/tblStudyObjectives.xlsx")
+# # obj$fkStudyID<-parse_integer(obj$fkStudyID)
+# fields<-dbReadTable(con,"tblStudyFields")
+# # fields<-read_xlsx("DB files - Excel/tblStudyFields.xlsx")
+# 
+# # To close the connection
+# dbDisconnect(con)
 
 #####
 # Edit tables for joining
