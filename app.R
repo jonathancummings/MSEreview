@@ -303,7 +303,7 @@ server <- function(input, output, session) {   # code to create output using ren
              "Sub Alternatives"="ProcedureElicitation_Sub")
   })
   part.data_reviewed2<- reactive({part.data_reviewed() %>%
-    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(~ strsplit(as.character(.),split=",")) %>%
     purrr::map(unlist) %>%
     purrr::map(table)
   })
@@ -345,7 +345,7 @@ server <- function(input, output, session) {   # code to create output using ren
   # What drivers are considered
   drive.data<-reactive({data_reviewed() %>%
     select(Drivers) %>%
-    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(~ strsplit(as.character(.),split=",")) %>%
     purrr::map(unlist) %>%
     purrr::map(table) %>%
     plyr::ldply(data.frame) %>%
@@ -358,7 +358,7 @@ server <- function(input, output, session) {   # code to create output using ren
   # What Objective types are considered
   objcat.data<-reactive({data_reviewed() %>%
     select(ObjectiveCategories) %>%
-    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(~ strsplit(as.character(.),split=",")) %>%
     purrr::map(unlist) %>%
     purrr::map(table) %>%
     plyr::ldply(data.frame) %>%
@@ -401,7 +401,7 @@ server <- function(input, output, session) {   # code to create output using ren
   # What Alternative types are considered
   altcat.data<-reactive({data_reviewed() %>%
     select(ManagementType) %>%
-    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(~ strsplit(as.character(.),split=",")) %>%
     purrr::map(unlist) %>%
     purrr::map(table) %>%
     plyr::ldply(data.frame) %>%
