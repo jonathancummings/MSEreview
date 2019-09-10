@@ -88,22 +88,45 @@ obj.join<-obj %>%
 
 # Join tables
 data<-full_join(study,mgmt.join,by=c("ID"="fkStudyID"))
-data<-full_join(data,obj.join,by=c("ID"="fkStudyID")) %>% 
-  select(-c("ID"))
-obj.data<-right_join(study.join,obj,by=c("ID"="fkStudyID"))%>% 
-  select(-c("ID","ID.y"))
+data<-full_join(data,obj.join,by=c("ID"="fkStudyID"))
+obj.data<-right_join(study.join,obj,by=c("ID"="fkStudyID"))
 
 # Move comment column to the end
 data<-data %>% 
   select(-'Comments', 'Comments')
+
+# Filter data to create separate pub and climate change objects
+data_pub<-filter(data,IncludeInPublication==TRUE)
+data_CC<-filter(data,str_detect(Drivers,"Climate Change"))
+
+data_pub.join<-data_pub %>%
+  select(ID,Citation)
+data_CC.join<-data_CC %>%
+  select(ID,Citation)
+
+obj.data_pub<-left_join(data_pub.join,obj,by=c("ID"="fkStudyID"))%>%
+  select(-c("ID","ID.y"))
+obj.data_CC<-left_join(data_CC.join,obj,by=c("ID"="fkStudyID"))%>%
+  select(-c("ID","ID.y"))
+
+alt.data_pub<-left_join(data_pub.join,mgmt,by=c("ID"="fkStudyID"))%>%
+  select(-c("ID","ID.y"))
+alt.data_CC<-left_join(data_CC.join,mgmt,by=c("ID"="fkStudyID"))%>%
+  select(-c("ID","ID.y"))
+
+data_pub<-data_pub %>%
+  select(-c("ID"))
+data_CC<-data_CC %>%
+  select(-c("ID"))
+
+data<-select(data,-c("ID"))
+obj.data<-select(obj.data,-c("ID","ID.y"))
 
 # Get columns whose width needs editing
 targets<-match(c("FullCitation","Comments"),names(data))
 
 # Get columns for study summary
 summary.col<-c("Citation",
-               "Authors",
-               "YearPub",
                "Species",
                "Location",
                "System")
@@ -141,7 +164,8 @@ alt.col<-c("ManagementType",
 # Get columns for map
 map.col<-c("Latitude",
            "Longitude",
-           "Citation")
+           "Citation",
+           "Drivers")
 
 #####
 ###-- Shiny App --###
@@ -253,7 +277,7 @@ server <- function(input, output, session) {   # code to create output using ren
     } 
     else 
       if(input$data_filter=="CC"){
-        filter(data,Drivers=="Climate Change")
+        filter(data,str_detect(Drivers,"Climate Change"))
       }
     else 
       if(input$data_filter=="all"){
