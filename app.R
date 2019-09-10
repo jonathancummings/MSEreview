@@ -173,6 +173,7 @@ map.col<-c("Latitude",
 ui <- fluidPage(
   theme = shinytheme("readable"),
   tabsetPanel(
+    #### Tab 1: Filter Results ####
     tabPanel("Filter Results", 
              headerPanel("An Assessment of Management Strategy Evaluations"),# title of the page
              h2("MSE literature review results"),
@@ -205,6 +206,7 @@ ui <- fluidPage(
                )
              )
              ),
+    #### Tab 2: Results - Plots ####
     tabPanel("Results - Plots", 
              headerPanel("An Assessment of Management Strategy Evaluations"),# title of the page
              h2("MSE literature review results"),
@@ -221,6 +223,7 @@ ui <- fluidPage(
              plotOutput("part.plot"),
              p("Figure 3. Participation at different stages of the MSE process")
              ),
+    #### Tab 3: Results - Tables ####
     tabPanel("Results - Tables", 
              h2("Explict Process Documentation"),
              p("Table 1. The number and percentage of MSE processes that explicitly included each step in the process"),
@@ -243,6 +246,7 @@ ui <- fluidPage(
              p("Table 5. Number of, percentage of objectives, and Frequency per MSE of objective usage"),
              tableOutput("MSE.alt")
              ),
+    #### Tab 4: Data - All ####
     tabPanel("Data - All",
              h1("All of the MSE literature review data"),
              h2("Study data"),
@@ -254,6 +258,7 @@ ui <- fluidPage(
              h2("Field Descriptions"),
              tableOutput("MSE.Fields")
              ),
+    #### Tab 5: Data Tables - Subsets ####
     tabPanel("Data Tables - Subsets",
              h1("Selected columns of MSE literature review data"),
              h2("Study Summaries"),
@@ -262,32 +267,40 @@ ui <- fluidPage(
              h2("Problem Components"),
              DT::dataTableOutput("MSE.problem")
              ),
+    #### Tab 6: Background and methods ####
     tabPanel("Background and methods",
-             h2("Background"),
+             h4("Background"),
              p("Fisheries management has mostly focused on fishing impacts
                 with ecosystem status viewed as a background constant."),
              p("The increasing rate of climate change is changing this
-     dynamic, bringing ecosystem status to the forefront of fisheries
+      dynamic, bringing ecosystem status to the forefront of fisheries
                management."),
              p("Management strategy evaluation (MSE) is 'widely considered to
-     be the most appropriate way to evaluate the trade‐offs achieved by
-     alternative management strategies and to assess the consequences of
-     uncertainty for achieving management goals' (Punt et al. 2014). Thus,
-     MSE is a compelling tool to assess climate change impacts and test
-     climate-ready options for fisheries management decisions Adaptive
-     management arose to address uncertainties and accelerate progress
-     towards meeting management objectives. We used the structured decision
-     making (SDM) process - the decision making framework in which adaptive
-     management occurs - as our framework, how do published MSE projects
-     utilize standard SDM components and support learning within the MSE
-     practitioner community?"),
+      be the most appropriate way to evaluate the trade‐offs achieved by
+      alternative management strategies and to assess the consequences of
+      uncertainty for achieving management goals' (Punt et al. 2014). Thus,
+      MSE is a compelling tool to assess climate change impacts and test
+      climate-ready options for fisheries management decisions Adaptive
+      management arose to address uncertainties and accelerate progress
+      towards meeting management objectives. We used the structured decision
+      making (SDM) process - the decision making framework in which adaptive
+      management occurs - as our framework, how do published MSE projects
+      utilize standard SDM components and support learning within the MSE
+      practitioner community?"),
           imageOutput("imageSDM",
                       width=400,
                       height=275),
           p(em("Structured Decision Making Process")),
-             h2("Study Summaries"),
-             hr(),
-             h2("Problem Components")
+          h4("MSE Review Methods"),
+          p("We conducted our search for MSEs in the SCI-EXPANDED index from
+      Web of Science, searching for “management strategy evaluation” by topic
+      across all years on January 8th, 2019. This search returned 253
+      results. We reviewed a random sample of 30 articles that document a
+      MSE, removing articles that were reviews, meta-analyses, or simply
+      cited other MSE articles from our sample. Of the 253 articles, 11
+      included climate change as a driver of fishery status, and after
+      removing other articles we estimate ~140 articles document a MSE."),
+          tableOutput("MSEcounts")
     )
   )
 )
@@ -563,6 +576,10 @@ server <- function(input, output, session) {   # code to create output using ren
     list(src=filename,
          width=400,
          height=275)},deleteFile = FALSE)
+  output$MSEcounts <- renderTable({
+    data_frame("MSE type"=c("Published (estimated)","Random Sample","Climate Change"),
+               "Count"=c(140,30,11))
+})
 }
 
 shinyApp(ui, server)
