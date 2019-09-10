@@ -544,7 +544,7 @@ MSE.map +
 ### Are structured decision making steps explicit in MSEs?
 The majority of MSEs did not explicitly document how the stages of the MSE process -- defined using the SDM framework -- were completed (Figure \@ref(fig:explicit)).
 
-```{r explicit, fig.cap='Percentage of MSEs that included explicit documentation (colored bars) of SDM process steps --- Roles and meetings --- and adoption of results. In the remaining MSEs was documentation was inexplicit, or absent, and whether the results were adopted was unknown.', fig.height=5.5, out.width="100%"}
+```{r explicit, fig.cap='Percentage of MSEs that included explicit documentation (colored bars) of SDM process steps --- Roles and meetings --- and adoption of results. In the remaining MSEs documentation was inexplicit, or absent, and whether the results were adopted was unknown.', fig.height=5.5, out.width="100%"}
 text1<-expression(paste("Inexplicit \nor Absent"))
 text2<-paste("Absent")
 text3<-paste("Unknown")
