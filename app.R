@@ -168,18 +168,56 @@ map.col<-c("Latitude",
 ui <- fluidPage(
   theme = shinytheme("readable"),
   tabsetPanel(
-    #### Tab 1: Filter Results ####
-    tabPanel("Filter Results", 
-             headerPanel("An Assessment of Management Strategy Evaluations"),# title of the page
-             h2("MSE literature review results"),
+    #### Tab 1: About ####
+    tabPanel("About", 
+             h1("An Assessment of Management Strategy Evaluations"),# title of the page
              hr(),
-             radioButtons("data_filter",
-                          "Show results from:",
-                          choices = c(
-                                      "MSEs reviewed for Cummings et. al. Publication"="pub",
-                                      "MSE included climate change as a driver"="CC",
-                                      "All MSEs"="all")),
-             textOutput("radio"),
+             h4("Background"),
+             p("Fisheries management has mostly focused on fishing impacts
+               with ecosystem status viewed as a background constant."),
+             p("The increasing rate of climate change is changing this
+               dynamic, bringing ecosystem status to the forefront of fisheries
+               management."),
+             p("Management strategy evaluation (MSE) is 'widely considered to
+               be the most appropriate way to evaluate the trade‐offs achieved by
+               alternative management strategies and to assess the consequences of
+               uncertainty for achieving management goals' (Punt et al. 2014). Thus,
+               MSE is a compelling tool to assess climate change impacts and test
+               climate-ready options for fisheries management decisions Adaptive
+               management arose to address uncertainties and accelerate progress
+               towards meeting management objectives. We used the structured decision
+               making (SDM) process - the decision making framework in which adaptive
+               management occurs - as our framework, how do published MSE projects
+               utilize standard SDM components and support learning within the MSE
+               practitioner community?"),
+             imageOutput("imageSDM",
+                         width=400,
+                         height=275),
+             p(em("Structured Decision Making Process")),
+             h4("MSE Review Methods"),
+             p("We conducted our search for MSEs in the SCI-EXPANDED index from
+               Web of Science, searching for “management strategy evaluation” by topic
+               across all years on January 8th, 2019. This search returned 253
+               results. We reviewed a random sample of 30 articles that document a
+               MSE, removing articles that were reviews, meta-analyses, or simply
+               cited other MSE articles from our sample. Of the 253 articles, 11
+               included climate change as a driver of fishery status, and after
+               removing other articles we estimate ~140 articles document a MSE."),
+             fluidRow(
+               column(width = 4,
+                      tableOutput("MSEcounts")
+               ),
+               column(width = 8,
+                      radioButtons("data_filter",
+                                   "Show results from:",
+                                   choices = c(
+                                     "MSEs reviewed for Cummings et. al. Publication"="pub",
+                                     "MSE included climate change as a driver"="CC",
+                                     "All MSEs"="all"),
+                                   width='400px'),
+                      textOutput("radio")
+               )
+             ),
              hr(),
              plotOutput("mse.map",
                         brush = brushOpts(id = "map_brush"),
@@ -261,41 +299,6 @@ ui <- fluidPage(
              hr(),
              h2("Problem Components"),
              DT::dataTableOutput("MSE.problem")
-             ),
-    #### Tab 6: Background and methods ####
-    tabPanel("Background and methods",
-             h4("Background"),
-             p("Fisheries management has mostly focused on fishing impacts
-                with ecosystem status viewed as a background constant."),
-             p("The increasing rate of climate change is changing this
-      dynamic, bringing ecosystem status to the forefront of fisheries
-               management."),
-             p("Management strategy evaluation (MSE) is 'widely considered to
-      be the most appropriate way to evaluate the trade‐offs achieved by
-      alternative management strategies and to assess the consequences of
-      uncertainty for achieving management goals' (Punt et al. 2014). Thus,
-      MSE is a compelling tool to assess climate change impacts and test
-      climate-ready options for fisheries management decisions Adaptive
-      management arose to address uncertainties and accelerate progress
-      towards meeting management objectives. We used the structured decision
-      making (SDM) process - the decision making framework in which adaptive
-      management occurs - as our framework, how do published MSE projects
-      utilize standard SDM components and support learning within the MSE
-      practitioner community?"),
-          imageOutput("imageSDM",
-                      width=400,
-                      height=275),
-          p(em("Structured Decision Making Process")),
-          h4("MSE Review Methods"),
-          p("We conducted our search for MSEs in the SCI-EXPANDED index from
-      Web of Science, searching for “management strategy evaluation” by topic
-      across all years on January 8th, 2019. This search returned 253
-      results. We reviewed a random sample of 30 articles that document a
-      MSE, removing articles that were reviews, meta-analyses, or simply
-      cited other MSE articles from our sample. Of the 253 articles, 11
-      included climate change as a driver of fishery status, and after
-      removing other articles we estimate ~140 articles document a MSE."),
-          tableOutput("MSEcounts")
     )
   )
 )
