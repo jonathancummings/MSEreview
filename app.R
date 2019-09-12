@@ -2,8 +2,7 @@
 # Literature Review Data Analysis
 # 3/8/2019, JWC
 
-##### 
-# Meta Data and setup
+##### Meta Data and setup #####
 # Description: Import and analyze MSE documentation from database
 # Value: TBD
 
@@ -44,15 +43,12 @@ library(DBI) # database interface
 
 load("MSEreview.RData")
 
-##### 
-# Script
 
 # Get map background for plotting the map
 world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
 
 
-#####
-###-- Data Processing --###
+##### Data Processing #####
 
 # # Obtain data tables
 # study<-dbReadTable(con,"tblStudy")
@@ -69,7 +65,7 @@ world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a
 # # To close the connection
 # dbDisconnect(con)
 
-#####
+
 # Edit tables for joining
 study<-study %>% 
   unite(Citation,c(Authors,YearPub),sep=" ",remove=F)
@@ -167,8 +163,7 @@ map.col<-c("Latitude",
            "Citation",
            "Drivers")
 
-#####
-###-- Shiny App --###
+##### Shiny App #####
 
 ui <- fluidPage(
   theme = shinytheme("readable"),
