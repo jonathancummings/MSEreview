@@ -36,13 +36,7 @@ knitr::opts_chunk$set(cache=TRUE,
                       })
 ```
 
-```{r, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
-                      warning = FALSE,
-                      tidy = FALSE,
-                      message = FALSE,
-                      fig.align = 'center',
-                      out.width = "100%")
+```{r load data, include=FALSE}
 options(knitr.table.format = "html")
 ##### load libraries #####
 library(tidyverse) # upgrade to base R
@@ -79,8 +73,11 @@ data<-full_join(data,obj.join,by=c("ID"="fkStudyID"))
 # Move comment column to the end
 data<-data %>%
   select(-'Comments', 'Comments')
+```
 
-# Filter data
+```{r filter data, include=FALSE}
+
+# Filter data by study type
 data_pub<-filter(data,IncludeInPublication==TRUE)
 data_CC<-filter(data,str_detect(Drivers,"Climate Change"))
 
@@ -107,7 +104,7 @@ data_CC<-data_CC %>%
 # Get columns whose width needs editing
 targets<-match(c("FullCitation","Comments"),names(data))
 
-#####-- Data analysis --#####
+#####-- Filter Data by analysis --#####
 # Get columns for study summary
 summary.col<-c("Citation",
                "Species",
@@ -127,8 +124,8 @@ freq.col<-c("ProcessExplicit",
             "ObjectivesExplicit",
             "AlternativesExplicit",
             "TradeOffsExplicit",
-            "DecisionExplicit",
-            "RolesExplicit",
+            "DecisionExplicit")
+freq2.col<-c("RolesExplicit",
             "OpenMeetings",
             "ResultsAdopted")
 # Get columns for participant analysis
@@ -155,6 +152,16 @@ summary.data_pub<-data_pub %>%
     select(summary.col)
 summary.data_CC<-data_CC %>%
   select(summary.col)
+```
+
+```{r analyze data, include=FALSE}
+options(knitr.table.format = "html")
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      tidy = FALSE,
+                      message = FALSE,
+                      fig.align = 'center',
+                      out.width = "100%")
 
 # Frequency of method
 n_mse<-nrow(data)
@@ -170,16 +177,12 @@ freq.data_pub<-data_pub %>%
            "Objectives"="ObjectivesExplicit",
            "Alternatives"="AlternativesExplicit",
            "Tradeoffs"="TradeOffsExplicit",
-           "Decision"="DecisionExplicit",
-           "Roles"="RolesExplicit",
-           "Open Meetings"="OpenMeetings",
-           "Adopted"="ResultsAdopted") %>%
+           "Decision"="DecisionExplicit") %>%
     summarise_all(funs(sum))%>%
     gather(Explicit) %>%
     mutate(Percent=value/n_mse*100) %>%
     mutate(Explicit=factor(Explicit,levels=
-                  c("Process","Problem","Objectives","Alternatives","Tradeoffs","Decision",
-                               "Roles","Open Meetings","Adopted"))) %>%
+                  c("Process","Problem","Objectives","Alternatives","Tradeoffs","Decision"))) %>%
     rename("Number"="value")
 
 freq.data_CC<-data_CC %>%
@@ -189,16 +192,12 @@ freq.data_CC<-data_CC %>%
          "Objectives"="ObjectivesExplicit",
          "Alternatives"="AlternativesExplicit",
          "Tradeoffs"="TradeOffsExplicit",
-         "Decision"="DecisionExplicit",
-         "Roles"="RolesExplicit",
-         "Open Meetings"="OpenMeetings",
-         "Adopted"="ResultsAdopted") %>%
+         "Decision"="DecisionExplicit") %>%
   summarise_all(funs(sum))%>%
   gather(Explicit) %>%
   mutate(Percent=value/n_mse*100) %>%
   mutate(Explicit=factor(Explicit,levels=
-                           c("Process","Problem","Objectives","Alternatives","Tradeoffs","Decision",
-                             "Roles","Open Meetings","Adopted"))) %>%
+                           c("Process","Problem","Objectives","Alternatives","Tradeoffs","Decision"))) %>%
   rename("Number"="value")
 
 # Who participates
@@ -461,28 +460,23 @@ MSE.map<-ggplot(data=map.data,aes(x=Longitude, y=Latitude,color=Drivers)) + worl
 
 # plot explicit documentation of steps or components of MSE processes
 # Random Sample MSEs
-Freq.plot<-ggplot(freq.data,aes(Explicit,Percent,fill=Analysis))+
-  geom_col(position="dodge")+geom_vline(xintercept=3.5,linetype="dashed")+
-  geom_vline(xintercept=1.5,linetype="dashed")+
-  coord_flip()+scale_fill_manual(values=c("#66CCCC","#006666")) +
+Freq.plot<-ggplot(freq.data_pub,aes(Explicit,Percent))+
+  geom_col()+
+  coord_flip() +
   scale_y_continuous(limits=c(0,100),expand = c(0,0))+xlab(NULL)+
   scale_x_discrete(
-    limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
+    limits=c("Decision","Tradeoffs",
              "Alternatives","Objectives","Problem","Process"),
-    labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-             "Alternatives","Objectives","Problem","Process")) +
-  guides(fill = guide_legend(reverse=T)) + theme_bw() +
-  theme(legend.position = c(0.85,0.07),legend.title = element_blank())
+    labels=c("Decision","Tradeoffs",
+             "Alternatives","Objectives","Problem","Process")) + theme_bw()
 
-Part.plot<-ggplot(part.data,aes(x=order,y=Percent,fill=Analysis)) +
-  facet_wrap(~Stage,scale="free",ncol=2) + geom_col(position="dodge") +
+Part.plot<-ggplot(part.data_pub,aes(x=order,y=Percent)) +
+  facet_wrap(~Stage,scale="free",ncol=2) + geom_col() +
   scale_fill_manual(values=c("#66CCCC","#006666")) +
   scale_x_continuous(breaks = part.data$order,
                      labels = part.data$Participants)+
   scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
-  ylab("Percent")+xlab(NULL)+coord_flip() +
-  guides(fill = guide_legend(reverse=T)) + theme_bw() +
-  theme(legend.position = c(0.86,0.075),legend.title = element_blank())
+  ylab("Percent")+xlab(NULL)+coord_flip() + theme_bw()
 
 Driver.plot<-ggplot(drive.data,aes(x=order,y=Percent,fill=Analysis)) +
   geom_col(position="dodge") +
@@ -504,9 +498,95 @@ Management strategy evaluation (MSE) is "widely considered to be the most approp
 
 Adaptive management arose to address uncertainties and accelerate progress towards meeting management objectives. We used the structured decision making (SDM) process [@R-SDM] -- the decision making framework in which adaptive management occurs -- as our framework, how do published MSE projects utilize standard SDM components and support learning within the MSE practitioner community?  
 
+### Objectives
+We review published MSEs against the steps of the SDM framework to:  
+
+* Determine the rate of documentation, and use of steps, in the MSE process:  
+* Identify participants in MSE processes.
+* Highlight unique aspects of MSEs that model climate change as a driver.
+* Identify aspects of successful MSEs that can be adopted to inform fisheries management in a changing climate  
+* Provide insights about MSE processes and documentation that can further learning to improve future MSEs
+
 # Methods
+## Finding and Sampling the MSE Literature
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 253 results.  We reviewed a random sample of 30 articles that document a MSE, removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. Of the 253 articles, 11 included climate change as a driver of fishery status, and after removing other articles we estimate 110-160 articles document a MSE.   
+
+| MSE type | Count |
+|:--:|:--:|
+| Published (estimated) | 110-160 |
+| Random Sample | 30 |
+| Climate Change | 11 |  
+
+## Reviewing MSE documentation 
+Methods for scoring the documentation.
 
 # Results
+## Are structured decision making steps explicit in MSEs?
+The majority of MSEs did not explicitly document how the stages of the MSE process -- defined using the SDM framework -- were completed (Table \@ref(tab:explicit)).  The most documented stage was the alternative stage, while 3 of the 30 studies explicitly documented a tradeoff analysis and 2 of the 30 documented a management decision.
+
+```{r explicit}
+freq.data_pub %>%
+  mutate("Percent"=round(Percent,0)) %>% 
+  kable(align = "c", caption = "Prevalence of Explicit Documentation of stages in the MSE process")
+```
+
+### Who is involved in MSEs?
+The primary participants and leaders of the MSE processes were scientists, with some lead by governments and management agencies (Figure \@ref(fig:participants)).  Objectives and alternatives were elicited from a variety of participants, with scientists seemingly selecting these components in cases where documentation was inexplicit.
+
+```{r participants, fig.cap='Who guided, participated in, or provided input during the specified steps of the MSE process', fig.height=6, out.width="100%"}
+Part.plot
+```
+
+<!-- ### Where have climate change MSEs occurred? -->
+<!-- To date MSEs modeling climate change have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)). -->
+
+<!-- ```{r, mapfigure, fig.cap='Map of MSE study locations.', fig.height=4, out.width="100%"} -->
+<!-- MSE.map + -->
+<!--   theme(text = element_text(size=14)) -->
+<!-- ``` -->
+
+
+
+<!-- ### What questions and management objectives do MSEs address? -->
+<!-- Uncertainty in system parameters was the main driver of the system state, but a variety of drivers were considered across the random sample of MSEs (Figure \@ref(fig:driversPlot)). -->
+
+<!-- ```{r driversPlot, fig.cap='Drivers included in MSE models', fig.height=6, out.width="100%"} -->
+<!-- Driver.plot + -->
+<!--   theme(text = element_text(size=14)) -->
+<!-- ``` -->
+
+<!-- More objectives were considered per MSE in the random sample than in the climate change MSEs (Table \@ref(tab:PerMSE)).  Climate change MSEs were less likely to consider economic and social objectives than the random sample (Table \@ref(tab:objectiveCategories)). -->
+
+<!-- ```{r, PerMSE} -->
+<!-- color_Pub <- which(per.MSE$Analysis=='Random Sample') -->
+<!-- color_CC <- which(per.MSE$Analysis=='Climate Change') -->
+
+<!-- per.MSE %>% -->
+<!--   kable(align = "c", caption = "Number of objectives considered per management strategy evaluation") %>%   -->
+<!--   row_spec(color_CC, color = "#66CCCC", background = "white") %>% -->
+<!--   row_spec(color_Pub, color = "#006666", background = "white") -->
+<!-- ``` -->
+
+<!-- ```{r, objectiveCategories} -->
+<!-- color_Pub <- which(objcat.data$Analysis=='Random Sample') -->
+<!-- color_CC <- which(objcat.data$Analysis=='Climate Change') -->
+
+<!-- objcat.data %>% -->
+<!--   kable(align = "c", caption = "Objective categories considered in management strategy evaluations") %>% -->
+<!--   row_spec(color_CC, color = "#66CCCC", background = "white") %>% -->
+<!--   row_spec(color_Pub, color = "#006666", background = "white") -->
+<!-- ``` -->
+
+### Main Conclusions
+The picture painted by MSE documentation is one of scientist driven simulation studies rather than management driven decision processes. 
+While documentation about the **modeling** conducted in a MSE was explicit, documentation about the **process used to make decisions** about the MSE model **were limited**. Scientists participated in, or seemingly directly selected the objectives and alternatives to evaluate in most MSEs. Facilitators and decision analysts -- participants focused on the decision making process -- were rarely participants in MSE processes.  Conservation, Economic, and Yield focused objectives were commonly considered, while **broader social objectives were rarely considered**.
+
+Despite numerous applications of MSE, the applications that include climate change are limited, leaving uncertainty about the best approach to MSE use for fishereis management that accounts for a changing environment.
+
+### Explore our review on the web!
+Check out our shiny app (<https://jonathancummings.shinyapps.io/MSEreview/>).
+
+### References
 
 # Discussion
 
