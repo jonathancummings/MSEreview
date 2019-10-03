@@ -119,7 +119,11 @@ data<-select(data,-c("ID"))
 obj.data<-select(obj.data,-c("ID","ID.y"))
 
 # Get columns whose width needs editing
-targets<-match(c("FullCitation","Comments"),names(data))
+targetsC<-match(c("Comments","ProblemDefinition"),names(data))
+targetsAE<-match(c("AlternativesEvaluated","FullCitation"),names(data))
+targetsSp<-match(c("Species","ObjElicitationMethod"),names(data))
+targetsSy<-match(c("System"),names(data))
+targetsL<-match(c("Location"),names(data))
 
 # Get columns for study summary
 summary.col<-c("Citation",
@@ -134,6 +138,7 @@ prob.col<-c("Citation",
             "TradeOffMethod_Exp",
             "TradeOffMethod_Sub",
             "Decision")
+targetsPD<-match(c("ProblemDefinition"),prob.col)
 # Get columns for frequency analysis
 freq.col<-c("ProcessExplicit",
             "ProblemDefinitionExplicit",
@@ -170,90 +175,93 @@ ui <- fluidPage(
   tabsetPanel(
     #### Tab 1: About ####
     tabPanel("About", 
+      h1("An Assessment of Management Strategy Evaluations"),# title of the page
+      hr(),
+      h4("Background"),
+      p("Fisheries management has mostly focused on fishing impacts
+      with ecosystem status viewed as a background constant."),
+      p("The increasing rate of climate change is changing this
+      dynamic, bringing ecosystem status to the forefront of fisheries
+      management."),
+      p("Management strategy evaluation (MSE) is 'widely considered to
+      be the most appropriate way to evaluate the trade‐offs achieved by
+      alternative management strategies and to assess the consequences of
+      uncertainty for achieving management goals' (Punt et al. 2014). Thus,
+      MSE is a compelling tool to assess climate change impacts and test
+      climate-ready options for fisheries management decisions Adaptive
+      management arose to address uncertainties and accelerate progress
+      towards meeting management objectives. We used the structured decision
+      making (SDM) process - the decision making framework in which adaptive
+      management occurs - as our framework, how do published MSE projects
+      utilize standard SDM components and support learning within the MSE
+      practitioner community?"),
+      imageOutput("imageSDM",
+                   width=400,
+                   height=275),
+      p(em("Structured Decision Making Process")),
+      h4("MSE Review Methods"),
+      p("We conducted our search for MSEs in the SCI-EXPANDED index from
+       Web of Science, searching for “management strategy evaluation” by topic
+       across all years on January 8th, 2019. This search returned 253
+       results. We reviewed a random sample of 30 articles that document a
+       MSE, removing articles that were reviews, meta-analyses, or simply
+       cited other MSE articles from our sample. Of the 253 articles, 11
+       included climate change as a driver of fishery status, and after
+       removing other articles we estimate ~140 articles document a MSE."),
+      fluidRow(
+       column(width = 4,
+        tableOutput("MSEcounts")
+       ),
+       column(width = 8,
+        radioButtons("data_filter",
+         "Show results from:",
+         choices = c(
+           "Random sample of MSEs reviewed for future Cummings et. al. Publication"="pub",
+           "MSE included climate change as a driver"="CC",
+           "All MSEs (entered in the database to date)"="all"),
+         width='400px'),
+        textOutput("radio")
+       )
+      ),
+      hr(),
+      h5("Where have management strategy evaluations occurred?"),
+      plotOutput("mse.map",
+        brush = brushOpts(id = "map_brush"),
+        hover = hoverOpts("map_hover")
+      ),
+      p("Figure 1. Map of MSE locations. Points represent the approximate 
+        center point of the fishery the MSE evaluated."),
+      p("Hovering over a point on the map will give the associated citation below, 
+        while selecting an area will give all citations in the 'brushed' map area."),
+      fluidRow(
+        column(width = 6,
+          h4("Hovered points"),
+          tableOutput("hover")
+        ),
+        column(width = 6,
+          h4("Brushed points"),
+          tableOutput("brush")
+        )
+      )
+    ),
+    #### Tab 2: Results - Figures ####
+    tabPanel("Results - Figures", 
              h1("An Assessment of Management Strategy Evaluations"),# title of the page
+             h2("MSE literature review results - Figures"),
              hr(),
-             h4("Background"),
-             p("Fisheries management has mostly focused on fishing impacts
-               with ecosystem status viewed as a background constant."),
-             p("The increasing rate of climate change is changing this
-               dynamic, bringing ecosystem status to the forefront of fisheries
-               management."),
-             p("Management strategy evaluation (MSE) is 'widely considered to
-               be the most appropriate way to evaluate the trade‐offs achieved by
-               alternative management strategies and to assess the consequences of
-               uncertainty for achieving management goals' (Punt et al. 2014). Thus,
-               MSE is a compelling tool to assess climate change impacts and test
-               climate-ready options for fisheries management decisions Adaptive
-               management arose to address uncertainties and accelerate progress
-               towards meeting management objectives. We used the structured decision
-               making (SDM) process - the decision making framework in which adaptive
-               management occurs - as our framework, how do published MSE projects
-               utilize standard SDM components and support learning within the MSE
-               practitioner community?"),
-             imageOutput("imageSDM",
-                         width=400,
-                         height=275),
-             p(em("Structured Decision Making Process")),
-             h4("MSE Review Methods"),
-             p("We conducted our search for MSEs in the SCI-EXPANDED index from
-               Web of Science, searching for “management strategy evaluation” by topic
-               across all years on January 8th, 2019. This search returned 253
-               results. We reviewed a random sample of 30 articles that document a
-               MSE, removing articles that were reviews, meta-analyses, or simply
-               cited other MSE articles from our sample. Of the 253 articles, 11
-               included climate change as a driver of fishery status, and after
-               removing other articles we estimate ~140 articles document a MSE."),
-             fluidRow(
-               column(width = 4,
-                      tableOutput("MSEcounts")
-               ),
-               column(width = 8,
-                      radioButtons("data_filter",
-                                   "Show results from:",
-                                   choices = c(
-                                     "MSEs reviewed for Cummings et. al. Publication"="pub",
-                                     "MSE included climate change as a driver"="CC",
-                                     "All MSEs"="all"),
-                                   width='400px'),
-                      textOutput("radio")
-               )
-             ),
-             hr(),
-             plotOutput("mse.map",
-                        brush = brushOpts(id = "map_brush"),
-                        hover = hoverOpts("map_hover")
-                        ),
-             p("Figure 1. Map of MSE locations. Points represent the approximate 
-               center point of the fishery the MSE evaluated."),
-             hr(),
-             p("Hovering over a point will give the associated citation below, 
-                while selected an area will give all citations in the 'brushed' area."),
-             fluidRow(
-               column(width = 6,
-                      h4("Hovered points"),
-                      tableOutput("hover")
-               ),
-               column(width = 6,
-                      h4("Brushed points"),
-                      tableOutput("brush")
-               )
-             )
-             ),
-    #### Tab 2: Results - Plots ####
-    tabPanel("Results - Plots", 
-             headerPanel("An Assessment of Management Strategy Evaluations"),# title of the page
-             h2("MSE literature review results"),
-             hr(),
-             plotOutput("Freq.plot"),
+             h5("Are structured decision making steps explicit in MSEs?"),
+             plotOutput("Freq.plot",height="100%"),
              p("Figure 2. Percentage of MSEs that included: "),
-             p("'Decision' - Documentation of the alternative selected and implemented as the management procedure going forward,"),
-             p("'Objectives' - Explicit documentation of the process used to produce objectives and performance metrics to evaluate the management procedures,"),
-             p("'Open Meetings' - Meetings open to the public or those outside of the MSE participants,"),
-             p("'Problem' - Explicit documentation of the problem the MSE is attempting to address,"),
-             p("'Process' - Explicit documentation of the decision making process used to conduct the MSE,"),
-             p("'Roles' - Explicit documentation of the MSE participants roles,"),
-             p("'Tradeoffs' - Explicit documentation of the tradeoff evaluation process."),
-             plotOutput("part.plot"),
+             p(strong("Process")," - Explicit documentation of the decision making process used to conduct the MSE,",
+              strong("Problem")," - Explicit documentation of the problem the MSE is attempting to address,",
+              strong("Objectives")," - Explicit documentation of the process used to produce objectives and performance metrics to evaluate the management procedures,",
+              strong("Tradeoffs")," - Explicit documentation of the tradeoff evaluation process,",
+              strong("Decision")," - Documentation of the alternative selected and implemented as the management procedure going forward,",
+              strong("Roles")," - Explicit documentation of the MSE participants roles,",
+              strong("Open Meetings")," - Meetings open to the public or those outside of the MSE participants,",
+              strong("Adopted")," - Explicit documentation of decision makers implementing the results of the MSE."),
+             h5("Who is involved, and participates in, MSEs?"),
+             plotOutput("part.plot",height="100%"),
              p("Figure 3. Participation at different stages of the MSE process")
              ),
     #### Tab 3: Results - Tables ####
@@ -396,12 +404,11 @@ server <- function(input, output, session) {   # code to create output using ren
     mutate(order = row_number())
   })
    
- 
-  part.data_table<-reactive({part.data_reviewed5() %>%
-    as_tibble() %>%
-    select(Stage,Participants,Number) %>%
+   part.data_table<-reactive({part.data_reviewed5() %>%
+    as_tibble()  %>% 
+    select(Stage,Participants,Number)  %>% 
     rename("Participant Group"="Participants") %>%
-    spread(Stage,Number,fill=0)
+    spread(Stage,Number,fill=0) 
   })
 
   # What drivers are considered
@@ -413,20 +420,20 @@ server <- function(input, output, session) {   # code to create output using ren
     plyr::ldply(data.frame) %>%
     select(Var1,Freq) %>%
     rename("Driver"="Var1","Frequency"="Freq") %>%
-    mutate(Percent=Frequency/n_mse()*100) %>%
+    mutate(Percent=round(Frequency/n_mse()*100,0)) %>%
     arrange(desc(Frequency))
   })
 
   # What Objective types are considered
   objcat.data<-reactive({data_reviewed() %>%
     select(ObjectiveCategories) %>%
-    purrr::map(~ strsplit(as.character(.),split=",")) %>%
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
     purrr::map(unlist) %>%
     purrr::map(table) %>%
     plyr::ldply(data.frame) %>%
     select(Var1,Freq) %>%
     rename("Objective Category"="Var1","Frequency"="Freq") %>%
-    mutate(Percent=Frequency/n_mse()*100) %>%
+    mutate(Percent=round(Frequency/n_mse()*100,0)) %>%
     arrange(desc(Frequency))
   })
 
@@ -446,8 +453,8 @@ server <- function(input, output, session) {   # code to create output using ren
   obj.data_table1 <- reactive({neworder <- c("ObjCategory","ObjType","ObjDirection","ObjScale")
     newlabels <- c("Category","Type","Direction","Scale")
     obj.data3() %>%
-    mutate(Percent=Number/nrow(obj.data)*100) %>%
-    mutate('Per MSE'=Number/n_mse()) %>%
+    mutate(Percent=sprintf("%.0f",round(Number/nrow(obj.data)*100,0))) %>%
+    mutate('Per MSE'=sprintf("%.2f",round(Number/n_mse(),2))) %>%
     mutate(Objective=factor(Objective,levels=neworder,labels=newlabels))
   })
 
@@ -463,14 +470,16 @@ server <- function(input, output, session) {   # code to create output using ren
   # What Alternative types are considered
   altcat.data<-reactive({data_reviewed() %>%
     select(ManagementType) %>%
-    purrr::map(~ strsplit(as.character(.),split=",")) %>%
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(unlist) %>%
+    purrr::map(~ strsplit(as.character(.),split=",")) %>% 
     purrr::map(unlist) %>%
     purrr::map(table) %>%
     plyr::ldply(data.frame) %>%
     select(Var1,Freq) %>%
     rename("Management Type"="Var1","Number"="Freq") %>%
-    mutate(Percent=Number/n_mse()*100) %>%
-    mutate('Per MSE'=Number/n_mse()) %>%
+    mutate(Percent=sprintf("%.0f",round(Number/n_mse()*100,0))) %>%
+    mutate('Per MSE'=sprintf("%.2f",round(Number/n_mse(),2))) %>%
     arrange(desc(Number))
   })
 
@@ -511,31 +520,33 @@ server <- function(input, output, session) {   # code to create output using ren
           limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
                    "Objectives","Problem","Process"), 
           labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-                   "Objectives","Problem","Process"))
-  })
+                   "Objectives","Problem","Process")) +
+      theme(text = element_text(size=18))
+  },height=300,width=600)
   output$part.plot <- renderPlot({
     ggplot(part.data_reviewed5(),aes(x=order,y=Percent)) +
-      facet_wrap(~Stage,scale="free") + geom_col() +  
+      facet_wrap(~Stage,scale="free",ncol=2) + geom_col(width=0.8) +  
       scale_x_continuous(
         breaks = part.data_reviewed5()$order,
         labels = part.data_reviewed5()$Participants,
         expand = c(0,0)
       )+scale_y_continuous(limits=c(0,100)) +
-      ylab("Percent")+coord_flip()
-  })
+      ylab("Percent")+coord_flip()+xlab(NULL) +
+      theme(text = element_text(size=18))
+  },height=600)
   # Tab 3 - Results - tables
   output$MSE.freq <- renderTable({
     freq.data()
-  })
+  },digits=0)
   output$MSE.part <- renderTable({
     part.data_table()
-  })
+  },digits=0)
   output$MSE.drive <- renderTable({
     drive.data()
-  })
+  },digits=0)
   output$MSE.objcat <- renderTable({
     objcat.data()
-  })
+  },digits=0)
   output$MSE.obj <- renderTable({
     obj.data_table1()
   })
@@ -549,9 +560,12 @@ server <- function(input, output, session) {   # code to create output using ren
   output$MSE.Table <- DT::renderDataTable({
     data_reviewed()
   },  options = list(autoWidth = TRUE,
-                     columnDefs = list(list(width = '600px', targets = targets)),
-                     scrollX=TRUE
-                     )
+                     columnDefs = list(list(width = '1125px', targets = targetsC), # comments, ProblemDefinition
+                                       list(width = '700px', targets = targetsAE), # AlternativesEvaluated, FullCitation
+                                       list(width = '500px', targets = targetsSp),
+                                       list(width = '250px', targets = targetsSy),
+                                       list(width = '75px', targets = targetsL)),
+                     scrollX=TRUE)
   )
   output$MSE.Obj.Table <- DT::renderDataTable({
     obj.data
@@ -561,13 +575,16 @@ server <- function(input, output, session) {   # code to create output using ren
       select(-Order)
     mse.fields
   })
-    # Tab 5
+  # Tab 5
   output$MSE.summary <- DT::renderDataTable({
     arrange(summary.data(),Citation)
   })
   output$MSE.problem <- DT::renderDataTable({
     arrange(prob.data(),Citation)
-  })
+  }, options = list(autoWidth = TRUE,
+                    columnDefs = list(list(width = '800px', targets = targetsPD)), # comments, ProblemDefinition
+                    scrollX=TRUE)
+  )
   # Tab 6
   output$imageSDM<-renderImage({
     filename<-normalizePath(file.path('./www',paste("SDMprocess.png")))
@@ -575,8 +592,8 @@ server <- function(input, output, session) {   # code to create output using ren
          width=400,
          height=275)},deleteFile = FALSE)
   output$MSEcounts <- renderTable({
-    data_frame("MSE type"=c("Published (estimated)","Random Sample","Climate Change"),
-               "Count"=c(140,30,11))
+    tibble("MSE type"=c("Published (estimated)","Random Sample","Climate Change"),
+               "Count"=c(142,30,11))
 })
 }
 
