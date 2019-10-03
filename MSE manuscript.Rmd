@@ -378,7 +378,10 @@ altcat.data_CC<-alt.data_CC %>%
 
 # Get map background for plotting the map
 world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
+```
+text
 
+```{r plots}
 # Where MSEs have occured
 map.data<-rbind(data_pub,data_CC) %>%
   select(map.col) %>%
@@ -478,15 +481,12 @@ Part.plot<-ggplot(part.data_pub,aes(x=order,y=Percent)) +
   scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
   ylab("Percent")+xlab(NULL)+coord_flip() + theme_bw()
 
-Driver.plot<-ggplot(drive.data,aes(x=order,y=Percent,fill=Analysis)) +
-  geom_col(position="dodge") +
-  scale_fill_manual(values=c("#66CCCC","#006666")) +
-  scale_x_continuous(breaks = drive.data$order,
-                     labels = drive.data$Driver)+
+Driver.plot<-ggplot(drive.data_pub,aes(x=order,y=Percent)) +
+  geom_col() +
+  scale_x_continuous(breaks = drive.data_pub$order,
+                     labels = drive.data_pub$Driver)+
   scale_y_continuous(limits=c(0,100),expand = c(0,0))+
-  ylab("Percent")+xlab(NULL)+coord_flip() +
-  guides(fill = guide_legend(reverse=T)) + theme_bw() +
-  theme(legend.position = c(0.825,0.075),legend.title = element_blank())
+  ylab("Percent")+xlab(NULL)+coord_flip()+ theme_bw()
 ```
 
 # Introduction
@@ -522,7 +522,7 @@ Methods for scoring the documentation.
 
 # Results
 ## Are structured decision making steps explicit in MSEs?
-The majority of MSEs did not explicitly document how the stages of the MSE process -- defined using the SDM framework -- were completed (Table \@ref(tab:explicit)).  The most documented stage was the alternative stage, while 3 of the 30 studies explicitly documented a tradeoff analysis and 2 of the 30 documented a management decision.
+The majority of MSEs did not explicitly document how the stages of the MSE process -- defined using the SDM framework -- were completed (Table \@ref(tab:explicit)).  The most documented stage was the alternative stage, while 3 of the 30 MSEs explicitly documented a tradeoff analysis and 2 of the 30 documented a management decision. One of the 30 documented either the roles of participants in the MSE process or that the results of the MSE were adopted.
 
 ```{r explicit}
 freq.data_pub %>%
@@ -537,44 +537,44 @@ The primary participants and leaders of the MSE processes were scientists, with 
 Part.plot
 ```
 
+### What questions and management objectives do MSEs address?
+Uncertainty in system parameters was the main driver of the system state, but a variety of drivers were considered across the random sample of MSEs (Figure \@ref(fig:driversPlot)).
+
+```{r driversPlot}
+drive.data_pub %>%
+  mutate("Percent"=round(Percent,0)) %>% 
+  select(Driver,Percent,Frequency) %>% 
+  kable(align = "c", caption = "Prevalence of Explicit Documentation of stages in the MSE process")
+```
+
+More objectives were considered per MSE in the random sample than in the climate change MSEs (Table \@ref(tab:PerMSE)).  Climate change MSEs were less likely to consider economic and social objectives than the random sample (Table \@ref(tab:objectiveCategories)).
+
+```{r, PerMSE}
+color_Pub <- which(per.MSE$Analysis=='Random Sample')
+color_CC <- which(per.MSE$Analysis=='Climate Change')
+
+per.MSE %>%
+  kable(align = "c", caption = "Number of objectives considered per management strategy evaluation") %>%
+  row_spec(color_CC, color = "#66CCCC", background = "white") %>%
+  row_spec(color_Pub, color = "#006666", background = "white")
+```
+
+```{r, objectiveCategories}
+color_Pub <- which(objcat.data$Analysis=='Random Sample')
+color_CC <- which(objcat.data$Analysis=='Climate Change')
+
+objcat.data %>%
+  kable(align = "c", caption = "Objective categories considered in management strategy evaluations") %>%
+  row_spec(color_CC, color = "#66CCCC", background = "white") %>%
+  row_spec(color_Pub, color = "#006666", background = "white")
+```
+
 <!-- ### Where have climate change MSEs occurred? -->
 <!-- To date MSEs modeling climate change have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)). -->
 
 <!-- ```{r, mapfigure, fig.cap='Map of MSE study locations.', fig.height=4, out.width="100%"} -->
 <!-- MSE.map + -->
 <!--   theme(text = element_text(size=14)) -->
-<!-- ``` -->
-
-
-
-<!-- ### What questions and management objectives do MSEs address? -->
-<!-- Uncertainty in system parameters was the main driver of the system state, but a variety of drivers were considered across the random sample of MSEs (Figure \@ref(fig:driversPlot)). -->
-
-<!-- ```{r driversPlot, fig.cap='Drivers included in MSE models', fig.height=6, out.width="100%"} -->
-<!-- Driver.plot + -->
-<!--   theme(text = element_text(size=14)) -->
-<!-- ``` -->
-
-<!-- More objectives were considered per MSE in the random sample than in the climate change MSEs (Table \@ref(tab:PerMSE)).  Climate change MSEs were less likely to consider economic and social objectives than the random sample (Table \@ref(tab:objectiveCategories)). -->
-
-<!-- ```{r, PerMSE} -->
-<!-- color_Pub <- which(per.MSE$Analysis=='Random Sample') -->
-<!-- color_CC <- which(per.MSE$Analysis=='Climate Change') -->
-
-<!-- per.MSE %>% -->
-<!--   kable(align = "c", caption = "Number of objectives considered per management strategy evaluation") %>%   -->
-<!--   row_spec(color_CC, color = "#66CCCC", background = "white") %>% -->
-<!--   row_spec(color_Pub, color = "#006666", background = "white") -->
-<!-- ``` -->
-
-<!-- ```{r, objectiveCategories} -->
-<!-- color_Pub <- which(objcat.data$Analysis=='Random Sample') -->
-<!-- color_CC <- which(objcat.data$Analysis=='Climate Change') -->
-
-<!-- objcat.data %>% -->
-<!--   kable(align = "c", caption = "Objective categories considered in management strategy evaluations") %>% -->
-<!--   row_spec(color_CC, color = "#66CCCC", background = "white") %>% -->
-<!--   row_spec(color_Pub, color = "#006666", background = "white") -->
 <!-- ``` -->
 
 ### Main Conclusions
@@ -662,38 +662,6 @@ There are a lot of cheatsheets and reference guides for Markdown (e.g. [Adam Pri
 
 ```markdown
 
-# Introduction
-
-**Lorem ipsum** dolor *sit amet*. 
-
-- Single asterisks italicize text *like this*. 
-- Double asterisks embolden text **like this**.
-
-Start a new paragraph with a blank line separating paragraphs.
-
-- This will start an unordered list environment, and this will be the first item.
-- This will be a second item.
-- A third item.
-    - Four spaces and a dash create a sublist and this item in it.
-- The fourth item.
-    
-1. This starts a numerical list.
-2. This is no. 2 in the numerical list.
-    
-# This Starts A New Section
-## This is a Subsection
-### This is a Subsubsection
-#### This starts a Paragraph Block.
-
-> This will create a block quote, if you want one.
-Want a table? This will create one.
-
-Table Header  | Second Header
-------------- | -------------
-Table Cell    | Cell 2
-Cell 3        | Cell 4 
-
-Note that the separators *do not* have to be aligned.
 
 Want an image? This will do it.
 
@@ -701,12 +669,6 @@ Want an image? This will do it.
 
 `fig_caption: yes` will provide a caption. Put that in the YAML metadata.
 
-Almost forgot about creating a footnote.[^1] This will do it again.[^2]
-
-[^1]: The first footnote
-[^2]: The second footnote
-
-Want to cite something? 
 
 - Find your biblatexkey in your bib file.
 - Put an @ before it, like @smith1984, or whatever it is.
