@@ -40,6 +40,8 @@ getSqlConnection <- function(){
 # Open connection
 con <- getSqlConnection()
 
+# load("C:/Users/jcummings/OneDrive - UMASS Dartmouth/SMAST/Research/MSE Problem Framing/MSEreview/MSEreview.RData")
+
 # Obtain data tables
 study<-dbReadTable(con,"tblStudy")
 # study<-read_xlsx("DB files - Excel/tblStudy.xlsx")
@@ -392,8 +394,26 @@ part.data_CC<-mutate(part.data_CC,Analysis="Climate Change")
 part.data<-rbind(part.data_pub,part.data_CC) %>% 
   arrange(Stage, Percent) %>% 
   mutate(order = row_number())
-part.data$order<-c(1,2,3,3,4,4,5,6,7,8,6,9,10,8,9,11,12,10,13,12,13,14,14,15,16,17,18,19,20,16,17,18,20,21,22,23,24,25,21,23,
-                   26,25,26,27,27,28,29,30,31,29,32,30,33,32,33,34,35,36,37,38,39,39)
+part.data$order<-c(1,2,3,3,4,4,5,6,7,8,6,9,10,8,9,11,12,10,13,12,13,14,14,15,16,17,18,19,20,
+                   16,17,18,20,21,22,23,24,25,21,23,26,25,26,27,27,28,29,30,31,29,32,30,33,
+                   32,33,34,35,36,37,38,39,39)
+
+# part.data<-rbind(part.data,c('Process','Government',1,1,1,'Climate Change'),
+#                  c('Process','Management',1,1,2,'Climate Change'),
+#                  c('Participants','Analysts',1,1,5,'Climate Change'),
+#                  c('Participants','Decision Makers',1,1,11,'Climate Change'),
+#                  c('Participants','Public',1,1,7,'Climate Change'),
+#                  c('Explicit Objectives Process','Analysts',1,1,15,'Climate Change'),
+#                  c('Explicit Objectives Process','Independent',1,1,19,'Publication'),
+#                  c('Subjective Objectives Process','Experts',1,1,24,'Publication'),
+#                  c('Subjective Objectives Process','Independent',1,1,22,'Climate Change'),
+#                  c('Explicit Alternatives Process','Analysts',1,1,28,'Climate Change'),
+#                  c('Explicit Alternatives Process','Independent',1,1,31,'Publication'),
+#                  c('Subjective Alternatives Process','Management',1,1,37,'Climate Change'),
+#                  c('Subjective Alternatives Process','Unknown',1,1,35,'Publication'),
+#                  c('Subjective Alternatives Process','Experts',1,1,36,'Climate Change'),
+#                  c('Subjective Alternatives Process','Fishery',1,1,38,'Climate Change'),
+#                  c('Subjective Alternatives Process','Independent',1,1,34,'Climate Change'))
 
 ##### Data Analysis Outputs #####
 # number of climate change MSE articles
@@ -452,7 +472,7 @@ Part.plot_CC<-ggplot(part.data_CC,aes(x=order,y=Percent)) +
 
 Part.plot<-ggplot(part.data,aes(x=order,y=Percent,fill=Analysis)) +
   facet_wrap(~Stage,scale="free",ncol=2) + geom_col(position="dodge") +  
-  scale_fill_manual(values=c("#FF0033","#0000FF")) +
+  scale_fill_manual(values=c("#FF0033","#0000FF"))+
   scale_x_continuous(breaks = part.data$order,
                      labels = part.data$Participants)+
   scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
@@ -478,17 +498,39 @@ as_tibble(obj.dataTable_CC)
 as_tibble(altcat.data_pub)
 as_tibble(altcat.data_CC)
 
-devtools::install_github("odeleongt/postr")
-library(postr)
-
-devtools::install_github("brentthorne/posterdown")
-library(posterdown)
-
-##### Example SQL update and select syntax #####
-dbExecute(con, "UPDATE tblStudyObjectives 
-  SET ObjDirection = 'Constraint', ObjMetric = 'SB(y)/SB(0)'
-  WHERE ID = 51")
-
-dbExecute(con, "DELETE FROM tblStudyManagement")
+# devtools::install_github("odeleongt/postr")
+# library(postr)
 # 
-dbGetQuery(con, "SELECT * FROM tblStudyObjectives WHERE ID = 51")
+# devtools::install_github("brentthorne/posterdown")
+# library(posterdown)
+# 
+# ##### Example SQL update and select syntax #####
+# dbExecute(con, "UPDATE tblStudyObjectives 
+#   SET ObjDirection = 'Constraint', ObjMetric = 'SB(y)/SB(0)'
+#   WHERE ID = 51")
+# 
+# dbExecute(con, "DELETE FROM tblStudyManagement")
+# # 
+# dbGetQuery(con, "SELECT * FROM tblStudyObjectives WHERE ID = 51")
+# 
+# obj.dataTable_pub<-mutate(obj.dataTable_pub,Analysis="Reviewed") %>% 
+#   mutate(Percent=round(Percent,0))
+# obj.dataTable_CC<-mutate(obj.dataTable_CC,Analysis="Climate Change")%>% 
+#   mutate(Percent=round(Percent,0))
+# obj.dataTable<-rbind(obj.dataTable_pub,obj.dataTable_CC) %>% 
+#   filter(Objective=="Category") %>%
+#   group_by(Analysis) %>% 
+#   summarise('AVG'=sum(Number)) %>% 
+#   mutate(count=c(11,30)) %>% 
+#   mutate('Per MSE'=AVG/count)
+# 
+# alt.dataTable_pub<-mutate(alt.dataTable_pub,Analysis="Reviewed") %>% 
+#   mutate(Percent=round(Percent,0))
+# alt.dataTable_CC<-mutate(alt.dataTable_CC,Analysis="Climate Change")%>% 
+#   mutate(Percent=round(Percent,0))
+# alt.dataTable<-rbind(alt.dataTable_pub,alt.dataTable_CC) %>% 
+#   filter(Objective=="Category") %>%
+#   group_by(Analysis) %>% 
+#   summarise('AVG'=sum(Number)) %>% 
+#   mutate(count=c(11,30)) %>% 
+#   mutate('Per MSE'=AVG/count)
