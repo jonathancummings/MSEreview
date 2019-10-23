@@ -198,7 +198,7 @@ ui <- fluidPage(
       imageOutput("imageSDM",
                    width=400,
                    height=275),
-      p(em("Structured Decision Making Process")),
+      p(em("Structured Decision Making process used as review framework")),
       h4("MSE Review Methods"),
       p("We conducted our search for MSEs in the SCI-EXPANDED index from
        Web of Science, searching for “management strategy evaluation” by topic
@@ -587,7 +587,7 @@ server <- function(input, output, session) {   # code to create output using ren
   )
   # Tab 6
   output$imageSDM<-renderImage({
-    filename<-normalizePath(file.path('./www',paste("SDMprocess.png")))
+    filename<-normalizePath(file.path('./www',paste("SDMProcessFramework.png")))
     list(src=filename,
          width=400,
          height=275)},deleteFile = FALSE)
