@@ -178,18 +178,17 @@ ui <- fluidPage(
       h1("An Assessment of Management Strategy Evaluations"),# title of the page
       hr(),
       h4("Background"),
-      p("Fisheries management has mostly focused on fishing impacts
-      with ecosystem status viewed as a background constant."),
-      p("The increasing rate of climate change is changing this
-      dynamic, bringing ecosystem status to the forefront of fisheries
-      management."),
-      p("Management strategy evaluation (MSE) is 'widely considered to
+      p("The calls for fisheries management to utilize management strategy
+      evaluation are both aspirational and estimable in their aim and vision.
+      Management strategy evaluation (MSE) is 'widely considered to
       be the most appropriate way to evaluate the trade‐offs achieved by
       alternative management strategies and to assess the consequences of
       uncertainty for achieving management goals' (Punt et al. 2014). Thus,
-      MSE is a compelling tool to assess climate change impacts and test
-      climate-ready options for fisheries management decisions Adaptive
-      management arose to address uncertainties and accelerate progress
+      MSE is a compelling tool to assess fisheries management procedures.  For
+      example, in our changing oceans and increasing climate change impacts MSE
+      can evaluate climate-ready options for fisheries management decisions.
+
+      Adaptive management arose to address uncertainties and accelerate progress
       towards meeting management objectives. We used the structured decision
       making (SDM) process - the decision making framework in which adaptive
       management occurs - as our framework, how do published MSE projects
@@ -592,8 +591,8 @@ server <- function(input, output, session) {   # code to create output using ren
          width=400,
          height=275)},deleteFile = FALSE)
   output$MSEcounts <- renderTable({
-    tibble("MSE type"=c("Published (estimated)","Random Sample","Climate Change"),
-               "Count"=c(142,30,11))
+    tibble("MSE type"=c("Published","Random Sample","Climate Change"),
+               "Count"=c(151,30,11))
 })
 }
 

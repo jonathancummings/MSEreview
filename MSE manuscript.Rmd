@@ -522,7 +522,7 @@ We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, 
 
 | MSE type | Count |
 |:--:|:--:|
-| Published | 150 |
+| Published | 151 |
 | Random Sample | 30 |
 | Climate Change | 11 |  
 *Estimated by extrapolating from the assessed MSEs to the full set for now, the submission will contain an final count.
