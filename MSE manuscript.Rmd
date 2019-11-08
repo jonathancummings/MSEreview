@@ -8,9 +8,11 @@ author:
 output:
   bookdown::html_document2:
     number_sections: false
+  bookdown::word_document2:
   bookdown::pdf_document2:
     number_sections: false
-biblio-style: apsr
+always_allow_html: yes
+biblio-style: apalike
 endnote: no
 fontfamily: mathpazo
 fontsize: 11pt
@@ -498,14 +500,14 @@ Driver.plot<-ggplot(drive.data_pub,aes(x=order,y=Percent)) +
 ```
 
 # Introduction 
-The calls for fisheries management to utilize management strategy evaluation and adaptive management have been both aspirational and estimable in their aim and vision. For example, management strategy evaluation (MSE) is "widely considered to be the most appropriate way to evaluate the trade‐offs achieved by alternative management strategies and to assess the consequences of uncertainty for achieving management goals” [@Punt]. The positive aspects of MSE that have been listed include that it is “A tool that scientists and managers can use to simulate the workings of a fisheries system and allow them to test whether potential harvest strategies—or management procedures— can achieve pre-agreed management objectives.”[@Pew], that it “can be used to identify a ‘best’ management strategy among a set of candidate strategies" [@PuntLab] and “MSE has the advantage of being able to reveal the trade-offs among a range of possible management decisions, and should assist our Commissioners in determining whether the objectives should be weighted differently. Specifically, to provide the information on which to base a rational decision, given objectives, preferences, and attitudes to risk.”  – International Pacific Halibut Commission  Based on these descriptions MSE is a compelling tool to support and improve fisheries management decisions.
+The calls for fisheries management to utilize management strategy evaluation and adaptive management have been both aspirational and estimable in their aim and vision. For example, management strategy evaluation (MSE) is "widely considered to be the most appropriate way to evaluate the trade‐offs achieved by alternative management strategies and to assess the consequences of uncertainty for achieving management goals” [@Punt]. The positive aspects of MSE that have been listed include that it is “A tool that scientists and managers can use to simulate the workings of a fisheries system and allow them to test whether potential harvest strategies—or management procedures— can achieve pre-agreed management objectives.”[@Pew], that it “can be used to identify a ‘best’ management strategy among a set of candidate strategies" [@PuntLab] and “MSE has the advantage of being able to reveal the trade-offs among a range of possible management decisions, and should assist our Commissioners in determining whether the objectives should be weighted differently. Specifically, to provide the information on which to base a rational decision, given objectives, preferences, and attitudes to risk.”  [@IPHC].  Based on these descriptions MSE is a compelling tool to support and improve fisheries management decisions.
 
 In terms of the MSE process, it is described as being "at the interface between science and policy.” [@PuntLab] and being an “Undertaking [that] requires scientists, managers, and stakeholders to be involved throughout the process." [@IPHC] The International Pacific Halibut Commission (2017) also states, "While the scientists do the modelling, managers must offer extensive input. Because of the many steps and the iterative process, communication among parties is critical for achieving buy-in on the results of the management strategy evaluation.”
 
-Adaptive management developed in fisheries management as a means to improve the achievement of objectives through time, when learning can aid achieving those objectives.  For example, the Millennium Ecosystem Assessment (2005) defines adaptive management as “A systematic process for continually improving management policies and practices by learning from the outcomes of previously employed policies and practices. In active adaptive management, management is treated as a deliberate experiment for purposes of learning.” We contend that scientific publication is essentially a process intended to support adaptive management, in that researchers gain knowledge from the decisions made and outcomes produced by previous work to inform their decisions.
+Adaptive management developed in fisheries management as a means to improve the achievement of objectives through time, when learning can aid achieving those objectives [@ADM].  For example, the Millennium Ecosystem Assessment [-@MEA] defines adaptive management as “A systematic process for continually improving management policies and practices by learning from the outcomes of previously employed policies and practices. In active adaptive management, management is treated as a deliberate experiment for purposes of learning.” We contend that scientific publication is essentially a process intended to support adaptive management, in that researchers gain knowledge from the decisions made and outcomes produced by previous work to inform their decisions.  In the case of fisheries management, are scientific publications of management strategy evaluations supporting adaptive management?
 
 ### Objectives 
-Our overall objectives is to understanding of how MSEs utilize standard components of decision making processes and to what extent their documentation can support learning within the MSE practitioner community?  Given that scientific publication is the primary means of communicating the results of MSE, we review the scientific literature to assess the extent to which the process and aims of MSE, and adaptive management are being achieved and supported by the scientific literature. We use the structured decision making (SDM) process [@SDM] -- the decision making framework in which adaptive management occurs -- as our framework for evaluation.  Using this framework we review published MSEs to:  
+Our overall objectives is to determine the extent that MSE documentation can support learning within the MSE practitioner community?  Given that scientific publication is the primary means of communicating the results of MSE, we review the scientific literature to assess the extent to which the process and aims of MSE, and adaptive management are being achieved and supported by the scientific literature. To assess this we determine how MSEs utilize standard components of decision making processes. We use the structured decision making (SDM) process [@SDM] -- the decision making framework in which adaptive management occurs -- as our framework for evaluation.  Using this framework we review published MSEs to:  
 
 * Determine what questions MSE processes are addressing
 * Identify the objectives and alternatives considered in MSE
@@ -520,22 +522,29 @@ We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, 
 
 | MSE type | Count |
 |:--:|:--:|
-| Published (estimated*) | ~142 |
+| Published | 150 |
 | Random Sample | 30 |
 | Climate Change | 11 |  
+*Estimated by extrapolating from the assessed MSEs to the full set for now, the submission will contain an final count.
 
 ## Reviewing MSE documentation 
-We used the structured decision making framework as our framework for evaluating management strategy evaluation documents. [insert sdm figure]. For ease of presentation we present the review methodology and results in four groups: consequences, objectives, stages, and process.
+We used the structured decision making framework [@conroy2013decision; @gregory2012structured] as our framework for evaluating management strategy evaluation documents (Figure \@ref(fig:SDMfigure)). The structured decision making processes is composed of the six process stages: problem definition, objective elicitation, alternative development, consequence prediction, trade-off analysis, and decision implementation. 
 
-In the consequence group we report the drivers included as the primary factors influencing the predictions produced by the MSE model and report how the consequence predictions were made. The information reported here addresses what question the MSE was designed to address, and how it was addressed.
+```{r, SDMfigure, fig.cap='Review framework - structured decision making process'}
+knitr::include_graphics('figs/SDMProcessFramework.png')
+```
 
-In the objectives group we report the category of objectives considered in the MSE, and what type of objectives were considered.  We noted four types of objectives: strategic objectives regarding the overall mission of the system in which the decision evaluated by the MSE falls, process objectives addressing how the management decision addressed by the MSE would be made, fundamental objectives addressing the goals of the management decision, and means objectives addressing means to achieving fundamental objectives of the management decision.
+We present the review methodology and results in four groups: consequences - which focuses on what was considered during the prediction stage, objectives - which focuses on what categories of objectives were considered, stages - which focuses on whether and how the stages of the process were completed, and participants - which focuses on how participation in the process was structured.  These results were entered into a relational database for storage and evaluation, and is available via our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
 
-In the stages group we report whether the stages (Problem, Objectives, Alternatives, Consequences, Trade-offs, and Decision) of the structured decision making framework were explicitly completed and documented.  We also report whether the MSE results were adopted in subsequent management.  In many cases the process used to elicit objectives and alternatives was not explicit, but some information is provided or can be gleaned about who participated in the production of those components of the MSE.  In those cases we record and report who those participants were, referring to them as subjective participants in the objectives or alternatives process.
+The consequence group addresses what question the MSE was designed to address, and how it was addressed. We report the drivers included as the primary factors influencing the predictions produced by the MSE model, listing each driver a MSE included. We also report how the consequence predictions were made, with possible values of simulation modeling, dynamic programming, expert elicitation, mental models, and unknown.
 
-In the process group we report who lead the MSE, who participated in it, if the roles of participants were established and documented.
+In the objectives group we address what the concerns, or goals of the MSE were.  We record each objective considered, and report the type and category of objectives included in each MSE. Natural resource management problems typically include four types of objectives: conservation, resource use, i.e., yield in the fisheries context, economic, and social objectives [@runge2013]. We sort objectives into four types: strategic objectives - which are concerned with the overall mission of the system in which the decision evaluated by the MSE falls, process objectives - which are concerned with how the management decision addressed by the MSE would be made, fundamental objectives - which address the goals of the management decision, and means objectives - which address means to achieving the fundamental objectives of the management decision.  
 
-We collected additional information about the MSEs we reviewed. For a full description of the information recorded in database columns for this MSE review see the supplemental information (supplement), and for the full results see our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
+In the stages group we address how the MSE stages were completed. We report whether the stages of the structured decision making framework were explicitly completed and documented.  We also report whether the MSE results were adopted in subsequent management.
+
+In the participant group we address how participation in the MSE process was structured and who participated. We report who lead the MSE, who participated in it, and if the roles of participants were established and documented.  In many cases the process used to elicit objectives and alternatives was not explicit.  In these cases we used what information was provided to glean who participated in the production of those components of the MSE.  We record and report who those participants were, referring to them as subjective participants in the objectives or alternatives process.  In other cases where there was not enough information to glean who participated we report the participants as unknown.  
+
+We collected additional information about the MSEs we reviewed beyond what is reported here. For a full description of the information recorded in the relational database see the supplemental information (supplement), and for the full data set and results see our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
 
 # Results 
 ### What questions and management objectives do MSEs address? 
@@ -558,9 +567,17 @@ objcat.data_pub %>%
   kable_styling()
 ```
 <br>
+No strategic or process objectives were documented in the MSEs we reviewed.  There were roughly the same number of fundamental and means included in the MSEs (Table \@ref(tab:objectiveTypes)).
+```{r, objectiveTypes}
+obj.dataTable_pub %>%
+  filter(Objective=="Type") %>%
+  select(-Analysis, -Objective) %>% 
+  kable(caption = "Objective Types") %>% 
+  kable_styling()
+```
 
 ## Are structured decision making steps explicit in MSEs? 
-The majority of MSEs did not explicitly document how the stages of the MSE process -- defined using the SDM framework -- were completed (Table \@ref(tab:explicit)).  The most documented stage was the alternative stage with 6 MSEs documenting this stage of the process. Three of the 30 MSEs explicitly documented a trade-off analysis and 2 of the 30 documented a management decision. One of the 30 documented either the roles of participants in the MSE process or that the results of the MSE were adopted.
+The majority of MSEs did not explicitly document how the stages of the MSE process -- defined using the SDM framework -- were completed (Table \@ref(tab:explicit)).  The consequence prediction stage -- which is the primary focus of MSE publication -- was always addressed.  Apart from the consequence stage, the most documented stage was the alternative stage with 6 MSEs documenting this stage of the process. Three of the 30 MSEs explicitly documented a trade-off analysis and 2 of the 30 documented a management decision. One MSE documented that the results of the MSE were adopted.
 
 ```{r explicit}
 freq.data_pub %>%
@@ -580,12 +597,11 @@ freq2.data_pub %>%
   kable_styling()
 ```
 
-The primary participants and leaders of the MSE processes were scientists, with some lead by governments and management agencies (Figure \@ref(fig:participants)).  Scientist lead 73 percent of the MSE processes, with another 23 percent lacking documentation that made the leader of the process clear.  
+The primary participants and leaders of the MSE processes were scientists, while some MSE process were led by governments and management agencies (Figure \@ref(fig:participants)).  Scientist led 73 percent of the MSE processes, with another 23 percent lacking documentation that made the leader of the process clear.  
 
-Scientists were participants in nearly all of the reviewed MSE processes.  Other stakeholders in MSE processes were less frequent participants.  Members of the fishery participated in 30 percent, management and government representatives in 23 percent, representatives of independent institutions in 7 percent, and the members of the public in 3 percent of reviewed MSEs.  Decision makers, those responsible for selecting the management plan to implement, were participants in 13 percent of MSEs.  Experts, a possible source of data or predictions, participated in 3 percent of the MSEs reviewed.  Participants involved to the assist the MSE process itself, facilitators and analysts participated in 10 and 3 percent of MSE processes respectively. 
+Scientists were participants in nearly all of the reviewed MSE processes.  Other stakeholders in MSE processes were less frequent participants.  Members of the fishery participated in 30 percent, management and government representatives in 23 percent, representatives of independent institutions in 7 percent, and the members of the public in 3 percent of reviewed MSEs.  Decision makers -- those responsible for selecting the management plan to implement -- were participants in 13 percent of MSEs.  Experts, a possible source of data or predictions, participated in 3 percent of the MSEs reviewed.  Participants involved to the assist the MSE process itself, i.e., facilitators and analysts, participated in 10 and 3 percent of MSE processes respectively. 
 
-Objectives and alternatives were elicited from a variety of participants.  About 10 percent of the objectives and alternatives explicitly were produced by stakeholders in the fisheries, coming from management, government, or the fishery.  In most cases the source of the objectives and alternatives was not explicit.  In those cases scientists selected these components most frequently.
-
+Objectives and alternatives were elicited from a variety of participants.  About 10 percent of the objectives and alternatives explicitly were produced by stakeholders in the fisheries, coming from management, government, or fishery sources.  In most cases the source of the objectives and alternatives was not explicit.  In those cases scientists selected these components most frequently, while in some cases the source was unknown.
 
 ```{r participants, fig.cap='Who guided, participated in, or provided input during the specified steps of the MSE process', fig.height=6, out.width="100%"}
 Part.plot
@@ -594,9 +610,9 @@ Part.plot
 # Climate Change in MSE (As *Box Insert*) 
 Fisheries management has mostly focused on fishing impacts with ecosystem status viewed as a background constant. The increasing rate of climate change is changing this dynamic, bringing ecosystem status to the forefront of fisheries management. 
 
-We review published MSEs including climate change as a driver against the steps of the SDM framework to:  Highlight unique aspects of MSEs that model climate change as a driver to inform fisheries management in a changing climate.
+We review published MSEs including climate change as a driver against the stages in a SDM process to:  Highlight unique aspects of MSEs that model climate change as a driver to help inform fisheries management
  
-We found that as of the end of December 2018 11 MSEs included climate change as a driver. These MSEs have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)).
+We filtered the original set of MSE by searching for the term "climate change" within the set. We found that, as of the end of December 2018, 11 MSEs included climate change as a driver. We reviewed the climate change MSEs using the same methodology described above. These MSEs have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)).
 
 ```{r, mapfigure, fig.cap='Map of MSE study locations.', fig.height=4, out.width="100%"}
 MSE.map +
@@ -636,7 +652,7 @@ objcat.data %>%
   kable_styling()
 ```
 
-Climate change MSEs were more likely to explicitly document the alternative elicitation and trade-off analysis steps, but otherwise were less likely to document steps in the decision process.
+Climate change MSEs were more likely to explicitly document the alternative elicitation and trade-off analysis stages, but otherwise were less likely to document stages in the decision process.
 ```{r, CCstages}
 freq.data_CC %>%
   select(-Analysis) %>% 
@@ -645,26 +661,25 @@ freq.data_CC %>%
   kable_styling()
 ```
 
-Including climate change in a MSE appears to reduce the complexity of other stages in the MSE process, as on average climate change MSEs consider fewer drivers, fewer and less diverse objectives, and are less explicitly documented at most stages of the process.  If the MSE process is time or effort limited, the inclusion of climate change may be reducing the time and effort that otherwise is invested in other stages of the MSE process.
+Including climate change in a MSE appears to reduce the complexity of other stages in the MSE process. On average climate change MSEs consider fewer drivers, consider fewer and less diverse objectives, and explicitly document fewer stages of the MSE process.  If the MSE process is time or effort limited, the inclusion of climate change may utlizing time and effort that in other case was invested elsewhere in the MSE process.
 
 # Discussion 
 The primary picture painted by MSE documentation is one of scientist driven simulation studies rather than management driven decision processes. While documentation about the modeling conducted in a MSE was explicit, documentation about the MSE process itself was often limited. 
 
-Management strategy evaluations typically do assess the consequences of uncertainty for achieving management goals, but other factors influencing the consequences of management strategies get more sporadic treatment.  
-[more about including uncertainty].  Data limitation is a frequent concern in fisheries management.  Next to accounting for uncertainty, accessing the influence of monitoring methodology was the most prevalent driver included in MSEs.  Further inclusion of this driver, and additional use of value of information analyses could expand the use of MSE as a tool to design cost-effective fisheries monitoring plans. While discussions of fisheries research and management seem to be move toward ecosystem effects, spatial models, and multiple species models, these characteristics were rarely considered in the set of MSEs we reviewed.
+Management strategy evaluations typically do assess the consequences of uncertainty for achieving management goals, but other factors influencing the consequences of management strategies get more sporadic treatment.  Data limitation is a frequent concern in fisheries management.  Next to accounting for uncertainty, accessing the influence of monitoring methodology was the most prevalent driver included in MSEs.  Further inclusion of this driver, and additional use of value of information analyses could expand the use of MSE as a tool to design cost-effective fisheries monitoring plans. While discussions of fisheries research and management seem to be moving toward ecosystem effects, spatial models, and multiple species models, these characteristics were rarely considered in the set of MSEs we reviewed.
 
-Managing natural resources entails achieving the objectives of people interacting with a natural resource, so decision processes are likely to produce more desirable results when they include peoples objectives.  These objectives are likely to include conservation, yield, economic, and social concerns, however the MSE we reviewed don't cover all categories of objectives, as yield and economic objectives were not included in about one quarter of MSEs, and social objectives were absent from all but 2 of the 30 evaluations. While we are unable to know the cause for this, our results may provide some clues.
+Managing natural resources entails achieving the objectives of people interacting with a natural resource, so decision processes are likely to produce more desirable results when they include peoples objectives.  These objectives are likely to include conservation, yield, economic, and social concerns, however the MSEs we reviewed don't cover all categories of objectives, as yield and economic objectives were not included in about one quarter of MSEs, and social objectives were absent from all but 2 of the 30 evaluations. While we are unable to know the cause for this with more explicit documentatin of MSE processes, our results may provide some clues.
 
 Scientists led, and participated in most of the MSEs, while decision-makers, decision making institutions, and stakeholders were relatively infrequent leaders and participants in the process.  The lack of participation by stakeholders may result in less frequent inclusion of social objectives. Another factor may be that MSE models are likely constructed mainly by ecosystem modelers, who are likely to be more comfortable modeling the consequences of conservation and yield objectives than economic or social objectives.  Given that scientists seem to be providing the objectives in many MSE processes, they may be selecting objectives that they are more comfortable evaluating. There also appears to be some degree of borrowing occurring in which scientists use a set of generic fishery objectives when conducting a MSE.  Perhaps because their were few social objectives included in these MSE, there was little inclusion of experts to aid in the prediction of consequences, or consequence prediction techniques other than simulation modeling.
 
-Participants that would be likely to expand the set of objectives considered in a MSE rarely participated in the MSEs we reviewed. That is, facilitators and decision analysts were rarely participants in MSE processes.  The inclusion of facilitators in decision processes aid information gain and conflict resolution, increase trust between participants, and lead to more beneficial environmental and social outcomes[@Vente].  Facilitators and decision analysts also aid decision processes by helping to diagnose the problem, which can result in selecting more appropriate analysis techniques for the problem type.  Finally, the additional structure and focus on the decision process would likely result in more explicit documentation when facilitators and decision analysts participate in MSE, as resulted in the MSE reviewed here (cite Williams et al 2011, Smith et al 2013, and Kolody et al 2008).
+Participants that would be likely to expand the set of objectives considered in a MSE rarely participated in the MSEs we reviewed. That is, facilitators and decision analysts were rarely participants in MSE processes.  The inclusion of facilitators in decision processes aid information gain and conflict resolution, increase trust between participants, and lead to more beneficial environmental and social outcomes [@Vente].  Facilitators and decision analysts also aid decision processes by helping to diagnose the problem, which can result in selecting more appropriate analysis techniques for the problem type.  Finally, the additional structure and focus on the decision process would likely result in more explicit documentation when facilitators and decision analysts participate in MSE, as resulted in some of the MSEs reviewed here [@williams2011; @smith2013; @kolody2008].
 
-The relative dearth of explicit documentation of the MSE processes may hinder learning by MSE practitioners.  While the modeling was clearly documented, the MSE process steps were often inexplicit.  Without explicit documentation it is unclear why the analysis was structured as it was, why a particular set of drivers was selected, and why a set of objectives or alternatives were chosen.  Perhaps the most crucial stage to enable understanding a replication of a decision resulting from a MSE is a clear presentation of how trade-offs between the multiple objectives were evaluated, and what the optimal or chosen alternative was that resulted from the MSE process. Different decision makers can rationally look at the same prediction of consequences and select a different preferred alternative if they treat the importance of the objectives differently.  Therefore, MSE documentation often is not supporting replication or learning due to the frequent absence of trade-off and decision documentation.  
+The relative dearth of explicit documentation we found in our review of MSE publications may hinder learning by MSE practitioners.  While the modeling was clearly documented, the MSE process steps were often inexplicit.  Without explicit documentation it is unclear why the analysis was structured as it was, why a particular set of drivers was selected, and why a set of objectives or alternatives were chosen.  Perhaps the most crucial stage to enable understanding a replication of a decision resulting from a MSE is a clear presentation of how trade-offs between the multiple objectives were evaluated, and what the optimal or chosen alternative was that resulted from the MSE process. Different decision makers can rationally look at the same prediction of consequences and select a different preferred alternative if they treat the importance of the objectives differently.  Therefore, MSE documentation often is not supporting replication or learning due to the frequent absence of trade-off and decision documentation.
+
+The MSE process may be aided by utilizing the techniques from the structured decision making approach to decision analysis (Cummings, in prep). Utilizing the structured decision making approach eases the documentation process by breaking decision making into more discrete stages. There may be practical considerations, such as time or budgetary constraints that limit how complex the stages of a MSE are, and the degree of documentation that occurs.  Where the expertise and budget is available, the use of facilitators and scribes may aid in addressing and documenting MSE processes.
 
 ### Explore and expand upon this review
 To aid future learning from the MSEs that have been conducted to date we produced a shiny application [@R-Shiny] that enables interactive results to accompany this article and entry of additional MSE information (<https://jonathancummings.shinyapps.io/MSEreview/>).  We hope that as MSE are conducted in the future they are entered here so that MSE practitioners can learn from each other.
-
-### References 
 
 # References 
 \setlength{\parindent}{-0.2in}
