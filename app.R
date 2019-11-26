@@ -23,7 +23,7 @@ library(DBI) # database interface
 # Copy into command prompt:
 ## cloud_sql_proxy -instances=alpine-tracker-230222:us-east1:mse-review=tcp:3306
 
-# Create connection function
+# # Create connection function
 # getSqlConnection <- function(){
 #   cn <-
 #     dbConnect(
@@ -32,13 +32,13 @@ library(DBI) # database interface
 #       host = '127.0.0.1',
 #       port=3306,
 #       username = 'root',
-#       password = 'tLenKdQCs9M2pqK')
+#       password = '2u8aNDdur1aFdb8z')
 #   return(cn)
 # }
 # # Open connection
 # con <- getSqlConnection()
-
-# To close the connection
+# 
+# # To close the connection
 # dbDisconnect(con)
 
 load("MSEreview.RData")
@@ -177,7 +177,6 @@ ui <- fluidPage(
     tabPanel("About", 
       h1("An Assessment of Management Strategy Evaluations"),# title of the page
       hr(),
-      h4("Background"),
       p("The calls for fisheries management to utilize management strategy
       evaluation are both aspirational and estimable in their aim and vision.
       Management strategy evaluation (MSE) is 'widely considered to
@@ -186,27 +185,35 @@ ui <- fluidPage(
       uncertainty for achieving management goals' (Punt et al. 2014). Thus,
       MSE is a compelling tool to assess fisheries management procedures.  For
       example, in our changing oceans and increasing climate change impacts MSE
-      can evaluate climate-ready options for fisheries management decisions.
-
-      Adaptive management arose to address uncertainties and accelerate progress
-      towards meeting management objectives. We used the structured decision
-      making (SDM) process - the decision making framework in which adaptive
-      management occurs - as our framework, how do published MSE projects
-      utilize standard SDM components and support learning within the MSE
-      practitioner community?"),
+      can evaluate climate-ready options for fisheries management decisions."),
+      p("Adaptive management arose to address uncertainties and accelerate 
+      progress towards meeting management objectives. In the case of fisheries
+      management, are scientific publications of management strategy evaluations
+      supporting adaptive management?"),
+      h4("Objective"),
+      p("Our objective is to review MSE methods and their documentation to 
+      determine how well MSE documentation supports learning within the MSE
+      practitioner community and to provide a location to facilitate learning
+      from previous MSE. We used the structured decision making (SDM) process 
+      - the decision making framework in which adaptive management occurs - 
+      as our review framework (Figure 1) to assess:"),
+      p("How do published MSE projects utilize standard decision making 
+      components and support learning within the MSE practitioner community?"),
       imageOutput("imageSDM",
                    width=400,
                    height=275),
-      p(em("Structured Decision Making process used as review framework")),
-      h4("MSE Review Methods"),
-      p("We conducted our search for MSEs in the SCI-EXPANDED index from
-       Web of Science, searching for “management strategy evaluation” by topic
-       across all years on January 8th, 2019. This search returned 253
-       results. We reviewed a random sample of 30 articles that document a
-       MSE, removing articles that were reviews, meta-analyses, or simply
-       cited other MSE articles from our sample. Of the 253 articles, 11
-       included climate change as a driver of fishery status, and after
-       removing other articles we estimate ~140 articles document a MSE."),
+      p(em("Figure 1. Structured Decision Making process used as review framework")),
+      h4("Methods"),
+      p("We searched the MSE literature via Web of Science, searching for 
+      “management strategy evaluation” by topic across all years on January
+      8th, 2019. This search returned 264 results, of which 154 were management
+      strategy evaluations after removing articles that were reviews, 
+      meta-analyses, or simply cited other MSE articles. We reviewed a random
+      sample of 30 of these 154 articles."),
+      h4("Explore the Results"),
+      p("Select the results you would like to examine using the radio buttons
+      below.  The figures and tables in this application are updated by your
+      selection."),
       fluidRow(
        column(width = 4,
         tableOutput("MSEcounts")
@@ -215,7 +222,7 @@ ui <- fluidPage(
         radioButtons("data_filter",
          "Show results from:",
          choices = c(
-           "Random sample of MSEs reviewed for future Cummings et. al. Publication"="pub",
+           "30 articles reviewed for Cummings et. al. Publication, "="pub",
            "MSE included climate change as a driver"="CC",
            "All MSEs (entered in the database to date)"="all"),
          width='400px'),
@@ -228,7 +235,7 @@ ui <- fluidPage(
         brush = brushOpts(id = "map_brush"),
         hover = hoverOpts("map_hover")
       ),
-      p("Figure 1. Map of MSE locations. Points represent the approximate 
+      p("Figure 2. Map of MSE locations. Points represent the approximate 
         center point of the fishery the MSE evaluated."),
       p("Hovering over a point on the map will give the associated citation below, 
         while selecting an area will give all citations in the 'brushed' map area."),
@@ -250,7 +257,7 @@ ui <- fluidPage(
              hr(),
              h5("Are structured decision making steps explicit in MSEs?"),
              plotOutput("Freq.plot",height="100%"),
-             p("Figure 2. Percentage of MSEs that included: "),
+             p("Figure 3. Percentage of MSEs that included: "),
              p(strong("Process")," - Explicit documentation of the decision making process used to conduct the MSE,",
               strong("Problem")," - Explicit documentation of the problem the MSE is attempting to address,",
               strong("Objectives")," - Explicit documentation of the process used to produce objectives and performance metrics to evaluate the management procedures,",
@@ -261,7 +268,7 @@ ui <- fluidPage(
               strong("Adopted")," - Explicit documentation of decision makers implementing the results of the MSE."),
              h5("Who is involved, and participates in, MSEs?"),
              plotOutput("part.plot",height="100%"),
-             p("Figure 3. Participation at different stages of the MSE process")
+             p("Figure 4. Participation at different stages of the MSE process")
              ),
     #### Tab 3: Results - Tables ####
     tabPanel("Results - Tables", 
@@ -592,8 +599,8 @@ server <- function(input, output, session) {   # code to create output using ren
          height=275)},deleteFile = FALSE)
   output$MSEcounts <- renderTable({
     tibble("MSE type"=c("Published","Random Sample","Climate Change"),
-               "Count"=c(151,30,11))
-})
+               "Count"=c(154,30,11))
+},digits=0)
 }
 
 shinyApp(ui, server)
