@@ -19,6 +19,7 @@ library(mapdata) # basemap generation
 library(odbc) # database connection 
 library(RMySQL) # MySQL scripting in R
 library(DBI) # database interface
+library(dbplyr) # database interface for plyr
 
 ###### To open a connection to the database: #####
 # Copy into command prompt:
@@ -53,6 +54,7 @@ obj<-dbReadTable(con,"tblStudyObjectives")
 # obj$fkStudyID<-parse_integer(obj$fkStudyID)
 fields<-dbReadTable(con,"tblStudyFields")
 # fields<-read_xlsx("DB files - Excel/tblStudyFields.xlsx")
+WOS<-dbReadTable(con,"tblWOS")
 
 # To close the database connection
 dbDisconnect(con)
