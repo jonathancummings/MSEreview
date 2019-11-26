@@ -404,3 +404,50 @@ server <- function(input, output) {   # code to create output using render
 }
 
 shinyApp(ui, server)
+
+
+WOS<-read_csv("tblWOS_tidyTuesday.csv")
+#Keep just the MSE files
+MSEsummary<-filter(WOS,IsMSE==1) 
+# count number of MSE articles by year
+countYear<-count(MSEsummary,Year) 
+# Plot MSE publications per year
+MSE.year<-ggplot(countYear,aes(x=Year, y=n)) + geom_point(size=2.5) + 
+  scale_y_continuous(limits=c(0,25)) +
+ylab("Number") + theme_bw()
+
+# count number of MSE articles by Journal
+countJournal<-count(MSEsummary,Journal) %>% 
+  arrange(desc(n)) %>% 
+  mutate(Percent=round(n/sum(n)*100,1))
+
+# count frequence of MSE by species
+countSpecies<-count(study,Species) %>% 
+  arrange(desc(n))
+
+# count frequence of MSE by system
+countSystem<-count(study,System) %>% 
+  arrange(desc(n))
+
+# Probablity of being explicit by journal
+
+dataSummary<-inner_join(study,MSEsummary,by=c("ID"="ID")) # This join doesn't work because tblWOS
+  # "ID" != tblStudy "ID"
+
+data_pub %>%
+  select(freq.col,) %>%
+  rename("Process"="ProcessExplicit",
+         "Problem"="ProblemDefinitionExplicit",
+         "Objectives"="ObjectivesExplicit",
+         "Alternatives"="AlternativesExplicit",
+         "Tradeoffs"="TradeOffsExplicit",
+         "Decision"="DecisionExplicit",
+         "Results Adopted"="ResultsAdopted") %>%
+  summarise_all(funs(sum))%>%
+  gather(Explicit) %>%
+  mutate(Percent=value/n_pub*100) %>%
+  mutate(Explicit=factor(Explicit,levels=
+                           c("Process","Problem","Objectives","Alternatives","Tradeoffs","Decision","Results Adopted"))) %>%
+  rename("Number"="value")
+
+# Check which data point doesn't have a direction for the objective
