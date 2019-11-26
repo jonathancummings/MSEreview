@@ -518,11 +518,11 @@ We also conduct a focused analysis of MSE processes that address the influence o
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
-We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 253 results.  We reviewed a random sample of 30 articles that document a MSE, removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. Of the 253 articles, 11 included climate change as a driver of fishery status, and after removing other articles we estimate 110-160 articles document a MSE.   
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE, removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. Of the 264 articles, 11 included climate change as a driver of fishery status, and after removing other articles 154 articles document a MSE.   
 
 | MSE type | Count |
 |:--:|:--:|
-| Published | 151 |
+| Published | 154 |
 | Random Sample | 30 |
 | Climate Change | 11 |  
 *Estimated by extrapolating from the assessed MSEs to the full set for now, the submission will contain an final count.
