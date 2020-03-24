@@ -18,6 +18,7 @@ library(mapdata) # basemap generation
 library(odbc) # database connection 
 library(RMySQL) # MySQL scripting in R
 library(DBI) # database interface
+library(here) # file directory assistance
 
 #To open a connection to the database:
 # Copy into command prompt:
@@ -53,7 +54,7 @@ library(DBI) # database interface
 # # To close the connection
 # dbDisconnect(con)
 
-load("MSEreview.RData")
+load(here("data/MSEreview.RData"))
 
 
 # Get map background for plotting the map
@@ -180,7 +181,7 @@ ui <- fluidPage(
       alternative management strategies and to assess the consequences of
       uncertainty for achieving management goals' (Punt et al. 2014). Thus,
       MSE is a compelling tool to assess fisheries management procedures.  For
-      example, in our changing oceans and increasing climate change impacts MSE
+      example, in our changing oceans and with increasing climate change impacts MSE
       can evaluate climate-ready options for fisheries management decisions."),
       p("Adaptive management arose to address uncertainties and accelerate 
       progress towards meeting management objectives. In the case of fisheries
