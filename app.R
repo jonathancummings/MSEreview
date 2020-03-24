@@ -38,18 +38,6 @@ library(DBI) # database interface
 # # Open connection
 # con <- getSqlConnection()
 # 
-# # To close the connection
-# dbDisconnect(con)
-
-load("MSEreview.RData")
-
-
-# Get map background for plotting the map
-world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
-
-
-##### Data Processing #####
-
 # # Obtain data tables
 # study<-dbReadTable(con,"tblStudy")
 # # study<-read_xlsx("DB files - Excel/tblStudy.xlsx")
@@ -65,6 +53,14 @@ world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a
 # # To close the connection
 # dbDisconnect(con)
 
+load("MSEreview.RData")
+
+
+# Get map background for plotting the map
+world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
+
+
+##### Data Processing #####
 
 # Edit tables for joining
 study<-study %>% 
