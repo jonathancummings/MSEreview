@@ -49,8 +49,9 @@ library(odbc) # database connection
 library(RMySQL) # MySQL scripting in R
 library(DBI) # database interface
 library(kableExtra) # extra formating of the tables
+library(here) # file directory assistance
 
-load("MSEreview.RData")
+load(here("data/MSEreview.RData"))
 
 study<-study %>% 
   unite(Citation,c(Authors,YearPub),sep=" ",remove=F)
@@ -518,13 +519,13 @@ We also conduct a focused analysis of MSE processes that address the influence o
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
-We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE, removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. Of the 264 articles, 11 included climate change as a driver of fishery status, and after removing other articles 154 articles document a MSE.   
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE, removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE and 13 of these included climate change as a driver of fishery status. To give as full a picture of the climate change MSE to date as possible we have also reviewed the additional climate change MSE
 
 | MSE type | Count |
 |:--:|:--:|
 | Published | 154 |
 | Random Sample | 30 |
-| Climate Change | 11 |  
+| Climate Change | 13 |  
 *Estimated by extrapolating from the assessed MSEs to the full set for now, the submission will contain an final count.
 
 ## Reviewing MSE documentation 
