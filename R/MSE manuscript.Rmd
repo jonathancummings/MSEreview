@@ -512,14 +512,14 @@ Are MSE processes being conducted in the manner described? Do MSE processes cons
 Adaptive management developed in fisheries management as a means to improve the achievement of objectives through time, when learning can aid achieving those objectives [@ADM].  For example, the Millennium Ecosystem Assessment [-@MEA] defines adaptive management as “A systematic process for continually improving management policies and practices by learning from the outcomes of previously employed policies and practices. In active adaptive management, management is treated as a deliberate experiment for purposes of learning.” We contend that scientific publication is essentially a process intended to support adaptive management, in that researchers gain knowledge from the decisions made and outcomes produced by previous work to inform their decisions. In the case of fisheries management, are scientific publications of management strategy evaluations supporting adaptive management?
 
 ### Objectives 
-Our overall objectives is to determine the extent that MSE achieves the aspirational aims outlined above, and whether MSE documentation supports learning within the MSE practitioner community.  Given that scientific publication is the primary means of communicating the results of MSE, we review the scientific literature to assess the extent to which the process and aims of MSE, and adaptive management are being achieved and supported by the scientific literature. To assess this we determine how MSEs utilize standard components of decision making processes. We use the structured decision making (SDM) process [@SDM] -- the decision making framework in which adaptive management occurs -- as our framework for evaluation.  Using this framework we review published MSEs to:  
+Our overall objective is to determine the extent that MSE achieves the aspirational aims outlined above, and whether MSE documentation supports learning within the MSE practitioner community.  Given that scientific publication is the primary means of communicating the results of MSE, we review the scientific literature to assess the extent to which the process and aims of MSE, and adaptive management are being achieved and supported by the scientific literature. To assess this we determine how MSEs utilize standard components of decision making processes. We use the structured decision making (SDM) process [@SDM] -- the decision making framework in which adaptive management occurs -- as our framework for evaluation.  Using this framework we review published MSEs to:  
 
 * Determine what questions MSE processes are addressing
 * Identify the objectives and alternatives considered in MSE
-* Determine the prevalence of explicit documentation and use of decision making steps in the MSE process, and 
+* Determine the prevalence of a) explicit documentation and b) use of decision making steps in the MSE process, and 
 * Identify participants in MSE processes.
 
-We also conduct a focused analysis of MSE processes that address the influence of climate change on fisheries management, highlighting unique aspects of MSE processes that model climate change as a driver of system status.
+We also conduct a focused analysis of MSE processes that address the influence of climate change on fisheries management, highlighting aspects of MSE processes that model climate change as a driver of system status.
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
