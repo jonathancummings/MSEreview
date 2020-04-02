@@ -519,18 +519,17 @@ Our overall objective is to determine the extent that MSE achieves the aspiratio
 * Determine the prevalence of a) explicit documentation and b) use of decision making steps in the MSE process, and 
 * Identify participants in MSE processes.
 
-We also conduct a focused analysis of MSE processes that address the influence of climate change on fisheries management, highlighting aspects of MSE processes that model climate change as a driver of system status.
+An incresingly recognized challenge in fisheries management is responding to changes in the productivity of fisheries stocks as a result of climate change [@busch_climate_2016, @brander_global_2007]. We also conduct a focused analysis of MSE processes that address the influence of climate change on fisheries management, highlighting aspects of MSE processes that model climate change as a driver of system status.
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
-We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE, removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE and 13 of these included climate change as a driver of fishery status. To give as full a picture of the climate change MSE to date as possible we have also reviewed the additional climate change MSE
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (supplement 2), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE.  We reviewed 16 climate change MSE articles (supplement 2). Twelve of these articles came from our original search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 additional climate change MSE articles published in 2019. 
 
 | MSE type | Count |
 |:--:|:--:|
 | Published | 154 |
 | Random Sample | 30 |
-| Climate Change | 13 |  
-*Estimated by extrapolating from the assessed MSEs to the full set for now, the submission will contain an final count.
+| Climate Change | 12 |  
 
 ## Reviewing MSE documentation 
 We used the structured decision making framework [@conroy2013decision; @gregory2012structured] as our framework for evaluating management strategy evaluation documents (Figure \@ref(fig:SDMfigure)). The structured decision making processes is composed of the six process stages: problem definition, objective elicitation, alternative development, consequence prediction, trade-off analysis, and decision implementation. 
