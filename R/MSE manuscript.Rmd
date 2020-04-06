@@ -523,13 +523,15 @@ An incresingly recognized challenge in fisheries management is responding to cha
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
-We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (supplement 2), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE.  We reviewed 16 climate change MSE articles (supplement 2). Twelve of these articles came from our original search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 additional climate change MSE articles published in 2019. 
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table 1). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (supplement 2), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE.  We reviewed 16 climate change MSE articles (supplement 2). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
 
+Table 1. Januaray 8, 2019 Web of Science "management strategy evaluation" search results
 | MSE type | Count |
 |:--:|:--:|
 | Published | 154 |
 | Random Sample | 30 |
-| Climate Change | 12 |  
+| Climate Change | 12* |  
+* We also reviewed 4 additional climate change MSE articles published in 2019 for a total of 16.
 
 ## Reviewing MSE documentation 
 We used the structured decision making framework [@conroy2013decision; @gregory2012structured] as our framework for evaluating management strategy evaluation documents (Figure \@ref(fig:SDMfigure)). The structured decision making processes is composed of the six process stages: problem definition, objective elicitation, alternative development, consequence prediction, trade-off analysis, and decision implementation. 
