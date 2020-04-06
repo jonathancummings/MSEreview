@@ -523,30 +523,24 @@ An incresingly recognized challenge in fisheries management is responding to cha
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
-We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table \@ref(tab:MSE count)). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (supplement 2), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE.  We reviewed 16 climate change MSE articles (supplement 2). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table \@ref(tab:MSEcount)). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (supplement 2), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE.  We reviewed 16 climate change MSE articles (supplement 2). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
 
-```{r MSE count}
+```{r MSEcount}
 MSE_Type<-c("Published","Random Sample","Climate Change")
-Count<-c(154,30,12)
-Table1.data<-as.tibble(cbind(MSE_Type,Count))
+Count<-c(154,30,"12*")
+Table1.data<-as_tibble(cbind(MSE_Type,Count))
   Table1.data %>%
+    rename("MSE Type"=MSE_Type) %>% 
   kable(caption = "Januaray 8, 2019 Web of Science 'management strategy evaluation' search results") %>% 
-  kable_styling()
+  kable_styling() %>% 
+    add_footnote(c("We also reviewed 4 additional climate change MSE articles published in 2019 for a total of 16."), notation = "symbol")
 ```
-
-Table 1. Januaray 8, 2019 Web of Science "management strategy evaluation" search results
-| MSE type | Count |
-|:--:|:--:|
-| Published | 154 |
-| Random Sample | 30 |
-| Climate Change | 12* |  
-* We also reviewed 4 additional climate change MSE articles published in 2019 for a total of 16.
 
 ## Reviewing MSE documentation 
 We used the structured decision making framework [@conroy2013decision; @gregory2012structured] as our framework for evaluating management strategy evaluation documents (Figure \@ref(fig:SDMfigure)). The structured decision making processes is composed of the six process stages: problem definition, objective elicitation, alternative development, consequence prediction, trade-off analysis, and decision implementation. 
 
 ```{r, SDMfigure, fig.cap='Review framework - structured decision making process'}
-knitr::include_graphics('figs/SDMProcessFramework.png')
+knitr::include_graphics(here('figs/SDMProcessFramework.png'))
 ```
 
 We present the review methodology and results in four groups: consequences - which focuses on what was considered during the prediction stage, objectives - which focuses on what categories of objectives were considered, stages - which focuses on whether and how the stages of the process were completed, and participants - which focuses on how participation in the process was structured.  These results were entered into a relational database for storage and evaluation, and is available via our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
