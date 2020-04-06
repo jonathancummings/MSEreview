@@ -523,7 +523,16 @@ An incresingly recognized challenge in fisheries management is responding to cha
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
-We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table 1). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (supplement 2), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE.  We reviewed 16 climate change MSE articles (supplement 2). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table \@ref(tab:MSE count)). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (supplement 2), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE.  We reviewed 16 climate change MSE articles (supplement 2). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
+
+```{r MSE count}
+MSE_Type<-c("Published","Random Sample","Climate Change")
+Count<-c(154,30,12)
+Table1.data<-as.tibble(cbind(MSE_Type,Count))
+  Table1.data %>%
+  kable(caption = "Januaray 8, 2019 Web of Science 'management strategy evaluation' search results") %>% 
+  kable_styling()
+```
 
 Table 1. Januaray 8, 2019 Web of Science "management strategy evaluation" search results
 | MSE type | Count |
