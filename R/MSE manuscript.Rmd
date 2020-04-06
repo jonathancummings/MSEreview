@@ -148,9 +148,9 @@ map.col<-c("Latitude",
 
 # Select data summary columns
 summary.data_pub<-data_pub %>%
-    select(summary.col)
+    select(all_of(summary.col))
 summary.data_CC<-data_CC %>%
-  select(summary.col)
+  select(all_of(summary.col))
 ```
 
 ```{r analyze data, include=FALSE}
@@ -170,7 +170,7 @@ n_CC<-nrow(data_CC)
 n_obj_CC<-nrow(obj.data_CC)
 
 freq.data_pub<-data_pub %>%
-    select(freq.col) %>%
+    select(all_of(freq.col)) %>%
     rename("Process"="ProcessExplicit",
            "Problem"="ProblemDefinitionExplicit",
            "Objectives"="ObjectivesExplicit",
@@ -186,7 +186,7 @@ freq.data_pub<-data_pub %>%
     rename("Number"="value")
 
 freq.data_CC<-data_CC %>%
-  select(freq.col) %>%
+  select(all_of(freq.col)) %>%
   rename("Process"="ProcessExplicit",
          "Problem"="ProblemDefinitionExplicit",
          "Objectives"="ObjectivesExplicit",
@@ -202,7 +202,7 @@ freq.data_CC<-data_CC %>%
   rename("Number"="value")
 
 freq2.data_pub<-data_pub %>%
-    select(freq2.col) %>%
+    select(all_of(freq2.col)) %>%
     rename("Roles"="RolesExplicit",
            "Open Meetings"="OpenMeetings") %>%
     summarise_all(funs(sum)) %>%
@@ -214,7 +214,7 @@ freq2.data_pub<-data_pub %>%
 
 # Who participates
 part.data_pub<-data_pub %>%
-    select(part.col) %>%
+    select(all_of(part.col)) %>%
     rename("Process"="Leader",
            "Doc Objectives"="ObjElicitationSource_Exp",
            "Doc Alternatives"="ProcedureElicitation_Exp",
@@ -249,7 +249,7 @@ part.data_pub <- part.data_pub %>%
     mutate(order = row_number())
 
 part.data_CC<-data_CC %>%
-  select(part.col) %>%
+  select(all_of(part.col)) %>%
   rename("Process"="Leader",
          "Doc Objectives"="ObjElicitationSource_Exp",
          "Doc Alternatives"="ProcedureElicitation_Exp",
@@ -336,12 +336,12 @@ objcat.data_CC<-data_CC %>%
 
 # How were objectives defined
 obj.data_pub<-obj.data_pub %>%
-  select(obj.col) %>%
+  select(all_of(obj.col)) %>%
   purrr::map(table) %>%
   plyr::ldply(data.frame)
 
 obj.data_CC<-obj.data_CC %>%
-  select(obj.col) %>%
+  select(all_of(obj.col)) %>%
   purrr::map(table) %>%
   plyr::ldply(data.frame)
 
@@ -395,7 +395,7 @@ world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a
 ```{r plots}
 # Where MSEs have occured
 map.data<-rbind(data_pub,data_CC) %>%
-  select(map.col) %>%
+  select(all_of(map.col)) %>%
   mutate(Drivers=str_extract(Drivers, "Climate Change")) %>%
   mutate(Drivers=replace_na(Drivers, "Random Sample"))
 
@@ -545,19 +545,19 @@ knitr::include_graphics(here('figs/SDMProcessFramework.png'))
 
 We present the review methodology and results in four groups: consequences - which focuses on what was considered during the prediction stage, objectives - which focuses on what categories of objectives were considered, stages - which focuses on whether and how the stages of the process were completed, and participants - which focuses on how participation in the process was structured.  These results were entered into a relational database for storage and evaluation, and is available via our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
 
-The consequence group addresses what question the MSE was designed to address, and how it was addressed. We report the drivers included as the primary factors influencing the predictions produced by the MSE model, listing each driver a MSE included. We also report how the consequence predictions were made, with possible values of simulation modeling, dynamic programming, expert elicitation, mental models, and unknown.
+The consequence group addresses what question the MSE was designed to address, and how it was addressed. We report the drivers included as the primary factors influencing the predictions produced by the MSE model, listing each driver a MSE included. We also report how the consequence predictions were made, with possible values of simulation modeling, dynamic programming, expert elicitation, and mental models, or unknown when it is unclear what methodology was used to predict the status of the system for management evaluation.
 
-In the objectives group we address what the concerns, or goals of the MSE were.  We record each objective considered, and report the type and category of objectives included in each MSE. Natural resource management problems typically include four types of objectives: conservation, resource use, i.e., yield in the fisheries context, economic, and social objectives [@runge2013]. We sort objectives into four types: strategic objectives - which are concerned with the overall mission of the system in which the decision evaluated by the MSE falls, process objectives - which are concerned with how the management decision addressed by the MSE would be made, fundamental objectives - which address the goals of the management decision, and means objectives - which address means to achieving the fundamental objectives of the management decision.  
+In the objectives group we address what the concerns, or goals of the MSE were.  We record each objective considered, and report the type and category of objectives included in each MSE. Natural resource management problems typically include four types of objectives: conservation, resource use, i.e., yield in the fisheries context, as well as economic, and social objectives [@runge2013]. We sort objectives into four types: strategic objectives - which are concerned with the overall mission of the system in which the decision evaluated by the MSE falls, process objectives - which are concerned with how the management decision addressed by the MSE would be made, fundamental objectives - which address the goals of the management decision, and means objectives - which address means to achieving the fundamental objectives of the management decision.  
 
-In the stages group we address how the MSE stages were completed. We report whether the stages of the structured decision making framework were explicitly completed and documented.  We also report whether the MSE results were adopted in subsequent management.
+In the stages group we address how the MSE stages were completed. We report whether the stages of the structured decision making framework, i.e., problem, objectives, alternatives, tradeoffs, were explicitly completed and the methods used to complete them were documented.  We also report whether the MSE results were adopted in subsequent management.
 
-In the participant group we address how participation in the MSE process was structured and who participated. We report who lead the MSE, who participated in it, and if the roles of participants were established and documented.  In many cases the process used to elicit objectives and alternatives was not explicit.  In these cases we used what information was provided to glean who participated in the production of those components of the MSE.  We record and report who those participants were, referring to them as subjective participants in the objectives or alternatives process.  In other cases where there was not enough information to glean who participated we report the participants as unknown.  
+In the participant group we address how participation in the MSE process was structured and who participated. We report who lead the MSE process, who participated in it, and if the roles of participants were established and documented.  In many cases the process used to elicit objectives and alternatives was not explicit.  In these cases we used what information was provided to glean who participated in the production of those components of the MSE.  We record and report who those participants were, referring to them as subjective participants in the objectives or alternatives process.  In other cases where there was not enough information to glean who participated we report the participants as unknown.  
 
 We collected additional information about the MSEs we reviewed beyond what is reported here. For a full description of the information recorded in the relational database see the supplemental information (supplement), and for the full data set and results see our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
 
 # Results 
 ### What questions and management objectives do MSEs address? 
-We found that uncertainty was the main driver of the system state included in management strategy evaluations, with uncertainty included in 21 of the 30 evaluations we reviewed (Table \@ref(tab:drivers)).  In addition to uncertainty about the system model itself, monitoring methodology was the most prevalent driver in MSE models, but a variety of drivers were considered across the random sample of MSEs. 
+We found that uncertainty was the main driver of the system state included in management strategy evaluations, with uncertainty included in 21 of the 30 evaluations we reviewed in our random sample (Table \@ref(tab:drivers)).  In addition to uncertainty about the system model itself, monitoring methodology was the most prevalent driver in MSE models, but a variety of drivers were considered across the random sample of MSEs. 
 
 ```{r drivers}
 drive.data_pub %>%
@@ -567,7 +567,7 @@ drive.data_pub %>%
   kable_styling()
 ```
 <br>
-Conservation objectives were present in nearly all of the MSEs we reviewed (Table \@ref(tab:objectiveCategories)).  Yield and economic objectives were present in about three quarters of the MSEs, while social objectives were only included in 2 of the MSEs.
+Conservation objectives were present in nearly all of the MSEs we sampled (Table \@ref(tab:objectiveCategories)).  Yield and economic objectives were present in about three quarters of the MSEs, while social objectives were only included in 2 of the sampled MSEs.
 
 ```{r, objectiveCategories}
 objcat.data_pub %>% 
@@ -576,7 +576,7 @@ objcat.data_pub %>%
   kable_styling()
 ```
 <br>
-No strategic or process objectives were documented in the MSEs we reviewed.  There were roughly the same number of fundamental and means included in the MSEs (Table \@ref(tab:objectiveTypes)).
+No strategic or process objectives were documented in the MSEs.  There were roughly the same number of fundamental and means included in the MSEs (Table \@ref(tab:objectiveTypes)).
 ```{r, objectiveTypes}
 obj.dataTable_pub %>%
   filter(Objective=="Type") %>%
@@ -586,7 +586,7 @@ obj.dataTable_pub %>%
 ```
 
 ## Are structured decision making steps explicit in MSEs? 
-The majority of MSEs did not explicitly document how the stages of the MSE process -- defined using the SDM framework -- were completed (Table \@ref(tab:explicit)).  The consequence prediction stage -- which is the primary focus of MSE publication -- was always addressed.  Apart from the consequence stage, the most documented stage was the alternative stage with 6 MSEs documenting this stage of the process. Three of the 30 MSEs explicitly documented a trade-off analysis and 2 of the 30 documented a management decision. One MSE documented that the results of the MSE were adopted.
+The majority of MSEs did not explicitly document how the stages of the MSE process -- defined using the SDM framework -- were completed (Table \@ref(tab:explicit)).  Apart from the consequence stage, which is the primary focus of MSE publication and therefore was always addressed, the most documented stage was the alternative stage with 6 MSEs documenting this stage of the process. The MSE process, problem, and objectives methodology were each documented in 5 of the MSEs. Three of the 30 MSEs explicitly documented a trade-off analysis and 2 of the 30 documented a management decision. One MSE documented that the results of the MSE were adopted.
 
 ```{r explicit}
 freq.data_pub %>%
@@ -606,11 +606,11 @@ freq2.data_pub %>%
   kable_styling()
 ```
 
-The primary participants and leaders of the MSE processes were scientists, while some MSE process were led by governments and management agencies (Figure \@ref(fig:participants)).  Scientist led 73 percent of the MSE processes, with another 23 percent lacking documentation that made the leader of the process clear.  
+The primary participants and leaders of the MSE processes were scientists, while some MSE process were led by governments and management agencies (Figure \@ref(fig:participants)).  Scientists were leaders, or the sole participants and therefore seemingly the leaders, in 73 percent of the MSE processes, while 23 percent of process lacked enough documentation of participants and leadership such that we were unable to identify a presumed leader of the process.  
 
 Scientists were participants in nearly all of the reviewed MSE processes.  Other stakeholders in MSE processes were less frequent participants.  Members of the fishery participated in 30 percent, management and government representatives in 23 percent, representatives of independent institutions in 7 percent, and the members of the public in 3 percent of reviewed MSEs.  Decision makers -- those responsible for selecting the management plan to implement -- were participants in 13 percent of MSEs.  Experts, a possible source of data or predictions, participated in 3 percent of the MSEs reviewed.  Participants involved to the assist the MSE process itself, i.e., facilitators and analysts, participated in 10 and 3 percent of MSE processes respectively. 
 
-Objectives and alternatives were elicited from a variety of participants.  About 10 percent of the objectives and alternatives explicitly were produced by stakeholders in the fisheries, coming from management, government, or fishery sources.  In most cases the source of the objectives and alternatives was not explicit.  In those cases scientists selected these components most frequently, while in some cases the source was unknown.
+Objectives and alternatives were elicited from a variety of participants.  About 10 percent of the objectives and alternatives explicitly were produced by stakeholders in the fisheries, coming from management, government, or fishery sources.  In most cases the source of the objectives and alternatives was not explicit.  In those subjective cases scientists seemingly selected these components most frequently, while in some cases the source was unknown.
 
 ```{r participants, fig.cap='Who guided, participated in, or provided input during the specified steps of the MSE process', fig.height=6, out.width="100%"}
 Part.plot
