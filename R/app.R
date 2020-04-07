@@ -357,7 +357,7 @@ server <- function(input, output, session) {   # code to create output using ren
            "Roles"="RoleSpecification",
            "Open Meetings"="OpenMeetings",
            "Adopted"="ResultsAdopted") %>%
-    summarise_all(funs(sum)) %>%
+    summarise_all(sum) %>%
     gather(Explicit) %>%
     mutate(Percent=value/n_mse()*100) %>%
     mutate(Explicit=factor(Explicit,levels=
@@ -376,7 +376,7 @@ server <- function(input, output, session) {   # code to create output using ren
              "Sub Alternatives"="ProcedureElicitation_Sub")
   })
   part.data_reviewed2<- reactive({part.data_reviewed() %>%
-    purrr::map(~ strsplit(as.character(.),split=",")) %>%
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
     purrr::map(unlist) %>%
     purrr::map(table)
   })
@@ -417,7 +417,7 @@ server <- function(input, output, session) {   # code to create output using ren
   # What drivers are considered
   drive.data<-reactive({data_reviewed() %>%
     select(Drivers) %>%
-    purrr::map(~ strsplit(as.character(.),split=",")) %>%
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
     purrr::map(unlist) %>%
     purrr::map(table) %>%
     plyr::ldply(data.frame) %>%
@@ -475,7 +475,7 @@ server <- function(input, output, session) {   # code to create output using ren
     select(ManagementType) %>%
     purrr::map(~ strsplit(as.character(.),split=", ")) %>%
     purrr::map(unlist) %>%
-    purrr::map(~ strsplit(as.character(.),split=",")) %>% 
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>% 
     purrr::map(unlist) %>%
     purrr::map(table) %>%
     plyr::ldply(data.frame) %>%
@@ -490,7 +490,7 @@ server <- function(input, output, session) {   # code to create output using ren
 
   # Where MSEs have occured
   map.data<-reactive({data_reviewed() %>%
-    select(map.col)
+    select(all_of(map.col))
   })
 
   # Tab 1 - Filtering
@@ -499,7 +499,7 @@ server <- function(input, output, session) {   # code to create output using ren
   output$mse.map <- renderPlot({
     # plot MSEs on map
     ggplot(data=map.data(),aes(x=Longitude, y=Latitude)) + world +
-      geom_point(color="red",size=1.5)
+      geom_point(color="red",size=1.5) + geom_point(size = 1.5, colour = "grey", shape = 1)
   })
   observeEvent(input$map_hover,
                output$hover <- renderTable({
