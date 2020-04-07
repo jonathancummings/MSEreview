@@ -58,8 +58,8 @@ study<-study %>%
 
 mgmt.join<-mgmt %>% 
   group_by(fkStudyID) %>%
-  summarise(ManagementType = toString(sort(unique(ManagementType))),
-            AlternativesEvaluated = toString(sort(unique(AlternativesEvaluated))))
+  summarise(ManagementType = toString(sort(unique(MPManagementTool))),
+            AlternativesEvaluated = toString(sort(unique(MPAlternativesEvaluated))))
 
 obj.join<-obj %>%
   group_by(fkStudyID) %>%
@@ -619,9 +619,9 @@ Part.plot
 # Climate Change in MSE (As *Box Insert*) 
 Fisheries management has mostly focused on fishing impacts with ecosystem status viewed as a background constant. The increasing rate of climate change is changing this dynamic, bringing ecosystem status to the forefront of fisheries management. 
 
-We review published MSEs including climate change as a driver against the stages in a SDM process to:  Highlight unique aspects of MSEs that model climate change as a driver to help inform fisheries management
+We review published MSEs including climate change as a driver against the stages in a SDM process to highlight unique aspects of MSEs that model climate change as a driver to help inform fisheries management
  
-We filtered the original set of MSE by searching for the term "climate change" within the set. We found that, as of the end of December 2018, 11 MSEs included climate change as a driver. We reviewed the climate change MSEs using the same methodology described above. These MSEs have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)).
+We filtered the original set of MSE by searching for the term "climate change" within the set, reviewing 16 published MSEs included climate change as a driver as of December 31st, 2019. We reviewed the climate change MSEs using the same methodology described above. These MSEs have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)).
 
 ```{r, mapfigure, fig.cap='Map of MSE study locations.', fig.height=4, out.width="100%"}
 MSE.map +
