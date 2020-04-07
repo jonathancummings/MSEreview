@@ -77,8 +77,8 @@ data<-data %>%
 ```{r filter data, include=FALSE}
 
 # Filter data by study type
-data_pub<-filter(data,IncludeInPublication==TRUE)
-data_CC<-filter(data,str_detect(Drivers,"Climate Change"))
+data_pub<-filter(data,RandomSample==TRUE)
+data_CC<-filter(data,str_detect(Drivers,"Climate Change")&UseInPublication==TRUE)
 
 data_pub.join<-data_pub %>%
   select(ID,Citation)
@@ -125,7 +125,7 @@ freq.col<-c("ProcessExplicit",
             "TradeOffsExplicit",
             "DecisionExplicit",
             "ResultsAdopted")
-freq2.col<-c("RolesExplicit",
+freq2.col<-c("RoleSpecification",
              "OpenMeetings")
 # Get columns for participant analysis
 part.col<-c("Leader",
@@ -203,7 +203,7 @@ freq.data_CC<-data_CC %>%
 
 freq2.data_pub<-data_pub %>%
     select(all_of(freq2.col)) %>%
-    rename("Roles"="RolesExplicit",
+    rename("Roles"="RoleSpecification",
            "Open Meetings"="OpenMeetings") %>%
     summarise_all(funs(sum)) %>%
     gather(Explicit) %>%
