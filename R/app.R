@@ -89,8 +89,8 @@ data<-data %>%
   select(-'Comments', 'Comments')
 
 # Filter data to create separate pub and climate change objects
-data_pub<-filter(data,IncludeInPublication==TRUE)
-data_CC<-filter(data,str_detect(Drivers,"Climate Change"))
+data_pub<-filter(data,RandomSample==TRUE)
+data_CC<-filter(data,str_detect(Drivers,"Climate Change")&UseInPublication==TRUE)
 
 data_pub.join<-data_pub %>%
   select(ID,Citation)
@@ -143,7 +143,7 @@ freq.col<-c("ProcessExplicit",
             "AlternativesExplicit",
             "TradeOffsExplicit",
             "DecisionExplicit",
-            "RolesExplicit",
+            "RoleSpecification",
             "OpenMeetings",
             "ResultsAdopted")
 # Get columns for participant analysis
@@ -322,15 +322,15 @@ server <- function(input, output, session) {   # code to create output using ren
   # Filter data to include only those reviewed for the publication or all MSEs
   data_reviewed<-reactive({
     if(input$data_filter=="pub"){
-      filter(data,IncludeInPublication==TRUE)
+      filter(data,RandomSample==TRUE)
     } 
     else 
       if(input$data_filter=="CC"){
-        filter(data,str_detect(Drivers,"Climate Change"))
+        filter(data,str_detect(Drivers,"Climate Change")&UseInPublication==TRUE)
       }
     else 
       if(input$data_filter=="all"){
-        filter(data,IncludeInPublication==TRUE|IncludeInPublication==FALSE)
+        filter(data,UseInPublication==TRUE|UseInPublication==FALSE)
     }
   })
   
@@ -354,7 +354,7 @@ server <- function(input, output, session) {   # code to create output using ren
            "Alternatives"="AlternativesExplicit",
            "Tradeoffs"="TradeOffsExplicit",
            "Decision"="DecisionExplicit",
-           "Roles"="RolesExplicit",
+           "Roles"="RoleSpecification",
            "Open Meetings"="OpenMeetings",
            "Adopted"="ResultsAdopted") %>%
     summarise_all(funs(sum)) %>%
