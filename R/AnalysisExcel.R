@@ -28,12 +28,12 @@ world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a
 ###-- Data Processing --###
 
 # Obtain data tables
-study<-read_xlsx("DB files - Excel/tblStudy.xlsx")
-mgmt<-read_xlsx("DB files - Excel/tblStudyManagementTools.xlsx")
+study<-read_xlsx("data/DB files - Excel/tblStudy.xlsx")
+mgmt<-read_xlsx("data/DB files - Excel/tblStudyManagementTools.xlsx")
 mgmt$fkStudyID<-parse_integer(mgmt$fkStudyID)
-obj<-read_xlsx("DB files - Excel/tblStudyObjectives.xlsx")
+obj<-read_xlsx("data/DB files - Excel/tblStudyObjectives.xlsx")
 obj$fkStudyID<-parse_integer(obj$fkStudyID)
-fields<-read_xlsx("DB files - Excel/tblStudyFields.xlsx")
+fields<-read_xlsx("data/DB files - Excel/tblStudyFields.xlsx")
 
 #####
 # Edit tables for joining
