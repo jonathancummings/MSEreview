@@ -72,8 +72,8 @@ study.join<-study %>%
 
 mgmt.join<-mgmt %>% 
   group_by(fkStudyID) %>%
-  summarise(ManagementType = toString(sort(unique(ManagementType))),
-            AlternativesEvaluated = toString(sort(unique(AlternativesEvaluated))))
+  summarise(ManagementType = toString(sort(unique(MPManagementTool))),
+            AlternativesEvaluated = toString(sort(unique(MPAlternativesEvaluated))))
 
 obj.join<-obj %>% 
   group_by(fkStudyID) %>%
