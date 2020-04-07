@@ -90,10 +90,10 @@ obj.data_pub<-left_join(data_pub.join,obj,by=c("ID"="fkStudyID"))%>%
 obj.data_CC<-left_join(data_CC.join,obj,by=c("ID"="fkStudyID"))%>%
   select(-c("ID","ID.y"))
 
-alt.data_pub<-left_join(data_pub.join,mgmt,by=c("ID"="fkStudyID"))%>%
-  select(-c("ID","ID.y"))
-alt.data_CC<-left_join(data_CC.join,mgmt,by=c("ID"="fkStudyID"))%>%
-  select(-c("ID","ID.y"))
+alt.data_pub<-left_join(data_pub.join,mgmt.join,by=c("ID"="fkStudyID"))%>%
+  select(-c("ID"))
+alt.data_CC<-left_join(data_CC.join,mgmt.join,by=c("ID"="fkStudyID"))%>%
+  select(-c("ID"))
 
 data_pub<-data_pub %>%
   select(-c("ID"))
@@ -222,7 +222,7 @@ part.data_pub<-data_pub %>%
            "Sub Alternatives"="ProcedureElicitation_Sub")
 
 part.data_pub<- part.data_pub %>%
-    purrr::map(~ strsplit(as.character(.),split=",")) %>%
+    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
     purrr::map(unlist) %>%
     purrr::map(table)
 
@@ -257,7 +257,7 @@ part.data_CC<-data_CC %>%
          "Sub Alternatives"="ProcedureElicitation_Sub")
 
 part.data_CC<- part.data_CC %>%
-  purrr::map(~ strsplit(as.character(.),split=",")) %>%
+  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
   purrr::map(unlist) %>%
   purrr::map(table)
 
