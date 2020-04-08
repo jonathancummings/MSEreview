@@ -220,7 +220,7 @@ ui <- fluidPage(
          "Show results from:",
          choices = c(
            "30 articles reviewed for Cummings et. al. Publication, "="pub",
-           "MSE included climate change as a driver"="CC",
+           "MSE including climate change as a driver"="CC",
            "All MSEs (entered in the database to date)"="all"),
          width='400px'),
         textOutput("radio")
@@ -336,18 +336,18 @@ server <- function(input, output, session) {   # code to create output using ren
   
   # Select study summary data_reviewed
   summary.data<-reactive({data_reviewed() %>%
-    select(summary.col)
+    select(all_of(summary.col))
   })
 
   # Select study problem and driver data_reviewed
   prob.data<-reactive({data_reviewed() %>%
-    select(prob.col)
+    select(all_of(prob.col))
   })
   
   # Frequency of method
   n_mse<-reactive({nrow(data_reviewed())})
   freq.data<-reactive({data_reviewed() %>%
-    select(freq.col) %>%
+    select(all_of(freq.col)) %>%
     rename("Process"="ProcessExplicit",
            "Problem"="ProblemDefinitionExplicit",
            "Objectives"="ObjectivesExplicit",
@@ -368,7 +368,7 @@ server <- function(input, output, session) {   # code to create output using ren
 
   # Who participates
   part.data_reviewed<-reactive({data_reviewed() %>%
-    select(part.col) %>%
+    select(all_of(part.col)) %>%
       rename("Process"="Leader",
              "Doc Objectives"="ObjElicitationSource_Exp",
              "Doc Alternatives"="ProcedureElicitation_Exp",
@@ -442,7 +442,7 @@ server <- function(input, output, session) {   # code to create output using ren
 
   # How were objectives defined
   obj.data2<-reactive({obj.data %>%
-    select(obj.col) %>%
+    select(all_of(obj.col)) %>%
     purrr::map(table)
   })
   
@@ -463,7 +463,7 @@ server <- function(input, output, session) {   # code to create output using ren
 
   obj.data_table2<-reactive({
     d<-obj.data %>%
-      select(obj.col) %>%
+      select(all_of(obj.col)) %>%
       group_by(ObjType,ObjCategory,ObjDirection,ObjScale) %>%
       summarize(n())
     colnames(d)<-c("Type","Category","Direction","Scale","Number")
@@ -596,7 +596,7 @@ server <- function(input, output, session) {   # code to create output using ren
          height=275)},deleteFile = FALSE)
   output$MSEcounts <- renderTable({
     tibble("MSE type"=c("Published","Random Sample","Climate Change"),
-               "Count"=c(154,30,11))
+               "Count"=c(154,30,16))
 },digits=0)
 }
 
