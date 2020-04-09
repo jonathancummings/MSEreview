@@ -581,7 +581,7 @@ No strategic or process objectives were documented in the MSEs.  There were roug
 ```{r, objectiveTypes}
 obj.dataTable_pub %>%
   filter(Objective=="Type") %>%
-  select(-Analysis, -Objective) %>% 
+  select(Type, Percent, Number, 'Per MSE', -Analysis, -Objective) %>% 
   kable(caption = "Objective Types") %>% 
   kable_styling()
 ```
@@ -593,6 +593,7 @@ The majority of MSEs did not explicitly document how the stages of the MSE proce
 freq.data_pub %>%
   select(-Analysis) %>% 
   mutate("Percent"=round(Percent,0)) %>% 
+  select(Explicit,Percent,Number) %>% 
   kable(caption = "Prevalence of explicit documentation of stages in the MSE process") %>% 
   kable_styling()
 ```
@@ -602,7 +603,8 @@ MSEs were rarely explicit about the roles participants played in MSE processes, 
 
 ```{r roles}
 freq2.data_pub %>% 
-  mutate("Percent"=round(Percent,0)) %>% 
+  mutate("Percent"=round(Percent,0)) %>%
+  select(Explicit,Percent,Number) %>% 
   kable(caption = "Prevalence of explicit roles for MSE participants and meetings that were open to the public during the MSE process") %>% 
   kable_styling()
 ```
@@ -618,18 +620,16 @@ Part.plot
 ```
 
 # Climate Change in MSE (As *Box Insert*) 
-Fisheries management has mostly focused on fishing impacts with ecosystem status viewed as a background constant. The increasing rate of climate change is changing this dynamic, bringing ecosystem status to the forefront of fisheries management. 
+Fisheries management has mostly focused on fishing impacts with ecosystem status viewed as a background constant. The increasing rate of climate change and its influence on fisheries is changing this dynamic, bringing ecosystem status to the forefront of fisheries management. 
 
-We review published MSEs including climate change as a driver against the stages in a SDM process to highlight unique aspects of MSEs that model climate change as a driver to help inform fisheries management
- 
-We filtered the original set of MSE by searching for the term "climate change" within the set, reviewing 16 published MSEs included climate change as a driver as of December 31st, 2019. We reviewed the climate change MSEs using the same methodology described above. These MSEs have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)).
+Here we review published MSEs the include climate change as a driver of the fisheries model using the stages in a SDM process to highlight unique aspects of these MSEs. We filtered the original set of MSEs published by as of December 31st, 2019 searching for the term "climate change" within the set that resulted from searching for "management strategy evaluation". This resulted in our reviewing 16 published MSEs that included climate change as a driver. We reviewed the climate change MSEs using the same methodology described above. These MSEs have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)).
 
 ```{r, mapfigure, fig.cap='Map of MSE study locations.', fig.height=4, out.width="100%"}
 MSE.map +
   theme(text = element_text(size=14))
 ```
 
-Uncertainty and monitoring methodology were also included in some of the climate change MSEs (Table \@ref(tab:driversCC)), but not as often.  Other biological drivers were also included in some of the climate change MSEs.  Overall climate change MSEs considered fewer drivers on average, 1.64, than the random sample of MSEs, which included 1.87.
+As with the random sample of reviewed MSEs, uncertainty was the most common driver, apart from climate change, included climate change MSEs (Table \@ref(tab:driversCC)), while other biological drivers were also included in some of the climate change MSEs.  Overall climate change MSEs considered fewer drivers on average, 1.4, than the random sample of MSEs, which included 1.8.
 
 ```{r driversCC}
 drive.data_CC %>%
@@ -639,44 +639,50 @@ drive.data_CC %>%
   kable_styling()
 ```
 
-More objectives were considered per MSE in the random sample of MSEs than in the climate change MSEs (Table \@ref(tab:CCPerMSE)).  Climate change MSEs were less likely to consider economic and social objectives than the random sample (Table \@ref(tab:CCobjectiveCategories)).
+Climate change MSEs averaged the same number of objectives per MSE. The categories of the objectives differed however, with more frequent inclusion of yield objectives, but less frequent consideration of economic objectives and no consideration of social objectives (Table \@ref(tab:CCobjectiveCategories)) in the climate change MSEs.
 ```{r, CCPerMSE}
-color_Pub <- which(per.MSE$Analysis=='Random Sample')
-color_CC <- which(per.MSE$Analysis=='Climate Change')
-
-per.MSE %>%
-  kable(caption = "Number of objectives considered per management strategy evaluation") %>%
-  row_spec(color_CC, color = "#66CCCC", background = "white") %>%
-  row_spec(color_Pub, color = "#006666", background = "white")%>% 
-  kable_styling()
+# color_Pub <- which(per.MSE$Analysis=='Random Sample')
+# color_CC <- which(per.MSE$Analysis=='Climate Change')
+# 
+# per.MSE %>%
+#   kable(caption = "Number of objectives considered per management strategy evaluation") %>%
+#   row_spec(color_CC, color = "#66CCCC", background = "white") %>%
+#   row_spec(color_Pub, color = "#006666", background = "white")%>% 
+#   kable_styling()
 ```
 
 ```{r, CCobjectiveCategories}
-color_Pub <- which(objcat.data$Analysis=='Random Sample')
-color_CC <- which(objcat.data$Analysis=='Climate Change')
+objcat.data_CC<-objcat.data %>%
+  filter(`Objective Category`!="Utility") %>% 
+  add_column(order=c(1,2,5,6,7,3,4)) %>% 
+  arrange(order)
 
-objcat.data %>%
+color_Pub <- which(objcat.data_CC$Analysis=='Random Sample')
+color_CC <- which(objcat.data_CC$Analysis=='Climate Change')
+
+objcat.data_CC %>%
+  select(-order) %>% 
   kable(caption = "Objective categories considered in management strategy evaluations") %>%
   row_spec(color_CC, color = "#66CCCC", background = "white") %>%
-  row_spec(color_Pub, color = "#006666", background = "white")%>% 
+  row_spec(color_Pub, color = "#006666", background = "white") %>% 
   kable_styling()
 ```
 
-Climate change MSEs were more likely to explicitly document the alternative elicitation and trade-off analysis stages, but otherwise were less likely to document stages in the decision process.
+Climate change MSEs were more likely to explicitly document the trade-off analysis stage, equaly likely to document the alternatives stages, but were less likely to document the other stages in the decision process.
 ```{r, CCstages}
 freq.data_CC %>%
-  select(-Analysis) %>% 
   mutate("Percent"=round(Percent,0)) %>% 
+  select(Explicit, Percent, Number, -Analysis) %>% 
   kable(caption = "Prevalence of explicit documentation of stages in climate change MSE processes") %>%
   kable_styling()
 ```
 
-Including climate change in a MSE appears to reduce the complexity of other stages in the MSE process. On average climate change MSEs consider fewer drivers, consider fewer and less diverse objectives, and explicitly document fewer stages of the MSE process.  If the MSE process is time or effort limited, the inclusion of climate change may utlizing time and effort that in other case was invested elsewhere in the MSE process.
+Including climate change in a MSE appears to reduce the complexity of other stages in the MSE process, in particular those stages that utilize input from additional particapants. On average climate change MSEs consider fewer drivers, consider less diverse objectives, and explicitly document fewer stages of the MSE process.  If the MSE process is time, effort, or participant limited the inclusion of climate change may be utlizing time, effort, or outside participants to focus on climate change rather than other aspects of the MSE process.
 
 # Discussion 
 The primary picture painted by MSE documentation is one of scientist driven simulation studies rather than management driven decision processes. While documentation about the modeling conducted in a MSE was explicit, documentation about the MSE process itself was often limited. 
 
-Management strategy evaluations typically do assess the consequences of uncertainty for achieving management goals, but other factors influencing the consequences of management strategies get more sporadic treatment.  Data limitation is a frequent concern in fisheries management.  Next to accounting for uncertainty, accessing the influence of monitoring methodology was the most prevalent driver included in MSEs.  Further inclusion of this driver, and additional use of value of information analyses could expand the use of MSE as a tool to design cost-effective fisheries monitoring plans. While discussions of fisheries research and management seem to be moving toward ecosystem effects, spatial models, and multiple species models, these characteristics were rarely considered in the set of MSEs we reviewed.
+Management strategy evaluations typically do assess the consequences of uncertainty for achieving management goals, but other factors influencing the consequences of management strategies get more sporadic treatment.  Data limitation is a frequent concern in fisheries management, and contributes to the degree of uncertainty present in fisheries management.  Next to accounting for uncertainty, accessing the influence of data quality and availablity, i.e.,  monitoring methodology was the most prevalent driver included in MSEs.  This likely points to a desire for the design and use of cost-effective fisheries monitoring plans, suggesting future MSEs may be able to learn from the set including monitoring methodology as a driver. Additionally, the use of value of information analyses could expand upon the benefits of MSE as a tool to direct scientific resources [@runge_2011; @moore_2012]. While discussions of fisheries research and management seem to be moving toward ecosystem effects, spatial models, and multiple species models, these characteristics were rarely considered in the set of MSEs we reviewed.
 
 Managing natural resources entails achieving the objectives of people interacting with a natural resource, so decision processes are likely to produce more desirable results when they include peoples objectives.  These objectives are likely to include conservation, yield, economic, and social concerns, however the MSEs we reviewed don't cover all categories of objectives, as yield and economic objectives were not included in about one quarter of MSEs, and social objectives were absent from all but 2 of the 30 evaluations. While we are unable to know the cause for this with more explicit documentatin of MSE processes, our results may provide some clues.
 
