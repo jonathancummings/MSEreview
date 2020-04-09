@@ -55,7 +55,7 @@ library(here) # file directory assistance
 # dbDisconnect(con)
 
 # Load data for app (data is obtained via the analysisexcel.R script)
-load(here("MSEreview.RData"))
+load("MSEreview.RData")
 
 # Get map background for plotting the map
 world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
