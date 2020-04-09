@@ -520,7 +520,7 @@ Our overall objective is to determine the extent that MSE achieves the aspiratio
 * Determine the prevalence of a) explicit documentation and b) use of decision making steps in the MSE process, and 
 * Identify participants in MSE processes.
 
-An incresingly recognized challenge in fisheries management is responding to changes in the productivity of fisheries stocks as a result of climate change [@busch_climate_2016, @brander_global_2007]. We also conduct a focused analysis of MSE processes that address the influence of climate change on fisheries management, highlighting aspects of MSE processes that model climate change as a driver of system status.
+An incresingly recognized challenge in fisheries management is responding to changes in the productivity of fisheries stocks as a result of climate change [@busch_climate_2016; @brander_global_2007]. We also conduct a focused analysis of MSE processes that address the influence of climate change on fisheries management, highlighting aspects of MSE processes that model climate change as a driver of system status.
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
@@ -554,11 +554,11 @@ In the stages group we address how the MSE stages were completed. We report whet
 
 In the participant group we address how participation in the MSE process was structured and who participated. We report who lead the MSE process, who participated in it, and if the roles of participants were established and documented.  In many cases the process used to elicit objectives and alternatives was not explicit.  In these cases we used what information was provided to glean who participated in the production of those components of the MSE.  We record and report who those participants were, referring to them as subjective participants in the objectives or alternatives process.  In other cases where there was not enough information to glean who participated we report the participants as unknown.  
 
-We collected additional information about the MSEs we reviewed beyond what is reported here. For a full description of the information recorded in the relational database see the supplemental information (supplement), and for the full data set and results see our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
+We collected additional information about the MSEs we reviewed beyond what is reported here. For a full description of the information recorded in the relational database see the supplemental information (supplement 1), and for the full data set and results see our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
 
 # Results 
 ### What questions and management objectives do MSEs address? 
-We found that uncertainty was the main driver of the system state included in management strategy evaluations, with uncertainty included in 21 of the 30 evaluations we reviewed in our random sample (Table \@ref(tab:drivers)).  In addition to uncertainty about the system model itself, monitoring methodology was the most prevalent driver in MSE models, but a variety of drivers were considered across the random sample of MSEs. 
+We found that uncertainty was the main driver of the system state included in management strategy evaluations, with uncertainty included in 21 of the 30 evaluations we reviewed in our random sample (Table \@ref(tab:drivers)).  In addition to uncertainty about the system model itself, monitoring methodology, how and what data is collected, was the most prevalent driver in MSE models, but a variety of drivers were considered across the random sample of MSEs. 
 
 ```{r drivers}
 drive.data_pub %>%
@@ -577,7 +577,7 @@ objcat.data_pub %>%
   kable_styling()
 ```
 <br>
-No strategic or process objectives were documented in the MSEs.  There were roughly the same number of fundamental and means included in the MSEs (Table \@ref(tab:objectiveTypes)).
+No strategic or process objectives were documented in the MSEs.  There were roughly the same number of fundamental and means objectives included in the MSEs (Table \@ref(tab:objectiveTypes)). An average of 6 objectives were evaluated by each management strategy evaluation.
 ```{r, objectiveTypes}
 obj.dataTable_pub %>%
   filter(Objective=="Type") %>%
@@ -598,7 +598,7 @@ freq.data_pub %>%
 ```
 
 ### Who is involved in MSEs? 
-MSEs were rarely explicit about the roles participants played in MSE processes, as only one MSE documented participant roles (Table \@ref(tab:roles)).  None of the MSEs noted whether or not public meetings were held in which the public could participate in the MSE process.
+MSEs were rarely explicit about the roles participants played in MSE processes, as only one MSE documented the roles participants played in the process (Table \@ref(tab:roles)).  None of the MSEs noted whether or not public meetings were held in which the public was invited to participate.
 
 ```{r roles}
 freq2.data_pub %>% 
@@ -607,13 +607,13 @@ freq2.data_pub %>%
   kable_styling()
 ```
 
-The primary participants and leaders of the MSE processes were scientists, while some MSE process were led by governments and management agencies (Figure \@ref(fig:participants)).  Scientists were leaders, or the sole participants and therefore seemingly the leaders, in 73 percent of the MSE processes, while 23 percent of process lacked enough documentation of participants and leadership such that we were unable to identify a presumed leader of the process.  
+The primary participants and leaders of the MSE processes were scientists, while some MSE process were led by governments and management agencies (Figure \@ref(fig:participants) Process).  Scientists were exlicitly the leaders -- or the sole participants and therefore seemingly the leaders -- in 73 percent of the MSE processes, while 27 percent of processes lacked enough documentation of participants and leadership such that we were unable to identify a presumed leader of the process.  
 
-Scientists were participants in nearly all of the reviewed MSE processes.  Other stakeholders in MSE processes were less frequent participants.  Members of the fishery participated in 30 percent, management and government representatives in 23 percent, representatives of independent institutions in 7 percent, and the members of the public in 3 percent of reviewed MSEs.  Decision makers -- those responsible for selecting the management plan to implement -- were participants in 13 percent of MSEs.  Experts, a possible source of data or predictions, participated in 3 percent of the MSEs reviewed.  Participants involved to the assist the MSE process itself, i.e., facilitators and analysts, participated in 10 and 3 percent of MSE processes respectively. 
+Scientists were participants in nearly all of the reviewed MSE processes (Figure \@ref(fig:participants) Participants).  Other stakeholders in MSE processes were less frequent participants.  Members of the fishery participated in 30 percent, management and government representatives in 23 percent, representatives of independent institutions in 7 percent, and the members of the public in 3 percent of reviewed MSEs.  Decision makers -- those responsible for selecting the management plan to implement -- were participants in 13 percent of MSEs.  Experts -- a possible source of data or predictions -- participated in 3 percent of the MSEs reviewed.  Participants involved to the assist the MSE process itself, i.e., facilitators and decision analysts, participated in 10 and 3 percent of MSE processes respectively. 
 
-Objectives and alternatives were elicited from a variety of participants.  About 10 percent of the objectives and alternatives explicitly were produced by stakeholders in the fisheries, coming from management, government, or fishery sources.  In most cases the source of the objectives and alternatives was not explicit.  In those subjective cases scientists seemingly selected these components most frequently, while in some cases the source was unknown.
+Objectives and alternatives were elicited from a variety of participants. Management, government, or fishery participants explicitly provided objectives and alternatives in about 10 percent of the MSE processes (Figure \@ref(fig:participants) Explicit).  However, in most cases the source of the objectives and alternatives was not explicit.  The source of objectives and alternatives was not explicit in more than 80% of the MSE processes, 25 of 30 objective sources were not explicit and 24 of 30 alternative sources. In those subjective cases scientists -- being the only or primary participants -- seemingly selected these components most frequently (Figure \@ref(fig:participants) Subjective).
 
-```{r participants, fig.cap='Who guided, participated in, or provided input during the specified steps of the MSE process', fig.height=6, out.width="100%"}
+```{r participants, fig.cap='Who guided (Process), participated in (Participants), or provided explicitly documented input (Explicit), or seemingly provided input (Subjective) during the specified steps of the MSE process', fig.height=6, out.width="100%"}
 Part.plot
 ```
 
