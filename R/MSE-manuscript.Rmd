@@ -6,9 +6,9 @@ author:
     - Dartmouth
   name: Jonathan W. Cummings, Amanda Hart, Gavin Fay
 output:
+  bookdown::word_document2:
   bookdown::html_document2:
     number_sections: false
-  bookdown::word_document2:
   bookdown::pdf_document2:
     number_sections: false
 always_allow_html: yes
@@ -513,7 +513,7 @@ Are MSE processes being conducted in the manner described? Do MSE processes cons
 Adaptive management developed in fisheries management as a means to improve the achievement of objectives through time, when learning can aid achieving those objectives [@ADM].  For example, the Millennium Ecosystem Assessment [-@MEA] defines adaptive management as “A systematic process for continually improving management policies and practices by learning from the outcomes of previously employed policies and practices. In active adaptive management, management is treated as a deliberate experiment for purposes of learning.” We contend that scientific publication is essentially a process intended to support adaptive management, in that researchers gain knowledge from the decisions made and outcomes produced by previous work to inform their decisions. In the case of fisheries management, are scientific publications of management strategy evaluations supporting adaptive management?
 
 ### Objectives 
-Our overall objective is to determine the extent that MSE achieves the aspirational aims outlined above, and whether MSE documentation supports learning within the MSE practitioner community.  Given that scientific publication is the primary means of communicating the results of MSE, we review the scientific literature to assess the extent to which the process and aims of MSE, and adaptive management are being achieved and supported by the scientific literature. To assess this we determine how MSEs utilize standard components of decision making processes. We use the structured decision making (SDM) process [@SDM] -- the decision making framework in which adaptive management occurs -- as our framework for evaluation.  Using this framework we review published MSEs to:  
+Our overall objective is to determine the extent that MSE achieves the aspirational aims outlined above, and whether MSE documentation supports learning within the MSE practitioner community.  Given that scientific publication is the primary means of communicating the results of MSE, we review the scientific literature to assess the extent to which the process and aims of MSE, and adaptive management are being achieved and supported by the scientific literature. To assess this, we determine how MSEs utilize standard components of decision making processes. We use the structured decision making (SDM) process [@SDM] -- the decision making framework in which adaptive management occurs -- as our framework for evaluation.  Using this framework, we review published MSEs to:  
 
 * Determine what questions MSE processes are addressing
 * Identify the objectives and alternatives considered in MSE
@@ -538,7 +538,7 @@ Table1.data<-as_tibble(cbind(MSE_Type,Count))
 ```
 
 ## Reviewing MSE documentation 
-We used the structured decision making framework [@conroy2013decision; @gregory2012structured] as our framework for evaluating management strategy evaluation documents (Figure \@ref(fig:SDMfigure)). The structured decision making processes is composed of the six process stages: problem definition, objective elicitation, alternative development, consequence prediction, trade-off analysis, and decision implementation. 
+We used the structured decision making framework [@conroy2013decision; @gregory2012structured] as our framework for evaluating management strategy evaluation documents (Figure \@ref(fig:SDMfigure)). The structured decision making process is composed of the six process stages: problem definition, objective elicitation, alternative development, consequence prediction, trade-off analysis, and decision implementation. 
 
 ```{r, SDMfigure, fig.cap='Review framework - structured decision making process'}
 knitr::include_graphics(here('figs/SDMProcessFramework.png'))
@@ -552,7 +552,7 @@ In the objectives group we address what the concerns, or goals of the MSE were. 
 
 In the stages group we address how the MSE stages were completed. We report whether the stages of the structured decision making framework, i.e., problem, objectives, alternatives, tradeoffs, were explicitly completed and the methods used to complete them were documented.  We also report whether the MSE results were adopted in subsequent management.
 
-In the participant group we address how participation in the MSE process was structured and who participated. We report who lead the MSE process, who participated in it, and if the roles of participants were established and documented.  In many cases the process used to elicit objectives and alternatives was not explicit.  In these cases we used what information was provided to glean who participated in the production of those components of the MSE.  We record and report who those participants were, referring to them as subjective participants in the objectives or alternatives process.  In other cases where there was not enough information to glean who participated we report the participants as unknown.  
+In the participant group we address how participation in the MSE process was structured and who participated. We report who lead the MSE process, who participated in it, and if the roles of participants were established and documented.  In many cases the process used to elicit objectives and alternatives was not explicit.  In these cases, we used what information was provided to glean who participated in the production of those components of the MSE.  We record and report who those participants were, referring to them as subjective participants in the objectives or alternatives process.  In other cases where there was not enough information to glean who participated we report the participants as unknown.  
 
 We collected additional information about the MSEs we reviewed beyond what is reported here. For a full description of the information recorded in the relational database see the supplemental information (supplement 1), and for the full data set and results see our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
 
@@ -668,7 +668,7 @@ objcat.data_CC %>%
   kable_styling()
 ```
 
-Climate change MSEs were more likely to explicitly document the trade-off analysis stage, equally likely to document the alternatives stages, but were less likely to document the other stages in the decision process.
+Climate change MSEs were more likely to explicitly document the trade-off analysis stage, equally likely to document the alternatives stages, but were less likely to document the other stages in the decision process (Table \@ref(tab:CCstages)).
 ```{r, CCstages}
 freq.data_CC %>%
   mutate("Percent"=round(Percent,0)) %>% 
@@ -690,7 +690,7 @@ Scientists led, and participated in most of the MSEs, while decision-makers, dec
 
 Participants that would be likely to expand the set of objectives considered in a MSE rarely participated in the MSEs we reviewed. That is, facilitators and decision analysts were rarely participants in MSE processes.  The inclusion of facilitators in decision processes aid information gain and conflict resolution, increase trust between participants, and lead to more beneficial environmental and social outcomes [@Vente].  The additional structure and focus on the decision process would likely result in more explicit documentation when facilitators and decision analysts participate in MSE, as resulted in some of the MSEs reviewed here [@williams2011; @smith2013; @kolody2008]. Facilitators and decision analysts can also aid decision processes by helping to diagnose the problem, which can result in selecting more appropriate analysis techniques for the problem type, elicit a more complete and representative set of objectives, and select analysis tools to best address decision impediments to identify the optimal management strategy [@Cummings_inprep].  
 
-The MSE process may be aided by utilizing the techniques from the structured decision making approach to decision analysis, such as expanding the focus on problem framing at the outset of MSEs, eliciting fully representative sets of objectives, and utilizing multiple attribute utility theory to evaluate tradeoffs between objectives (Cummings, in prep). Utilizing the structured decision making approach also eases the documentation process by breaking decision making into more discrete stages. However, there may be practical considerations, such as time or budgetary constraints that limit how complex the stages of a MSE are, and the degree of documentation that occurs.  Where the expertise and budget is available, the use of facilitators and scribes may aid in addressing and documenting MSE processes.
+The MSE process may be aided by utilizing the techniques from the structured decision making approach to decision analysis, such as expanding the focus on problem framing at the outset of MSEs, eliciting fully representative sets of objectives, and utilizing multiple attribute utility theory to evaluate tradeoffs between objectives (Cummings, in prep). Utilizing the structured decision making approach also eases the documentation process by breaking decision making into more discrete stages. However, there may be practical considerations, such as time or budgetary constraints that limit how complex the stages of a MSE are, and the degree of documentation that occurs.  Where the expertise and budget are available, the use of facilitators and scribes may aid in addressing and documenting MSE processes.
 
 The relative dearth of explicit documentation we found in our review of MSE publications may hinder learning by MSE practitioners.  While the modeling was clearly documented, the MSE process steps were often inexplicit.  Without explicit documentation it is unclear why the analysis was structured as it was, why a particular set of drivers was selected, and why a set of objectives or alternatives were chosen.  Perhaps the most crucial stage to enable understanding a replication of a decision resulting from a MSE is a clear presentation of how trade-offs between the multiple objectives were evaluated, and what the optimal or chosen alternative was that resulted from the MSE process. Different decision makers can rationally look at the same prediction of consequences and select a different preferred alternative if they treat the importance of the objectives differently.  Therefore, MSE documentation often is not fully supporting replication or learning due to the frequent absence of trade-off and decision documentation.
 
