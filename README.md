@@ -12,9 +12,3 @@ How do published MSE projects utilize standard decision making components and su
 
 ## Methods
 We searched the MSE literature via Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019. This search returned 264 results, of which 154 were management strategy evaluations after removing articles that were reviews, meta-analyses, or simply cited other MSE articles. We reviewed a random sample of 30 of these 154 articles.
-
-MSE type | Count 
-:--:|:--:
-Published | 154 
-Random Sample | 30 
-Climate Change | 11 
