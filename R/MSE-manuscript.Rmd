@@ -483,7 +483,7 @@ Freq.plot<-ggplot(freq.data_pub,aes(Explicit,Percent))+
     limits=c("Decision","Tradeoffs",
              "Alternatives","Objectives","Problem","Process"),
     labels=c("Decision","Tradeoffs",
-             "Alternatives","Objectives","Problem","Process")) + theme_bw()
+             "Alternatives","Objectives","Problem","Process")) + theme_bw() + theme(plot.margin = margin(0, 0.5, 0, 0.25, "cm"))
 
 Part.plot<-ggplot(part.data_pub,aes(x=order,y=Percent)) +
   facet_wrap(~Stage,scale="free",ncol=2) + geom_col() +
@@ -491,14 +491,14 @@ Part.plot<-ggplot(part.data_pub,aes(x=order,y=Percent)) +
   scale_x_continuous(breaks = part.data_pub$order,
                      labels = part.data_pub$Participants)+
   scale_y_continuous(limits=c(0,100),expand = c(0,0)) +
-  ylab("Percent")+xlab(NULL)+coord_flip() + theme_bw()
+  ylab("Percent")+xlab(NULL)+coord_flip() + theme_bw() + theme(plot.margin = margin(0, 0.5, 0, 0.25, "cm"))
 
 Driver.plot<-ggplot(drive.data_pub,aes(x=order,y=Percent)) +
   geom_col() +
   scale_x_continuous(breaks = drive.data_pub$order,
                      labels = drive.data_pub$Driver)+
   scale_y_continuous(limits=c(0,100),expand = c(0,0))+
-  ylab("Percent")+xlab(NULL)+coord_flip()+ theme_bw()
+  ylab("Percent")+xlab(NULL)+coord_flip()+ theme_bw()+ theme(plot.margin = margin(0, 0.5, 0, 0.25, "cm"))
 ```
 
 # Introduction 
@@ -512,7 +512,7 @@ Are MSE processes being conducted in the manner described? Do MSE processes cons
 
 Adaptive management developed in fisheries management as a means to improve the achievement of objectives through time, when learning can aid achieving those objectives [@ADM].  For example, the Millennium Ecosystem Assessment [-@MEA] defines adaptive management as “A systematic process for continually improving management policies and practices by learning from the outcomes of previously employed policies and practices. In active adaptive management, management is treated as a deliberate experiment for purposes of learning.” We contend that scientific publication is essentially a process intended to support adaptive management, in that researchers gain knowledge from the decisions made and outcomes produced by previous work to inform their decisions. In the case of fisheries management, are scientific publications of management strategy evaluations supporting adaptive management?
 
-### Objectives 
+## Objectives 
 Our overall objective is to determine the extent that MSE achieves the aspirational aims outlined above, and whether MSE documentation supports learning within the MSE practitioner community.  Given that scientific publication is the primary means of communicating the results of MSE, we review the scientific literature to assess the extent to which the process and aims of MSE, and adaptive management are being achieved and supported by the scientific literature. To assess this, we determine how MSEs utilize standard components of decision making processes. We use the structured decision making (SDM) process [@SDM] -- the decision making framework in which adaptive management occurs -- as our framework for evaluation.  Using this framework, we review published MSEs to:  
 
 * Determine what questions MSE processes are addressing
@@ -524,7 +524,7 @@ An increasingly recognized challenge in fisheries management is responding to ch
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
-We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table \@ref(tab:MSEcount)). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (supplement 2), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE.  We reviewed 16 climate change MSE articles (supplement 2). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table \@ref(tab:MSEcount)). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (Appendix B), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE.  We reviewed 16 climate change MSE articles (Appendix B). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
 
 ```{r MSEcount}
 MSE_Type<-c("Published","Random Sample","Climate Change")
@@ -554,7 +554,7 @@ In the stages group we address how the MSE stages were completed. We report whet
 
 In the participant group we address how participation in the MSE process was structured and who participated. We report who lead the MSE process, who participated in it, and if the roles of participants were established and documented.  In many cases the process used to elicit objectives and alternatives was not explicit.  In these cases, we used what information was provided to glean who participated in the production of those components of the MSE.  We record and report who those participants were, referring to them as subjective participants in the objectives or alternatives process.  In other cases where there was not enough information to glean who participated we report the participants as unknown.  
 
-We collected additional information about the MSEs we reviewed beyond what is reported here. For a full description of the information recorded in the relational database see the supplemental information (supplement 1), and for the full data set and results see our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
+We collected additional information about the MSEs we reviewed beyond what is reported here. For a full description of the information recorded in the relational database see the supplemental information (Appendix A), and for the full data set and results see our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
 
 # Results 
 ### What questions and management objectives do MSEs address? 
