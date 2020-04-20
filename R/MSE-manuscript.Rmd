@@ -389,7 +389,7 @@ altcat.data_CC<-alt.data_CC %>%
   arrange(desc(Number))
 
 # Get map background for plotting the map
-world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
+world <- borders("world", colour="gray85", fill="gray96", alpha=0.75) # create a layer of borders
 ```
 
 ```{r plots}
@@ -469,8 +469,8 @@ per.MSE<-obj.dataTable %>%
 
 # plot MSEs on map
 MSE.map<-ggplot(data=map.data,aes(x=Longitude, y=Latitude,color=Drivers)) + world +
-  geom_point(size=2.5) + geom_point(size = 2.5, colour = "grey", shape = 1) +
-  scale_color_manual(values=c("#66CCCC","#006666"))+theme_void() +
+  geom_point(size=2.5) + geom_point(size = 2.5, colour = "gray55", shape = 1) +
+  scale_color_manual(values=c("gray10","gray55"))+theme_void() +
   theme(legend.position = c(0.15, 0.25))
 
 # plot explicit documentation of steps or components of MSE processes
@@ -557,7 +557,7 @@ In the participant group we address how participation in the MSE process was str
 We collected additional information about the MSEs we reviewed beyond what is reported here. For a full description of the information recorded in the relational database see the supplemental information (Appendix A), and for the full data set and results see our shiny application (https://jonathancummings.shinyapps.io/MSEreview/).
 
 # Results 
-### What questions and management objectives do MSEs address? 
+## What questions and management objectives do MSEs address? 
 We found that uncertainty was the main driver of the system state included in management strategy evaluations, with uncertainty included in 21 of the 30 evaluations we reviewed in our random sample (Table \@ref(tab:drivers)).  In addition to uncertainty about the system model itself, monitoring methodology, how and what data is collected, was the most prevalent driver in MSE models, but a variety of drivers were considered across the random sample of MSEs. 
 
 ```{r drivers}
@@ -598,7 +598,7 @@ freq.data_pub %>%
   kable_styling()
 ```
 
-### Who is involved in MSEs? 
+## Who is involved in MSEs? 
 MSEs were rarely explicit about the roles participants played in MSE processes, as only one MSE documented the roles participants played in the process (Table \@ref(tab:roles)).  None of the MSEs noted whether or not public meetings were held in which the public was invited to participate.
 
 ```{r roles}
@@ -694,7 +694,7 @@ The MSE process may be aided by utilizing the techniques from the structured dec
 
 The relative dearth of explicit documentation we found in our review of MSE publications may hinder learning by MSE practitioners.  While the modeling was clearly documented, the MSE process steps were often inexplicit.  Without explicit documentation it is unclear why the analysis was structured as it was, why a particular set of drivers was selected, and why a set of objectives or alternatives were chosen.  Perhaps the most crucial stage to enable understanding a replication of a decision resulting from a MSE is a clear presentation of how trade-offs between the multiple objectives were evaluated, and what the optimal or chosen alternative was that resulted from the MSE process. Different decision makers can rationally look at the same prediction of consequences and select a different preferred alternative if they treat the importance of the objectives differently.  Therefore, MSE documentation often is not fully supporting replication or learning due to the frequent absence of trade-off and decision documentation.
 
-### Explore and expand upon this review
+## Explore and expand upon this review
 To aid learning from the documentation that has occurred, and provide ready access to future MSE documentation we produced a shiny application [@R-Shiny] to enable an interactive means to explore the MSE literature (<https://jonathancummings.shinyapps.io/MSEreview/>). The MSE review shiny application enables users to interactively explore the results presented in this article. The application includes additional analyses that may be of interest, such as an analysis of what journals MSEs have been published in, who is authoring MSEs, and more. Users may also filter by driver, location, species, or other characteristics of MSEs to explore a set of MSEs of interest and relevance to aid learning in the MSE practitioner community. We hope that as MSE are conducted they are entered here so that MSE practitioners can further learn from each other in the future.
 
 # References 
