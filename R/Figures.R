@@ -623,3 +623,49 @@ as_tibble(altcat.data_CC)
 #   summarise('AVG'=sum(Number)) %>% 
 #   mutate(count=c(11,30)) %>% 
 #   mutate('Per MSE'=AVG/count)
+
+#Analyze the year that MSEs and the random sample of MSEs were published
+
+# Read in data on all publications
+tblWOS <- read_excel("data/DB files - Excel/tblWOS.xlsx")
+# Rename columns, filter to only MSEs, and select year published and whether the publication was in the 
+# random sample
+SampleCheck<-tblWOS %>%
+  rename(IsMSE="Is MSE?") %>% 
+  filter(IsMSE==TRUE) %>% 
+  select(YearPub,IncludeInPub)
+# Plot result
+ggplot(SampleCheck,aes(x=YearPub,color=IncludeInPub,fill=IncludeInPub))+geom_histogram(binwidth = 1)+
+  scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+theme_bw()+
+  labs(col="Random Sample",fill="Random Sample")
+# make a table of the result
+SampleCount<-SampleCheck %>% 
+  group_by(YearPub,IncludeInPub) %>% 
+  count() %>% 
+  pivot_wider(names_from = IncludeInPub,values_from = n) %>% 
+  rename(Selected="TRUE",
+         NotSelected="FALSE") %>%
+  mutate(percent=Selected/(Selected+NotSelected)*100)
+
+# Rename columns, filter to only MSEs, and select journal and whether the publication was in the 
+# random sample
+SampleJournals<-tblWOS %>%
+  rename(IsMSE="Is MSE?") %>% 
+  filter(IsMSE==TRUE) %>% 
+  select(Journal,IncludeInPub) %>%
+  group_by(Journal,IncludeInPub) %>% 
+  count() %>% 
+  filter(n>2) %>% 
+  drop_na() %>% 
+  arrange(-n)
+# Plot result
+ggplot(SampleJournals,aes(x=reorder(Journal, n),y=n,color=IncludeInPub,fill=IncludeInPub))+geom_col()+
+  scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+theme_bw()+
+  labs(col="Random Sample",fill="Random Sample")+coord_flip()
+# make a table of the result
+SampleJournalsTable<-SampleJOurnals %>% 
+  pivot_wider(names_from = IncludeInPub,values_from = n) %>% 
+  rename(Selected="TRUE",
+         NotSelected="FALSE") %>%
+  mutate(percent=Selected/(Selected+NotSelected)*100) %>% 
+  arrange(-NotSelected)
