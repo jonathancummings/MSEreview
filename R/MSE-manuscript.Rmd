@@ -397,7 +397,8 @@ world <- borders("world", colour="gray85", fill="gray96", alpha=0.75) # create a
 map.data<-rbind(data_pub,data_CC) %>%
   select(all_of(map.col)) %>%
   mutate(Drivers=str_extract(Drivers, "Climate Change")) %>%
-  mutate(Drivers=replace_na(Drivers, "Random Sample"))
+  mutate(Drivers=replace_na(Drivers, "Random Sample")) %>% 
+  type_convert()
 
 # label MSEs articles by analysis for ploting
 freq.data_pub<-mutate(freq.data_pub,Analysis="Random Sample")
