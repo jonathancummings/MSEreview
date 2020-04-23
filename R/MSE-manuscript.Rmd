@@ -524,7 +524,9 @@ An increasingly recognized challenge in fisheries management is responding to ch
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
-We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table \@ref(tab:MSEcount)). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (Appendix B), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE.  We reviewed 16 climate change MSE articles (Appendix B). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table \@ref(tab:MSEcount)). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (Appendix B), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE. The number of MSEs published each year is trending higher (Figure \@ref(fig:YearHistogram)), with the ICES Journal of Marine Science and Fisheries Research as the leading publication outlets ((Figure \@ref(fig:PublicationHistogram))). 
+
+We reviewed 16 climate change MSE articles (Appendix B). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
 
 ```{r MSEcount}
 MSE_Type<-c("Published","Random Sample","Climate Change")
@@ -535,6 +537,52 @@ Table1.data<-as_tibble(cbind(MSE_Type,Count))
   kable(caption = "January 8, 2019 Web of Science 'management strategy evaluation' search results") %>% 
   kable_styling() %>% 
     add_footnote(c("We also reviewed 4 additional climate change MSE articles published in 2019 for a total of 16."), notation = "symbol")
+```
+
+```{r YearHistogram}
+# Analyze the year that MSEs were published and sampled from
+# Wrangle data
+SampleCheck<-tblWOS %>%
+  rename(IsMSE="Is MSE?") %>% # rename column
+  filter(IsMSE==TRUE&YearPub<2019) %>% #filter data
+  mutate(IncludeInPub = replace(IncludeInPub, IncludeInPub == TRUE, "Selected")) %>% 
+  mutate(IncludeInPub = replace(IncludeInPub, IncludeInPub == FALSE, "Not Selected")) %>% #rename values
+  select(YearPub,IncludeInPub) # select desired columns
+# Plot result as a histogram
+YearHistogram<-ggplot(SampleCheck,aes(x=YearPub,color=IncludeInPub,fill=IncludeInPub))+
+  geom_histogram(binwidth = 1)+scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+theme_bw()+
+  labs(col="Random Sample",fill="Random Sample",x="Publication Year")+theme(legend.position = c(0.15, 0.85))
+YearHistogram
+```
+
+```{r PublicationHistogram}
+# Analyze the journal that MSEs were published in and sampled from
+# Wrangle data
+SampleJournals<-tblWOS %>%
+  rename(IsMSE="Is MSE?") %>% # rename column
+  filter(IsMSE==TRUE&YearPub<2019) %>% # filter data
+  select(Journal,IncludeInPub) %>% # select columns
+  group_by(Journal,IncludeInPub) %>% # group summary by
+  count() %>% # count by groups
+  arrange(-n) %>% # sort
+  ungroup() %>% # ungroup
+  mutate(IncludeInPub = replace(IncludeInPub, IncludeInPub == TRUE, "Selected")) %>% 
+  mutate(IncludeInPub = replace(IncludeInPub, IncludeInPub == FALSE, "Not Selected")) %>% # rename values
+  drop_na() %>% # Drop entries without journal sources
+  pivot_wider(names_from = IncludeInPub,values_from = n) %>% # pivot data
+  mutate_at(vars(Selected,"Not Selected"),~replace_na(., 0)) %>% # replace NA with 0
+  rename(NotSelected="Not Selected") %>% 
+  mutate(Total=Selected+NotSelected) %>% # calculate Total published for each journal
+  filter(Total>1) %>% # filter to remove journals with only one publication
+  rename("Not Selected"=NotSelected) %>%
+  pivot_longer(cols = c("Not Selected","Selected"),names_to = "IncludeInPub",values_to = "n") %>%  #pivot data
+  select(Journal,IncludeInPub,n) # select desired columns
+PublicationHistogram<-ggplot(SampleJournals,aes(x=reorder(Journal, n),y=n,color=IncludeInPub,fill=IncludeInPub))+
+  geom_col()+  scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+theme_bw()+
+  labs(col="Random Sample",fill="Random Sample")+coord_flip()+
+  theme(legend.position = c(0.75, 0.125),axis.title.y=element_blank())+
+  labs(y="Publication Count")
+PublicationHistogram
 ```
 
 ## Reviewing MSE documentation 
