@@ -626,18 +626,17 @@ as_tibble(altcat.data_CC)
 
 #Analyze the year that MSEs and the random sample of MSEs were published
 
-# Read in data on all publications
-tblWOS <- read_excel("data/DB files - Excel/tblWOS.xlsx")
 # Rename columns, filter to only MSEs, and select year published and whether the publication was in the 
 # random sample
 SampleCheck<-tblWOS %>%
   rename(IsMSE="Is MSE?") %>% 
-  filter(IsMSE==TRUE) %>% 
+  filter(IsMSE==TRUE&YearPub<2019) %>% 
   select(YearPub,IncludeInPub)
-# Plot result
+# Plot result as a histogram
 ggplot(SampleCheck,aes(x=YearPub,color=IncludeInPub,fill=IncludeInPub))+geom_histogram(binwidth = 1)+
   scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+theme_bw()+
   labs(col="Random Sample",fill="Random Sample")
+
 # make a table of the result
 SampleCount<-SampleCheck %>% 
   group_by(YearPub,IncludeInPub) %>% 
@@ -645,7 +644,14 @@ SampleCount<-SampleCheck %>%
   pivot_wider(names_from = IncludeInPub,values_from = n) %>% 
   rename(Selected="TRUE",
          NotSelected="FALSE") %>%
-  mutate(percent=Selected/(Selected+NotSelected)*100)
+  mutate_at(vars(Selected,NotSelected),~replace_na(., 0)) %>% 
+  mutate(percent=Selected/(Selected+NotSelected)*100) %>% 
+  pivot_longer(cols = c(Selected,NotSelected),names_to = "RandomSample") %>% 
+  arrange(value)
+# Plot result as area
+ggplot(SampleCount,aes(x=YearPub,y=value,color=RandomSample,fill=RandomSample))+geom_area()+geom_point(position = "stack")+
+  scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+theme_bw()+
+  labs(y="Publication Count",x="Year Published")
 
 # Rename columns, filter to only MSEs, and select journal and whether the publication was in the 
 # random sample
@@ -654,18 +660,28 @@ SampleJournals<-tblWOS %>%
   filter(IsMSE==TRUE) %>% 
   select(Journal,IncludeInPub) %>%
   group_by(Journal,IncludeInPub) %>% 
-  count() %>% 
-  filter(n>2) %>% 
-  drop_na() %>% 
-  arrange(-n)
+  count() %>%
+  arrange(-n) %>% 
+  ungroup() %>% 
+  mutate(IncludeInPub = replace(IncludeInPub, IncludeInPub == TRUE, "Selected")) %>% 
+  mutate(IncludeInPub = replace(IncludeInPub, IncludeInPub == FALSE, "NotSelected")) %>% 
+  drop_na()
 # Plot result
 ggplot(SampleJournals,aes(x=reorder(Journal, n),y=n,color=IncludeInPub,fill=IncludeInPub))+geom_col()+
   scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+theme_bw()+
   labs(col="Random Sample",fill="Random Sample")+coord_flip()
-# make a table of the result
-SampleJournalsTable<-SampleJOurnals %>% 
-  pivot_wider(names_from = IncludeInPub,values_from = n) %>% 
-  rename(Selected="TRUE",
-         NotSelected="FALSE") %>%
+# remove journals with less than 2 MSEs
+SampleJournalsFiltered<-SampleJournals %>% 
+  pivot_wider(names_from = IncludeInPub,values_from = n) %>%
+  mutate_at(vars(Selected,NotSelected),~replace_na(., 0)) %>% 
+  mutate(Total=Selected+NotSelected) %>% 
   mutate(percent=Selected/(Selected+NotSelected)*100) %>% 
-  arrange(-NotSelected)
+  filter(Total>1) %>% 
+  pivot_longer(cols = c("NotSelected","Selected"),names_to = "IncludeInPub",values_to = "n") %>% 
+  select(Journal,IncludeInPub,n)
+# Plot result
+ggplot(SampleJournalsFiltered,aes(x=reorder(Journal, n),y=n,color=IncludeInPub,fill=IncludeInPub))+geom_col()+
+  scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+theme_bw()+
+  labs(col="Random Sample",fill="Random Sample")+coord_flip()+
+  theme(legend.position = c(0.75, 0.125),axis.title.y=element_blank())+
+  labs(y="Publication Count")
