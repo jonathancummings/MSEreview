@@ -525,9 +525,7 @@ An increasingly recognized challenge in fisheries management is responding to ch
 
 # Methods 
 ## Finding and Sampling the MSE Literature 
-We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table \@ref(tab:MSEcount)). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (Appendix B), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE. The number of MSEs published each year is trending higher (Figure \@ref(fig:YearHistogram)), with the ICES Journal of Marine Science and Fisheries Research as the leading publication outlets ((Figure \@ref(fig:PublicationHistogram))). 
-
-We reviewed 16 climate change MSE articles (Appendix B). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
+We conducted our search for MSEs in the SCI-EXPANDED index from Web of Science, searching for “management strategy evaluation” by topic across all years on January 8th, 2019 (Table \@ref(tab:MSEcount)). This search returned 264 results.  We reviewed a random sample of 30 articles that document a MSE (Appendix B), removing articles that were reviews, meta-analyses, or simply cited other MSE articles from our sample. After removing other articles from the original set of 264 articles, 154 articles document a MSE. The number of MSEs published each year is trending higher (Figure \@ref(fig:YearHistogram)), with the ICES Journal of Marine Science and Fisheries Research as the leading publication outlets (Figure \@ref(fig:PublicationHistogram)). 
 
 ```{r MSEcount}
 MSE_Type<-c("Published","Random Sample","Climate Change")
@@ -540,7 +538,7 @@ Table1.data<-as_tibble(cbind(MSE_Type,Count))
     add_footnote(c("We also reviewed 4 additional climate change MSE articles published in 2019 for a total of 16."), notation = "symbol")
 ```
 
-```{r YearHistogram}
+```{r YearHistogram, fig.cap="Management Strategy Evaluations published per year for those selected and not selected in our random sample"}
 # Analyze the year that MSEs were published and sampled from
 # Wrangle data
 SampleCheck<-tblWOS %>%
@@ -556,7 +554,9 @@ YearHistogram<-ggplot(SampleCheck,aes(x=YearPub,color=IncludeInPub,fill=IncludeI
 YearHistogram
 ```
 
-```{r PublicationHistogram}
+We reviewed 16 climate change MSE articles (Appendix B). Twelve of these articles came from our original January 8th, 2019 Web of Science search.  To give as full a picture of the climate change MSE articles to date as possible we also reviewed the 4 climate change MSE articles published in 2019. 
+
+```{r PublicationHistogram, , fig.cap="Count of management strategy evaluations published by journal for those journal that have published at least two management strategy evaluations"}
 # Analyze the journal that MSEs were published in and sampled from
 # Wrangle data
 SampleJournals<-tblWOS %>%
@@ -673,7 +673,7 @@ Fisheries management has mostly focused on fishing impacts with ecosystem status
 
 Here we review published MSEs the include climate change as a driver of the fisheries model using the stages in a SDM process to highlight unique aspects of these MSEs. We filtered the original set of MSEs published by as of December 31st, 2019 searching for the term "climate change" within the set that resulted from searching for "management strategy evaluation". This resulted in our reviewing 16 published MSEs that included climate change as a driver. We reviewed the climate change MSEs using the same methodology described above. These MSEs have been concentrated in North America and Australia (Figure \@ref(fig:mapfigure)).
 
-```{r, mapfigure, fig.cap='Map of MSE study locations.', fig.height=4, out.width="100%"}
+```{r, mapfigure, fig.cap='Map of MSE study locations.', fig.height=6, out.width="100%"}
 MSE.map +
   theme(text = element_text(size=14))
 ```
