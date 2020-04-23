@@ -222,7 +222,7 @@ part.data_pub<-data_pub %>%
            "Sub Alternatives"="ProcedureElicitation_Sub")
 
 part.data_pub<- part.data_pub %>%
-    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(~ strsplit(as.character(.),split=";")) %>%
     purrr::map(unlist) %>%
     purrr::map(table)
 
@@ -257,7 +257,7 @@ part.data_CC<-data_CC %>%
          "Sub Alternatives"="ProcedureElicitation_Sub")
 
 part.data_CC<- part.data_CC %>%
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+  purrr::map(~ strsplit(as.character(.),split=";")) %>%
   purrr::map(unlist) %>%
   purrr::map(table)
 
@@ -291,7 +291,7 @@ part.dataTable_CC<-part.data_CC %>%
 # What drivers are considered
 drive.data_pub<-data_pub %>%
     select(Drivers) %>%
-    purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+    purrr::map(~ strsplit(as.character(.),split=";")) %>%
     purrr::map(unlist) %>%
     purrr::map(table) %>%
     plyr::ldply(data.frame) %>%
@@ -302,7 +302,7 @@ drive.data_pub<-data_pub %>%
 
 drive.data_CC<-data_CC %>%
   select(Drivers) %>%
-  purrr::map(~ strsplit(as.character(.),split=", ")) %>%
+  purrr::map(~ strsplit(as.character(.),split=";")) %>%
   purrr::map(unlist) %>%
   purrr::map(table) %>%
   plyr::ldply(data.frame) %>%
