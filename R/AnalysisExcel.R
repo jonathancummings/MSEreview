@@ -20,10 +20,6 @@ library(mapdata) # basemap generation
 ##### 
 # Script
 
-# Get map background for plotting the map
-world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
-
-
 #####
 ###-- Data Processing --###
 
@@ -34,6 +30,7 @@ mgmt$fkStudyID<-parse_integer(mgmt$fkStudyID)
 obj<-read_xlsx("data/DB files - Excel/tblStudyObjectives.xlsx")
 obj$fkStudyID<-parse_integer(obj$fkStudyID)
 fields<-read_xlsx("data/DB files - Excel/tblStudyFields.xlsx")
+tblWOS <- read_excel("data/DB files - Excel/tblWOS.xlsx")
 
 #####
 # Edit tables for joining
@@ -107,6 +104,9 @@ alt.col<-c("ManagementTool",
 map.col<-c("Latitude",
            "Longitude",
            "Citation")
+
+# Get map background for plotting the map
+world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
 
 #####
 ###-- Shiny App --###
