@@ -468,9 +468,10 @@ per.MSE<-obj.dataTable %>%
 world <- borders("world", colour="gray85", fill="gray96", alpha=0.75) # create a layer of borders
 
 # plot MSEs on map
-MSE.map<-ggplot(data=map.data,aes(x=Longitude, y=Latitude,color=Drivers)) + world +
-  geom_point(size=2.5) + geom_point(size = 2.5, colour = "gray55", shape = 1) +
-  scale_color_manual(values=c("gray10","gray55"))+theme_void() +
+MSE.map<-ggplot(data=map.data,aes(x=Longitude, y=Latitude,group=Drivers)) + world +
+  geom_point(aes(shape=Drivers,color=Drivers,fill=Drivers),size=2.5) + 
+  geom_point(aes(shape=Drivers),size = 2.5, colour = "gray45") +
+  scale_shape_manual(values=c(21,22))+scale_fill_manual(values=c("gray10","gray80"))+theme_void() +
   theme(legend.position = c(0.15, 0.25))
 
 # plot explicit documentation of steps or components of MSE processes 
@@ -689,6 +690,7 @@ ggplot(SampleJournalsFiltered,aes(x=reorder(Journal, n),y=n,color=IncludeInPub,f
   labs(y="Publication Count")
 
 # Examining the years and journals of climate change MSE publications
+# Year of publication
 SampleClimate<-data_CC %>%
   select(YearPub) %>% 
   group_by(YearPub) %>% 
@@ -696,14 +698,14 @@ SampleClimate<-data_CC %>%
   ungroup() %>% 
   add_row(YearPub=c("1999","2000","2001","2002","2003","2004","2005","2006","2007","2008",
                     "2012","2014","2015"),n=0)
-ggplot(SampleClimate,aes(x=YearPub,y=n))+geom_col()+
-  scale_color_grey()+theme_bw()+
-  labs(x="Publication Year")
+ggplot(SampleClimate,aes(x=YearPub,y=n))+geom_col()+scale_color_grey()+theme_bw()+labs(x="Publication Year")+
+  theme(axis.title.y=element_blank())
+# Journal
 SampleClimateJournal<-data_CC %>%
   select(Journal) %>% 
   group_by(Journal) %>% 
   count() %>% 
   arrange(-n)
 ggplot(SampleClimateJournal,aes(x=reorder(Journal,n),y=n))+geom_col()+  scale_color_grey()+theme_bw()+  coord_flip()+
-  theme(axis.title.y=element_blank())+  labs(y="Publication Count")
+  theme(axis.title.y=element_blank())+labs(y="Publication Count")
 
