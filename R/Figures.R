@@ -688,7 +688,7 @@ ggplot(SampleJournalsFiltered,aes(x=reorder(Journal, n),y=n,color=IncludeInPub,f
   theme(legend.position = c(0.75, 0.125),axis.title.y=element_blank())+
   labs(y="Publication Count")
 
-# Examining the years of climate change MSE publications
+# Examining the years and journals of climate change MSE publications
 SampleClimate<-data_CC %>%
   select(YearPub) %>% 
   group_by(YearPub) %>% 
@@ -699,4 +699,11 @@ SampleClimate<-data_CC %>%
 ggplot(SampleClimate,aes(x=YearPub,y=n))+geom_col()+
   scale_color_grey()+theme_bw()+
   labs(x="Publication Year")
+SampleClimateJournal<-data_CC %>%
+  select(Journal) %>% 
+  group_by(Journal) %>% 
+  count() %>% 
+  arrange(-n)
+ggplot(SampleClimateJournal,aes(x=reorder(Journal,n),y=n))+geom_col()+  scale_color_grey()+theme_bw()+  coord_flip()+
+  theme(axis.title.y=element_blank())+  labs(y="Publication Count")
 
