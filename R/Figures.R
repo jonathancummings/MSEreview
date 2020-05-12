@@ -709,3 +709,16 @@ SampleClimateJournal<-data_CC %>%
 ggplot(SampleClimateJournal,aes(x=reorder(Journal,n),y=n))+geom_col()+  scale_color_grey()+theme_bw()+  coord_flip()+
   theme(axis.title.y=element_blank())+labs(y="Publication Count")
 
+Authors<-tblWOS %>%
+  rename(IsMSE="Is MSE?") %>% 
+  filter(IsMSE==TRUE) %>% 
+  select(Authors) %>% 
+  purrr::map(~ strsplit(as.character(.),split="; ")) %>% 
+  purrr::map(unlist) %>%
+  purrr::map(~ strsplit(as.character(.),split="., ",fixed=TRUE))%>% 
+  purrr::map(unlist) %>% 
+  purrr::map(~ strsplit(as.character(.),split=" and ",fixed=TRUE))%>% 
+  purrr::map(unlist) %>% 
+  as_tibble() %>% 
+  count(Authors) %>% 
+  arrange(-n)
