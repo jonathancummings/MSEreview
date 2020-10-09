@@ -15,6 +15,10 @@ library(shinyWidgets)
 
 ssid <- as_sheets_id("1YjOTei_N7RS05rxXrVB6iuUptjYTDQC4xTLeoR-8fi8") #ID of google sheet. This sheet must be created properly for the app to function.
 
+objTable = data.frame(Category=character(), Objective=character(), Descriptions=character(),Direction=character(),Type=character(),
+                      Scale=character(),Metric=character())
+altTable = data.frame("Management Tools"=character(), Alternatives=character())
+
 # Function to save entries to SQLite
 saveData <- function(data) {
     # Add the data as a new row
@@ -36,18 +40,9 @@ ui <- fluidPage(
     p(strong("Enter the data from your review in the forms below.")),
    
     # Data Entry Form
-    tags$style(HTML("
-      #first {
-          border: 4px solid grey;
-      }
-      #second {
-          border: 2px dashed blue;
-      }
-    ")),
-    fluidRow(id="first",style = "background-color: #d0d6d1;",
+    fluidRow(style = "background-color: #d0d6d1;",
         column(width=12,
-             p(em("Summary Data")),
-             hr(),),
+             p(em("Summary Data"))),
         column(width=3,
                textInput("DOI","DOI","doi: 10.1016/j.tree.2011.05.003"),
                bsTooltip(id = "DOI", title = "Enter the DOI for the publicaion", trigger = "hover")),
@@ -74,90 +69,140 @@ ui <- fluidPage(
                bsTooltip(id = "species", title = "Enter the common name and (latin name) of the species addressed", trigger = "hover")),
         column(width=12,
                textAreaInput("citation","Citation","Bunnefeld N, Hoshino E, Milner-Gulland EJ. Management strategy evaluation: a powerful tool for conservation? Trends Ecol Evol. 2011 Sep;26(9):441-7.", width="1000px"),
-               bsTooltip(id = "species", title = "Enter the full citation", trigger = "hover"),
-        p(em("Process Documentation")),
-        hr(),),
+               bsTooltip(id = "citation", title = "Enter the full citation", trigger = "hover")),
+        column(width=12,
+               textInput("poc","Point of contact: contact info","e.g., jcummings@umassd.edu", width="400px"),
+               bsTooltip(id = "poc", title = "Provide contact info a point of contact associated with this MSE", trigger = "hover"),
+               hr(),
+        p(em("Process Documentation"))),
         column(width=2,
-              checkboxInput("processDoc", label = "Process Documented?"),
-              bsTooltip(id = "processDoc", title = "Was the process used to conduct the MSE documented?", trigger = "hover")),
+               checkboxInput("processDoc", label = "Process Documented?"),
+               bsTooltip(id = "processDoc", title = "Was the process used to conduct the MSE documented?", trigger = "hover")),
         column(width=2,
-               checkboxInput("rolessDoc", label = "Roles specified?"),
-               bsTooltip(id = "rolesDoc", title = "Were participants roles clearly defined and documented?", trigger = "hover")),
+               checkboxInput("rolesDoc", label = "Roles specified?"),
+               bsTooltip(id = "rolesDoc", title = "Were participant roles clearly defined and documented?", trigger = "hover")),
         column(width=2,
                checkboxInput("openMeetings", label = "Open meetings?"),
-               bsTooltip(id = "openMeetings", title = "Were meetings open to the public??", trigger = "hover")),
+               bsTooltip(id = "openMeetings", title = "Were meetings open to the public?", trigger = "hover")),
         column(width=2,            
-              checkboxInput("optimAlt","Best strategy documented?"),
-              bsTooltip(id = "optimAlt", title = "Was the optimal management strategy reported in the documentation?", trigger = "hover")),
+               checkboxInput("optimAlt","Best strategy documented?"),
+               bsTooltip(id = "optimAlt", title = "Was the optimal management strategy reported in the documentation?", trigger = "hover")),
         column(width=2,
-              checkboxInput("decisionDoc","Decision documented?"),
-              bsTooltip(id = "decisionDoc", title = "Was the management decision resulting from the process documented?", trigger = "hover")),
+               checkboxInput("decisionDoc","Decision documented?"),
+               bsTooltip(id = "decisionDoc", title = "Was a management decision documented?", trigger = "hover")),
         column(width=2,
-              checkboxInput("implemented","Results adopted?"),
-              bsTooltip(id = "implemented", title = "Was the decision resulting from the process implemented?", trigger = "hover")),
+               checkboxInput("implemented","Results adopted?"),
+               bsTooltip(id = "implemented", title = "Was the decision implemented?", trigger = "hover")),
         column(width=6,
-              selectInput("leader","Process Lead(s)?",choices = c("Government","Management","Fishery","Independent","Scientists","Public","Unknown"),
-                          selected = "Scientists",multiple = T,width="450px"),
-              bsTooltip(id = "leader", title = "Who lead this MSE process? Select one or more options", trigger = "hover"),),
+               selectInput("leader","Process Lead(s)?",choices = c("Select one or more. Click & Delete to deselect" = "","Government","Management","Fishery","Independent","Scientists","Public","Unknown"),
+                           multiple = T,width="450px"),
+               bsTooltip(id = "leader", title = "Who lead this MSE process?", trigger = "hover")),
         column(width=6,
-               selectInput("participants","Participants?",choices = c("Government","Management","Fishery","Independent","Scientists","Public","Facilitators","Decision Makers","Experts","Decision Analysts"),
-                           selected = "Scientists",multiple = T,width="450px"),
-               bsTooltip(id = "participants", title = "Who participated in this MSE process? Select one or more options", trigger = "hover"),),
+               selectInput("participants","Participants?",choices = c("Select one or more. Click & Delete to deselect" = "","Government","Management","Fishery","Independent","Scientists","Public","Facilitators","Decision Makers","Experts","Decision Analysts"),multiple = T,width="450px"),
+               bsTooltip(id = "participants", title = "Who participated in this MSE process?", trigger = "hover")),
         column(width=12,
-               p(em("Problem Definition")),
                hr(),
+               p(em("Problem Definition"))),
+        column(width=2,
                checkboxInput("problemDoc","Problem documented?"),
-               bsTooltip(id = "problemDoc", title = "Was the problem defined and documented?", trigger = "hover"),
-               textAreaInput("problemDef","How was the problem defined?","What approach to decision making will be support natural resource management decisions?", width="1000px"),
-               bsTooltip(id = "problemDef", title = "Enter the problem definition for this MSEn", trigger = "hover"),),
+               bsTooltip(id = "problemDoc", title = "Was the problem defined and documented?", trigger = "hover")),
+        column(width=10,
+               textAreaInput("problemDef","How was the problem defined?","What approach to decision making will be support natural resource management decisions?", width="900px"),
+               bsTooltip(id = "problemDef", title = "Enter the problem definition for this MSE", trigger = "hover")),
         column(width=12,
-               p(em("Objectives")),
                hr(),
-               ),
+               p(em("Objective Process"))),
         column(width=3,
                checkboxInput("objDoc","Objective elicitation documented?"),
                bsTooltip(id = "objDoc", title = "Was the objective elicitation process documented?", trigger = "hover"),
                ),
         column(width=4,
-               selectInput("objSource","Objectives source",choices = c("Government","Management","Fishery","Independent","Scientists","Public","Decision Makers","Experts","Decision Analysts","Unknown"),
-                           selected = "Unknown",multiple = T,width="450px"),
+               selectInput("objSource","Objectives source",choices = c("Select one or more. Click & Delete to deselect" = "","Government","Management","Fishery","Independent","Scientists","Public","Decision Makers","Experts","Decision Analysts","Unknown"),
+                           multiple = T,width="450px"),
                bsTooltip(id = "objSource", title = "Who provided the objectives?", trigger = "hover"),),
         column(width=4,
-               selectInput("subObjSource","Subjective objectives source",choices = c("Government","Management","Fishery","Independent","Scientists","Public","Decision Makers","Experts","Decision Analysts","Unknown"),
-                           selected = "Unknown",multiple = T,width="450px"),
-               bsTooltip(id = "subObjSource", title = "If it was not explicitly documented, based on your subjective interpretation of the process Who provided the objectives?", trigger = "hover"),),
+               selectInput("subObjSource","Subjective objectives source",choices = c("Select one or more. Click & Delete to deselect" = "","Government","Management","Fishery","Independent","Scientists","Public","Decision Makers","Experts","Decision Analysts","Unknown"),
+                           multiple = T,width="450px"),
+               bsTooltip(id = "subObjSource", title = "If it was not explicitly documented, based on your subjective interpretation of the process who provided the objectives?", trigger = "hover"),),
         column(width=12,
-               textAreaInput("elicitationObj","Objective Elicitation Process","Objectives were elicited by a facilitator", width="1000px"),
-               bsTooltip(id = "elicitationObj", title = "What process was used to elicit objectives?", trigger = "hover"),
-               p("linked objectives table"),
+               textAreaInput("elicitationObj","Objective Elicitation Process","Objectives were elicited by a facilitator.", width="1000px"),
+               bsTooltip(id = "elicitationObj", title = "What process was used to elicit objectives?", trigger = "hover"),),
+    ), # end fluidRow
+    fluidRow(style = "background-color: #9faba0;",
+        column(width=12,
+               p(em("Objectives: Individual Objective Entry"))),
+        column(width=3,
+               selectInput("objCategory","Category",choices = c("Conservation","Yield","Economic","Social","Utility"),multiple = F),
+               bsTooltip(id = "objCategory", title = "What category of objective is it?", trigger = "hover")),
+        column(width=3,
+               textInput("objName","Objective","Stock status"),
+               bsTooltip(id = "objName", title = "Objective name", trigger = "hover")),
+        column(width=6,
+               textAreaInput("objDescription","Description","Biomass as proportion of unfished biomass over last 10 years of the simulation",width="500px"),
+               bsTooltip(id = "objDescription", title = "Provide a description of the objective.", trigger = "hover")),
+        column(width=3,
+               selectInput("objDirection","Direction",choices = c("Maximize","Minimize","Target","Constraint","Unknown"),multiple = F),
+               bsTooltip(id = "objDirection", title = "What is the desired direction or what type of condition is used for the objective?", trigger = "hover")),
+        column(width=3,
+               selectInput("objType","Type",choices = c("Fundamental","Means","Process","Strategic"),multiple = F),
+               bsTooltip(id = "objType", title = "What type of objective is it?", trigger = "hover")),
+        column(width=3,
+               selectInput("objScale","Scale",choices = c("Natural","Proxy","Constructed"),multiple = F),
+               bsTooltip(id = "objScale", title = "What type of scale is used to measure the status of the objective?", trigger = "hover")),
+        column(width=3,
+               textInput("objMetric","Metric","B/B(0)"),
+               bsTooltip(id = "objMetric", title = "What metric or performance measure is used to assess the status of the objective?", trigger = "hover")),
+        column(width=12,       
+               actionButton("add_btn", "Click here to add the objective information entered above to the objectives table below", class = "btn-primary")),        
+        column(width=12,
+               p("Objectives Table:"),
+               DTOutput("ObjectivesTable"),
+               br(),
         ),
+    ), #end fluidRow
+    fluidRow(style = "background-color: #d0d6d1;",
         column(width=12,
-               p(em("Alternatives")),
-               hr(),),
+               p(em("Alternatives Process"))),
         column(width=3,
               checkboxInput("altDoc","Alternative production documented?"),
-              bsTooltip(id = "altDoc", title = "Was an alternative production process comppleted and documented?", trigger = "hover"),
+              bsTooltip(id = "altDoc", title = "Was a process for generating alternatives documented?", trigger = "hover"),
                ),
         column(width=4,
-               selectInput("altSource","Alternatives source",choices = c("Government","Management","Fishery","Independent","Scientists","Public","Decision Makers","Experts","Decision Analysts","Unknown"),
-                           selected = "Unknown",multiple = T,width="450px"),
+               selectInput("altSource","Alternatives source",choices = c("Select one or more. Click & Delete to deselect" = "","Government","Management","Fishery","Independent","Scientists","Public","Decision Makers","Experts","Decision Analysts","Unknown"),
+                           multiple = T,width="450px"),
                bsTooltip(id = "altSource", title = "Who provided the alternatives?", trigger = "hover"),),
         column(width=4,
-               selectInput("subAltSource","Subjective alternattives source",choices = c("Government","Management","Fishery","Independent","Scientists","Public","Decision Makers","Experts","Decision Analysts","Unknown"),
-                                  selected = "Unknown",multiple = T,width="450px"),
+               selectInput("subAltSource","Subjective alternattives source",choices = c("Select one or more. Click & Delete to deselect" = "","Government","Management","Fishery","Independent","Scientists","Public","Decision Makers","Experts","Decision Analysts","Unknown"),
+                                  multiple = T,width="450px"),
                bsTooltip(id = "subAltSource", title = "If it was not explicitly documented, based on your subjective interpretation of the process Who provided the alternatives?", trigger = "hover"),),
+    ), #end fluidRow
+    fluidRow(style = "background-color: #9faba0;",
+      column(width=12,
+               p(em("Alternatives: Individual Alternative Entry"))),
+        column(width=4,
+               selectInput("altType","Management Tools",choices = c("Catch Limit","Effort Limit","Size Limit","Access Control",
+                                                                    "Share Allocation","Closure","Other"),multiple = F),
+               bsTooltip(id = "altType", title = "What type of management tool was evaluated?", trigger = "hover")),
+        column(width=8,
+               textAreaInput("altAlternatives","Alternatives","5 Alternative harvest control rules (HCR), varrying by explotation rate and biological reference point time period",width="600px"),
+               bsTooltip(id = "altAlternatives", title = "Wat alternative actions were evaluated for this management tool?", trigger = "hover")),
         column(width=12,
-               p("linked alternatives table"),
-               ),
+               actionButton("addAlt_btn", "Click here to add the alternative information entered above to alternatives table below",class = "btn-primary")),
         column(width=12,
-               p(em("Consequences and Tradeoffs")),
-               hr(),),
+               p("Alternatives Table"),
+               DTOutput("AlternativesTable"),
+               br(),
+        ),
+    ), # end fluidRow
+    fluidRow(style = "background-color: #d0d6d1;",
+        column(width=12,
+               p(em("Consequences and Tradeoffs"))),
         column(width=6,
-               selectInput("predMethod","Prediction Method",choices = c("Dynamic programmings","Expert elicitation","Mental models","Simulation modeling","Unknown"),
-                           selected = "Unknown",multiple = T,width="450px"),
+               selectInput("predMethod","Prediction Method",choices = c("Select one"="","Dynamic programming","Expert elicitation","Mental models","Simulation modeling","Unknown"),
+                           multiple = T,width="450px"),
                bsTooltip(id = "predMethod", title = "What method was used to predict the consequences of proposed management strategies?", trigger = "hover"),),
         column(width=6,
-               selectInput("drivers","Consequence Drivers",choices = c("Allowable catch adjustement","Climate change","Ecosystem based management","Environmental conditions",
+               selectInput("drivers","Consequence Drivers",choices = c("Select one or more. Click & Delete to deselect"="","Allowable catch adjustement","Climate change","Ecosystem based management","Environmental conditions",
                                                                        "Fishing behavior","Habiat change","Implementation Uncertainty","Landing regulations","Management timeline",
                                                                        "Migration","Monitoring methodology","Multiple sectors","Predation","Spatial structure","Species interactions",
                                                                        "Stock Status","Uncertainty"),
@@ -168,25 +213,32 @@ ui <- fluidPage(
                bsTooltip(id = "tradeoffsDoc", title = "Were trade-offs between the alternative management strategies evaluated and documented?", trigger = "hover"),
         ),
         column(width=4,
-               selectInput("tradeMethod","Trade-off evaluaiton method",choices = c("Mental analysis","MCDA","Negotiation","Visualization","Unknown"),
-                           selected = "Unknown",multiple = T,width="450px"),
+               selectInput("tradeMethod","Trade-off evaluaiton method",choices = c("Select one or more. Click & Delete to deselect"="","Mental analysis","MCDA","Negotiation","Visualization","Unknown"),
+                           multiple = T,width="450px"),
                bsTooltip(id = "tradeMethod", title = "How were trade-offs evaluated?", trigger = "hover"),),
         column(width=4,
-               selectInput("subTradeMethod","Subjective trade-off evaluaiton method",choices = c("Mental analysis","MCDA","Negotiation","Visualization","Unknown"),
-                           selected = "Unknown",multiple = T,width="450px"),
-               bsTooltip(id = "subTradeMethod", title = "If it was not explicitly documented, based on your subjective interpretation of the process how were trade-offs evaluated?", trigger = "hover"),),
+               selectInput("subTradeMethod","Subjective trade-off evaluaiton method",choices = c("Select one or more. Click & Delete to deselect"="","Mental analysis","MCDA","Negotiation","Visualization","Unknown"),
+                           multiple = T,width="450px"),
+               bsTooltip(id = "subTradeMethod", title = "If it was not explicitly documented, based on your subjective interpretation how were trade-offs evaluated?", trigger = "hover"),),
         column(width=12,
+               hr(),
                p(em("Notes and Comments")),
-               hr(),
-               textAreaInput("notes","notes","This is an example text for the note field where you can provide any notes you think would be helpful or of interest to others regarding
-               this MSE process and its documentation", width="1000px"),
-               bsTooltip(id = "notes", title = "Add any notes you think would be helpful here.", trigger = "hover")),
+               textAreaInput("notes","notes","E.g., Stakeholders were included in this process, and there was some documentation of the process.  Additional documentation could have covered the development of the problem, roles, and the results of the visual trade-off evaluation.", width="1000px"),
+               bsTooltip(id = "notes", title = "Add any notes you think would be helpful here.", trigger = "hover"),
+               hr()),
+    ), # end fluidRow
+    fluidRow(style = "background-color: #e0dfc3;",
         column(width=12,
-               p(em("Other things to include are: (a) who submitted this review, (b) point of contact's contact info for the MSE"))),
-        column(width=12,
-               p(em("Submit Review")),
-               hr(),
-               actionButton("submit", "Submit"))
+               p(em("Submit Review"))),
+        column(width=4,
+               textInput("reviewer","Your name","E.g., Jonathan Cummings"),
+               bsTooltip(id = "reviewer", title = "Please provide your name", trigger = "hover"),),
+        column(width=4,
+               textInput("contactInfo","Your contact info","E.g., jcummings@massd.edu"),
+               bsTooltip(id = "contactInfo", title = "Please provide your contact information", trigger = "hover"),),
+        column(width=4,
+               actionButton("submit", "Click here to submit you MSE review",class="btn-warning")),
+               p("")
         ), #end fluidRow
     # Data table
     mainPanel(
@@ -205,6 +257,31 @@ server <- function(input, output, session) {
         data
     })
     
+    objTable <- reactiveVal(objTable)
+    
+    observeEvent(input$add_btn, {
+      t = rbind(data.frame(Category=input$objCategory,Objective=input$objObjective,Descriptions=NA,Direction=NA,
+                           Type=NA,Scale=NA,Metric=NA),
+                objTable())
+      objTable(t)
+    })
+    
+    output$ObjectivesTable <- renderDT({
+      datatable(objTable(), selection = 'single', options = list(dom = 't'))
+    })
+    
+    altTable <- reactiveVal(altTable)
+    
+    observeEvent(input$addAlt_btn, {
+      t = rbind(data.frame(Category=input$objCategory,Objective=input$objObjective),
+                altTable())
+      altTable(t)
+    })
+    
+    output$AlternativesTable <- renderDT({
+      datatable(altTable(), selection = 'single', options = list(dom = 't'))
+    })
+    
     # When the Submit button is clicked, save the form data
     observeEvent(input$submit, {
         saveData(formData())
@@ -216,7 +293,7 @@ server <- function(input, output, session) {
         input$submit
         loadData()
     })
-} # send server
+} # end server
 
 # Run the application 
 shinyApp(ui = ui, server = server)
