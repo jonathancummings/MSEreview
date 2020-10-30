@@ -15,14 +15,14 @@ library(shinyWidgets)
 
 ssid <- as_sheets_id("1YjOTei_N7RS05rxXrVB6iuUptjYTDQC4xTLeoR-8fi8") #ID of google sheet. This sheet must be created properly for the app to function.
 
-objTable = data.frame(Category=character(), Objective=character(), Descriptions=character(),Direction=character(),Type=character(),
+objTable = data.frame(Category=character(),Objective=character(),Descriptions=character(),Direction=character(),Type=character(),
                       Scale=character(),Metric=character())
 altTable = data.frame("Management Tools"=character(), Alternatives=character())
 
 # Function to save entries to SQLite
-saveData <- function(data) {
+saveData <- function(data,sheet) {
     # Add the data as a new row
-    sheet_append(ssid, data)
+    sheet_append(ssid, data,sheet)
 }
 
 loadData <- function() {
@@ -31,7 +31,15 @@ loadData <- function() {
 }
 
 # Define the fields we want to save from the form
-fields <- c("author","pubYear","system","location","species","DOI","citation","lat","long")
+# fields <- c("DOI","author","pubYear","system","location","lat","long","species","citation","poc","processDoc","rolesDoc","openMeetings",
+#             "optimAlt","decisionDoc","implemented","leader","participants","problemDoc","problemDef","objDoc","objSource","subObjSource",
+#             "elicitationObj","altDoc","altSource","subAltSource","predMethod","drivers","tradeoffsDoc","tradeMethod","subTradeMethod",
+#             "notes","reviewer","contactInfo")
+
+reviewFields <- c("DOI","author","pubYear","system","location","lat","long","species","citation","poc","processDoc","rolesDoc","openMeetings",
+            "optimAlt","decisionDoc","implemented")
+objFields <- c("objCategory")
+altFields <- c("altType")
 
 # Define UI
 ui <- fluidPage(
@@ -128,38 +136,38 @@ ui <- fluidPage(
                textAreaInput("elicitationObj","Objective Elicitation Process","Objectives were elicited by a facilitator.", width="1000px"),
                bsTooltip(id = "elicitationObj", title = "What process was used to elicit objectives?", trigger = "hover"),),
     ), # end fluidRow
-    fluidRow(style = "background-color: #9faba0;",
-        column(width=12,
-               p(em("Objectives: Individual Objective Entry"))),
-        column(width=3,
-               selectInput("objCategory","Category",choices = c("Conservation","Yield","Economic","Social","Utility"),multiple = F),
-               bsTooltip(id = "objCategory", title = "What category of objective is it?", trigger = "hover")),
-        column(width=3,
-               textInput("objName","Objective","Stock status"),
-               bsTooltip(id = "objName", title = "Objective name", trigger = "hover")),
-        column(width=6,
-               textAreaInput("objDescription","Description","Biomass as proportion of unfished biomass over last 10 years of the simulation",width="500px"),
-               bsTooltip(id = "objDescription", title = "Provide a description of the objective.", trigger = "hover")),
-        column(width=3,
-               selectInput("objDirection","Direction",choices = c("Maximize","Minimize","Target","Constraint","Unknown"),multiple = F),
-               bsTooltip(id = "objDirection", title = "What is the desired direction or what type of condition is used for the objective?", trigger = "hover")),
-        column(width=3,
-               selectInput("objType","Type",choices = c("Fundamental","Means","Process","Strategic"),multiple = F),
-               bsTooltip(id = "objType", title = "What type of objective is it?", trigger = "hover")),
-        column(width=3,
-               selectInput("objScale","Scale",choices = c("Natural","Proxy","Constructed"),multiple = F),
-               bsTooltip(id = "objScale", title = "What type of scale is used to measure the status of the objective?", trigger = "hover")),
-        column(width=3,
-               textInput("objMetric","Metric","B/B(0)"),
-               bsTooltip(id = "objMetric", title = "What metric or performance measure is used to assess the status of the objective?", trigger = "hover")),
-        column(width=12,       
-               actionButton("add_btn", "Click here to add the objective information entered above to the objectives table below", class = "btn-primary")),        
-        column(width=12,
-               p("Objectives Table:"),
-               DTOutput("ObjectivesTable"),
-               br(),
-        ),
-    ), #end fluidRow
+    # fluidRow(style = "background-color: #9faba0;",
+    #     column(width=12,
+    #            p(em("Objectives: Individual Objective Entry"))),
+    #     column(width=3,
+    #            selectInput("objCategory","Category",choices = c("Conservation","Yield","Economic","Social","Utility"),multiple = F),
+    #            bsTooltip(id = "objCategory", title = "What category of objective is it?", trigger = "hover")),
+    #     column(width=3,
+    #            textInput("objName","Objective","Stock status"),
+    #            bsTooltip(id = "objName", title = "Objective name", trigger = "hover")),
+    #     column(width=6,
+    #            textAreaInput("objDescription","Description","Biomass as proportion of unfished biomass over last 10 years of the simulation",width="500px"),
+    #            bsTooltip(id = "objDescription", title = "Provide a description of the objective.", trigger = "hover")),
+    #     column(width=3,
+    #            selectInput("objDirection","Direction",choices = c("Maximize","Minimize","Target","Constraint","Unknown"),multiple = F),
+    #            bsTooltip(id = "objDirection", title = "What is the desired direction or what type of condition is used for the objective?", trigger = "hover")),
+    #     column(width=3,
+    #            selectInput("objType","Type",choices = c("Fundamental","Means","Process","Strategic"),multiple = F),
+    #            bsTooltip(id = "objType", title = "What type of objective is it?", trigger = "hover")),
+    #     column(width=3,
+    #            selectInput("objScale","Scale",choices = c("Natural","Proxy","Constructed"),multiple = F),
+    #            bsTooltip(id = "objScale", title = "What type of scale is used to measure the status of the objective?", trigger = "hover")),
+    #     column(width=3,
+    #            textInput("objMetric","Metric","B/B(0)"),
+    #            bsTooltip(id = "objMetric", title = "What metric or performance measure is used to assess the status of the objective?", trigger = "hover")),
+    #     column(width=12,       
+    #            actionButton("add_btn", "Click here to add the objective information entered above to the objectives table below", class = "btn-primary")),        
+    #     column(width=12,
+    #            p("Objectives Table:"),
+    #            DTOutput("ObjectivesTable"),
+    #            br(),
+    #     ),
+    # ), #end fluidRow
     fluidRow(style = "background-color: #d0d6d1;",
         column(width=12,
                p(em("Alternatives Process"))),
@@ -176,24 +184,24 @@ ui <- fluidPage(
                                   multiple = T,width="450px"),
                bsTooltip(id = "subAltSource", title = "If it was not explicitly documented, based on your subjective interpretation of the process Who provided the alternatives?", trigger = "hover"),),
     ), #end fluidRow
-    fluidRow(style = "background-color: #9faba0;",
-      column(width=12,
-               p(em("Alternatives: Individual Alternative Entry"))),
-        column(width=4,
-               selectInput("altType","Management Tools",choices = c("Catch Limit","Effort Limit","Size Limit","Access Control",
-                                                                    "Share Allocation","Closure","Other"),multiple = F),
-               bsTooltip(id = "altType", title = "What type of management tool was evaluated?", trigger = "hover")),
-        column(width=8,
-               textAreaInput("altAlternatives","Alternatives","5 Alternative harvest control rules (HCR), varrying by explotation rate and biological reference point time period",width="600px"),
-               bsTooltip(id = "altAlternatives", title = "Wat alternative actions were evaluated for this management tool?", trigger = "hover")),
-        column(width=12,
-               actionButton("addAlt_btn", "Click here to add the alternative information entered above to alternatives table below",class = "btn-primary")),
-        column(width=12,
-               p("Alternatives Table"),
-               DTOutput("AlternativesTable"),
-               br(),
-        ),
-    ), # end fluidRow
+    # fluidRow(style = "background-color: #9faba0;",
+    #   column(width=12,
+    #            p(em("Alternatives: Individual Alternative Entry"))),
+    #     column(width=4,
+    #            selectInput("altType","Management Tools",choices = c("Catch Limit","Effort Limit","Size Limit","Access Control",
+    #                                                                 "Share Allocation","Closure","Other"),multiple = F),
+    #            bsTooltip(id = "altType", title = "What type of management tool was evaluated?", trigger = "hover")),
+    #     column(width=8,
+    #            textAreaInput("altAlternatives","Alternatives","5 Alternative harvest control rules (HCR), varrying by explotation rate and biological reference point time period",width="600px"),
+    #            bsTooltip(id = "altAlternatives", title = "Wat alternative actions were evaluated for this management tool?", trigger = "hover")),
+    #     column(width=12,
+    #            actionButton("addAlt_btn", "Click here to add the alternative information entered above to alternatives table below",class = "btn-primary")),
+    #     column(width=12,
+    #            p("Alternatives Table"),
+    #            DTOutput("AlternativesTable"),
+    #            br(),
+    #     ),
+    # ), # end fluidRow
     fluidRow(style = "background-color: #d0d6d1;",
         column(width=12,
                p(em("Consequences and Tradeoffs"))),
@@ -223,7 +231,7 @@ ui <- fluidPage(
         column(width=12,
                hr(),
                p(em("Notes and Comments")),
-               textAreaInput("notes","notes","E.g., Stakeholders were included in this process, and there was some documentation of the process.  Additional documentation could have covered the development of the problem, roles, and the results of the visual trade-off evaluation.", width="1000px"),
+               textAreaInput("notes","Notes","E.g., Stakeholders were included in this process, and there was some documentation of the process.  Additional documentation could have covered the development of the problem, roles, and the results of the visual trade-off evaluation.", width="1000px"),
                bsTooltip(id = "notes", title = "Add any notes you think would be helpful here.", trigger = "hover"),
                hr()),
     ), # end fluidRow
@@ -237,7 +245,7 @@ ui <- fluidPage(
                textInput("contactInfo","Your contact info","E.g., jcummings@massd.edu"),
                bsTooltip(id = "contactInfo", title = "Please provide your contact information", trigger = "hover"),),
         column(width=4,
-               actionButton("submit", "Click here to submit you MSE review",class="btn-warning")),
+               actionButton("submit", "Click here to submit your MSE review",class="btn-warning")),
                p("")
         ), #end fluidRow
     # Data table
@@ -252,16 +260,26 @@ ui <- fluidPage(
 server <- function(input, output, session) {
     
     # Whenever a field is filled, aggregate all form data
-    formData <- reactive({
-        data <- as.data.frame(t(sapply(fields, function(x) input[[x]])))
+    reviewData <- reactive({
+        data <- as.data.frame(t(sapply(reviewFields, function(x) input[[x]])))
         data
+    })
+    
+    objData <- reactive({
+      data <- as.data.frame(t(sapply(objFields, function(x) input[[x]])))
+      data
+    })
+    
+    altData <- reactive({
+      data <- as.data.frame(t(sapply(altFields, function(x) input[[x]])))
+      data
     })
     
     objTable <- reactiveVal(objTable)
     
     observeEvent(input$add_btn, {
-      t = rbind(data.frame(Category=input$objCategory,Objective=input$objObjective,Descriptions=NA,Direction=NA,
-                           Type=NA,Scale=NA,Metric=NA),
+      t = rbind(data.frame(Category=input$objCategory,Objective=input$objName,Descriptions=input$objDescription,
+                           Direction=input$objDirection,Type=input$objType,Scale=input$objScale,Metric=input$objMetric),
                 objTable())
       objTable(t)
     })
@@ -273,7 +291,7 @@ server <- function(input, output, session) {
     altTable <- reactiveVal(altTable)
     
     observeEvent(input$addAlt_btn, {
-      t = rbind(data.frame(Category=input$objCategory,Objective=input$objObjective),
+      t = rbind(data.frame("Management Tools"=input$altType,Alternatives=input$altAlternatives),
                 altTable())
       altTable(t)
     })
@@ -284,7 +302,9 @@ server <- function(input, output, session) {
     
     # When the Submit button is clicked, save the form data
     observeEvent(input$submit, {
-        saveData(formData())
+      saveData(reviewData(),1)
+      saveData(formData(),2)
+      saveData(formData(),3)
     })
     
     # Show the previous responses
