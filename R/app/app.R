@@ -3,8 +3,7 @@
 # 4/9/2020, JWC
 
 ##### Meta Data and setup #####
-# Description: Import and analyze MSE documentation from database
-# Value: TBD
+# Description: Display results of MSE documentation review, display MSe reposity info, and enable MSE reviews to be submitted
 
 # load libraries
 library(tidyverse) # upgrade to base R
@@ -21,6 +20,39 @@ library(here) # file directory assistance
 library(digest) # used to create unique file names
 library(googlesheets4) # link to Google sheets for storage
 library(shinyBS) # enable tooltips for form inputs
+library(googledrive) # enable connections to google drive
+
+# Load data for app (data is obtained via the analysisexcel.R script)
+load("MSEreview.RData")
+
+# Get map background for plotting the map
+world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
+
+# Authorize the connection to the google sheet by providing the path to the authorization token
+gs4_auth(path="alpine-tracker-230222-353a701fc629.json")
+
+# Provide the unique ID for the google sheet to add data to
+ssid <- as_sheets_id("1YjOTei_N7RS05rxXrVB6iuUptjYTDQC4xTLeoR-8fi8") #ID of google sheet. This sheet must be created properly for the app to function.
+
+# create table to store objective data
+objTable = data.frame(Category=character(),Objective=character(),Descriptions=character(),Direction=character(),Type=character(),
+                      Scale=character(),Metric=character())
+# create table to store alternatives
+altTable = data.frame("Management Tools"=character(), Alternatives=character())
+
+# Function to save form entries to google sheet
+saveData <- function(data,sheet) {
+  # Add the data as a new row
+  sheet_append(ssid, data, sheet)
+}
+
+# Define the fields we want to save from the data entry form
+reviewFields <- c("DOI","author","pubYear","system","location","lat","long","species","citation","authors","title","journal","poc",
+                  "processDoc","rolesDoc","openMeetings","optimAlt","decisionDoc","implemented","decision","leader","participants",
+                  "problemDoc","problemDef","objDoc","objSource","subObjSource","elicitationObj","altDoc","altSource","subAltSource",
+                  "predMethod","drivers","tradeoffsDoc","tradeMethod","subTradeMethod","notes","reviewer","contactInfo")
+objFields <- c("objCategory","objName","objDescription","objDirection","objType","objScale","objMetric")
+altFields <- c("altType","altAlternatives")
 
 #To open a connection to the database:
 # Copy into command prompt:
@@ -55,36 +87,6 @@ library(shinyBS) # enable tooltips for form inputs
 # 
 # # To close the connection
 # dbDisconnect(con)
-
-# Load data for app (data is obtained via the analysisexcel.R script)
-load("MSEreview.RData")
-
-# Get map background for plotting the map
-world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
-
-##### Set up data entry form #####
-# provide location to save data
-ssid <- as_sheets_id("1YjOTei_N7RS05rxXrVB6iuUptjYTDQC4xTLeoR-8fi8") #ID of google sheet. This sheet must be created properly for the app to function.
-
-# create table to store objective data
-objTable = data.frame(Category=character(),Objective=character(),Descriptions=character(),Direction=character(),Type=character(),
-                      Scale=character(),Metric=character())
-# create table to store alternatives
-altTable = data.frame("Management Tools"=character(), Alternatives=character())
-
-# Function to save form entries to google sheet
-saveData <- function(data,sheet) {
-  # Add the data as a new row
-  sheet_append(ssid, data, sheet)
-}
-
-# Define the fields we want to save from the data entry form
-reviewFields <- c("DOI","author","pubYear","system","location","lat","long","species","citation","authors","title","journal","poc",
-                  "processDoc","rolesDoc","openMeetings","optimAlt","decisionDoc","implemented","decision","leader","participants",
-                  "problemDoc","problemDef","objDoc","objSource","subObjSource","elicitationObj","altDoc","altSource","subAltSource",
-                  "predMethod","drivers","tradeoffsDoc","tradeMethod","subTradeMethod","notes","reviewer","contactInfo")
-objFields <- c("objCategory","objName","objDescription","objDirection","objType","objScale","objMetric")
-altFields <- c("altType","altAlternatives")
 
 ##### Data Processing #####
 
@@ -198,99 +200,88 @@ ui <- fluidPage(
     #### Tab 1: About ####
     tabPanel("About", 
       h1("An Assessment of Management Strategy Evaluations"),# title of the page
-      p("What can be learned from the Management Strategy Evalaution (MSE)
-      litearture and how have previous MSE processes been documented?"),
+      p("What can be learned from the Management Strategy Evaluation (MSE) literature? How have previous MSE processes been documented?"),
       hr(),
-      p("The calls for management to utilize management strategy evaluation
-      are both aspirational and estimable in their aim and vision.
-      Management strategy evaluation (MSE) is 'widely considered to
-      be the most appropriate way to evaluate the trade‐offs achieved by
-      alternative management strategies and to assess the consequences of
-      uncertainty for achieving management goals' (Punt et al. 2014). Thus,
-      MSE is a compelling tool to assess management startegies in the face of
-      challenging new conditions. For example, in our changing oceans and
-      with the increasing impacts of climate change MSE can be a tool to evaluate 
-      climate-responsive approaches to management decisions."),
-      p("Is the published literature supporting advancement and improvement of MSE
-      processes and how can MSE practioners better learn from previouse efforts?
-      We evalaute this question and provide a repository to document MSE processes
-      to aid practioners as they take on future MSE processes."),
+      p("The calls for management to utilize management strategy evaluation are both aspirational and estimable in their aim and vision. Management
+        strategy evaluation (MSE) is 'widely considered to be the most appropriate way to evaluate the trade‐offs achieved by alternative management
+        strategies and to assess the consequences of uncertainty for achieving management goals' (Punt et al. 2014). Thus, MSE is a compelling tool 
+        to assess management strategies in the face of challenging new conditions. For example, in our changing oceans and with the increasing impacts
+        of climate change MSE can be a tool to evaluate climate-responsive approaches to management decisions."),
+      p("Is the published literature supporting advancement and improvement of MSE processes? How can MSE practitioners better learn from previous
+        efforts? We evaluate these questions and provide a repository to document MSE processes to aid practitioners as they take on future MSE
+        processes."),
       h4("Objectives"),
       p("Our objectives are"),
       tags$div(
         tags$ul(
-          tags$li("to review the methodlogy and documentation of MSE processes using
-          the published literature, thereby assessing what compoents of the process are
-          documented in a manner that supports repetiion and learning within the MSE
-          practitioner community")
+          tags$li("to review the methodology and documentation of MSE processes using the published literature, assessing what components
+                  of the process are documented in a manner that supports repetition and learning within the MSE practitioner community, and")
         )
       ),
       tags$div(
         tags$ul(
-          tags$li("to provide a repository whre MSE practitioners can learn from previous MSE efforts.")
+          tags$li("to provide a repository where MSE practitioners can learn from previous MSE efforts.")
         )
       ),
       h4("Methods"),
-      p("We used the Structured Decision Making process as our framework to assess MSE
-      process. Strucutred Decision Making is the most common term used for decison
-      analysis in natural resource management and it is a valueable framework for this
-      analysis because it decomposes problems and decision making into the component
-      parts that make up a decision making process (figure 1)."),
+      p("We used the Structured Decision Making process as our framework to assess MSE processes. Structured Decision Making is the most common term
+        used for decision analysis in natural resource management and it is a valuable framework for this analysis because it decomposes problems and
+        decision making into the component parts that make up a decision making process (figure 1)."),
       imageOutput("imageSDM",
                    width=400,
                    height=275),
-      p(em("Figure 1. A depiction of the Structured Decision Making process frameowrk
-      and the components used to review MSE processes")),
-      p("We searched the MSE literature via Web of Science, searching for 
-      “management strategy evaluation” by topic across all years on January
-      8th, 2019. This search returned 264 results, of which 154 were management
-      strategy evaluations after removing articles that were reviews, 
-      meta-analyses, or simply cited other MSE articles. We reviewed a random
-      sample of 30 of these 154 articles."),
-      p("The results of this analysis will be avaialable in a future publication. You may
-        also explore the results of the analysis or submit a review of an MSE publication here."),
+      p(em("Figure 1. A depiction of the Structured Decision Making process framework and the components used to review MSE processes")),
+      p("We searched the MSE literature via Web of Science, searching for “management strategy evaluation” by topic across all years on
+        January 8th, 2019. This search produced 154 MSEs. While the initial search returned 264 results, 154 remained after removing articles that were
+        reviews, meta-analyses, or simply cited other MSEs. A random sample of 30 of these 154 articles were reviewed for our forthcoming Cummings et. al.
+        publication."),
       h4("Explore the Results"),
-      p("Select the results you would like to examine using the radio buttons
-      below.  The figures and tables in this application are updated by your
-      selection."),
+      p("Select the results you would like to examine using the radio buttons below. The figures and tables in this application are updated by your
+        selection."),
       radioButtons("data_filter",
          "Show results from:",
          choices = c(
-           "30 articles reviewed for Cummings et. al. Publication, "="pub",
-           "MSE including climate change as a driver"="CC",
-           "All MSEs (entered in the database to date)"="all"),
+           "MESs reviewed for Cummings et. al. Publication, "="pub",
+           "All MSEs (entered in the database to date)"="all",
+           "MSEs including climate change as a driver"="CC"),
          width='400px'),
         textOutput("radio"),
+      h4("Submit a Review"),
+      p("To build a more complete MSE repository we encourage you to submit reviews of any MSEs that have not yet been reviewed. To do so click on
+        the “Submit MSE - Data Entry Form” tab above."),
       hr(),
-      h5("Where have management strategy evaluations occurred?"),
-      p("Hovering over a point on the map will give the associated citation below, 
-        while selecting an area will give all citations in the 'brushed' map area. To
-        learn more about those MSEs you can search for the citations in the Data - All
-        tab."),
+      h4("Where have management strategy evaluations occurred?"),
+      p("Hovering over a point on the map will give the associated citation below, while clicking and dragging to select an area will give all
+        citations in the “brushed” map area. To learn more about those MSEs you can search for the citations in the “Data - All” or the
+        “Data - Summary” tabs."),
       plotOutput("mse.map",
         brush = brushOpts(id = "map_brush"),
         hover = hoverOpts("map_hover")
       ),
-      p("Figure 2. Map of MSE locations. Points represent the approximate 
-        center point of the fishery or management region the evalauted in the MSE."),
+      p("Figure 2. Map of MSE locations. Points represent the approximate center point of the fishery or management region evaluated in the MSE."),
       fluidRow(
         column(width = 6,
-          h4("Hovered points"),
+          h5("Hovered points"),
           tableOutput("hover")
         ),
         column(width = 6,
-          h4("Brushed points"),
+          h5("Brushed points"),
           tableOutput("brush")
         )
-      )
+      ),
+      hr(),
+      h4("Comments and Feedback"),
+      p("We welcome feedback and suggestions to improve this Shiny application and other comments. You can find contact information here:"),
+      tags$a(href="https://drjonathancummings.com/", "drjonathancummings.com")
     ),
     #### Tab 2: Results - Figures ####
     tabPanel("Results - Figures", 
-             h2("MSE literature review results - Figures"),
-             p("The figures in this tab show what percentage of the components of a deciison process were indlucded in an MSE's 
-               documentation and who participated and at particiular stages in the decision process."),
+             h2("MSE Review Results - Figures"),
+             h3("What components are documented, who participates, and how?"),
+             p("The figures in this tab show what percentage of the components of a decision process were included in an MSE's documentation and who
+               participated and at particular stages in the decision process."),
              hr(),
-             h5("Are the components of the decision process explicit in MSEs?"),
+             h4("Are the components of the decision process explicit in MSEs?"),
              p("For the set of MSEs selected, this figure displays the percentage of those MSEs that explicitly completed and included
                documentation of the selected components of a decision process."),
              plotOutput("Freq.plot",height="100%"),
@@ -305,9 +296,9 @@ ui <- fluidPage(
               strong("Adopted*")," - Explicit documentation of decision makers implementing the results of the MSE."),
              p(em("*note that the results of an MSE may have been adopted but not documented because the adoption occurred following
                   completing of the associated literature")),
-             h5("Who is involved, and participates in, MSEs?"),
-             p("For the set of MSEs selected, this figure displays the percentage of those MSEs that included each type of participant 
-               for diffrenet stages in the process."),
+             h4("Who is involved, and participates in, MSEs?"),
+             p("For the set of MSEs selected, this figure displays the percentage of those MSEs that included each type of participant for different
+               stages in the process."),
              plotOutput("part.plot",height="100%"),
              p("Figure 4. Percentage of MSEs that included each participant type at different stages:"),
              p(strong("Process")," - Who initiated and lead the MSE process?,",
@@ -440,7 +431,7 @@ ui <- fluidPage(
                              checkboxInput("implemented","Results adopted?"),
                              bsTooltip(id = "implemented", title = "Was the decision implemented?", trigger = "hover")),
                       column(width=12,
-                             textAreaInput("decision","Decision Result?"),
+                             textAreaInput("decision","Decision Result?","MSE is a valuable tool for natural resource management."),
                              bsTooltip(id = "decision", title = "If results were adopted, a decision was documented, or an optimal management strategy was identified, what was it?", trigger = "hover")),
                       column(width=6,
                              selectInput("leader","Process Lead(s)?",choices = c("Select one or more. Click & Delete to deselect" = "","Government","Management","Fishery","Independent","Scientists","Public","Unknown"),
@@ -771,7 +762,7 @@ server <- function(input, output, session) {   # code to create output using ren
     tibble("MSE type"=c("Published","Random Sample","Climate Change"),
            "Count"=c(154,30,16))
   },digits=0)
-  output$radio <-renderText(paste0("Number of MSEs in results: ", nrow(data_reviewed())))
+  output$radio <-renderText(paste0("Number of MSEs in result: ", nrow(data_reviewed())))
   output$imageSDM<-renderImage({
     filename<-normalizePath(file.path('./www',paste("SDMProcessFramework.png")))
     list(src=filename,
@@ -792,7 +783,8 @@ server <- function(input, output, session) {   # code to create output using ren
   observeEvent(input$map_brush,
                output$brush <- renderTable({
                  brushedPoints(data_reviewed(), input$map_brush, "Longitude","Latitude")%>% 
-                   select(Citation)
+                   select(Citation) %>% 
+                   arrange(Citation)
                })
   )
 
