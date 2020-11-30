@@ -278,35 +278,36 @@ ui <- fluidPage(
     tabPanel("Results - Figures", 
              h2("MSE Review Results - Figures"),
              h3("What components are documented, who participates, and how?"),
-             p("The figures in this tab show what percentage of the components of a decision process were included in an MSE's documentation and who
+             p("The figures in this tab show what percentage of the components of a decision process were included in an MSE's documentation,  and who
                participated and at particular stages in the decision process."),
              hr(),
-             h4("Are the components of the decision process explicit in MSEs?"),
-             p("For the set of MSEs selected, this figure displays the percentage of those MSEs that explicitly completed and included
-               documentation of the selected components of a decision process."),
+             h4("Are the components of MSE decision processes explicit?"),
+             p("For the set of MSEs selected, this figure displays the percentage of those MSEs that explicitly completed and documented the
+               decision making components (top), and elements of a decision process (bottom)."),
              plotOutput("Freq.plot",height="100%"),
-             p("Figure 3. Percentage of MSEs that included: "),
-             p(strong("Process")," - Explicit documentation of the decision making process used to conduct the MSE,",
-              strong("Problem")," - Explicit documentation of the problem the MSE is attempting to address,",
-              strong("Objectives")," - Explicit documentation of the process used to produce objectives and performance metrics to evaluate the management procedures,",
+             p("Figure 3. Percentage of MSEs that included: ", strong("Problem")," - Explicit documentation of the decision problem the MSE is attempting to address,",
+              strong("Objectives")," - Explicit documentation of the process used to produce the objectives and performance metrics to evaluate the 
+              management procedures,",
               strong("Tradeoffs")," - Explicit documentation of the tradeoff evaluation process,",
               strong("Decision")," - Documentation of the alternative selected and implemented as the management procedure going forward,",
-              strong("Roles")," - Explicit documentation of the MSE participants' roles,",
-              strong("Open Meetings")," - Meetings open to the public or those outside of the set of MSE participants,",
-              strong("Adopted*")," - Explicit documentation of decision makers implementing the results of the MSE."),
+              strong("Adopted*")," - Explicit documentation of decision makers implementing the results of the MSE,",
+              strong("Process")," - Explicit documentation of the decision making process used to conduct the MSE,",
+              strong("Roles")," - Explicit documentation of the MSE participants' roles, and",
+              strong("Open Meetings")," - Meetings open to the public or those outside of the set of MSE participants."),
              p(em("*note that the results of an MSE may have been adopted but not documented because the adoption occurred following
                   completing of the associated literature")),
              h4("Who is involved, and participates in, MSEs?"),
              p("For the set of MSEs selected, this figure displays the percentage of those MSEs that included each type of participant for different
                stages in the process."),
              plotOutput("part.plot",height="100%"),
-             p("Figure 4. Percentage of MSEs that included each participant type at different stages:"),
-             p(strong("Process")," - Who initiated and lead the MSE process?,",
-               strong("Participants")," - Who participated in the the MSe process?,",
+             p("Figure 4. ", strong("Participants")," - Who participated at any stage of the MSE process?,",
+               strong("Process")," - Who initiated and lead the MSE process?,",
                strong("Documented Objectives")," - Who provided the objectives based on the documentation of the MSE process?,",
                strong("Subjective Objectives")," - Who most likely provided the objectives based on a subjective reading of the documentation?,",
-               strong("Documented Alternatives")," - Who provided the alternatives based on the documentation of the MSE process?,",
-               strong("Subjective Alternatives")," - Who most likely provided the alternatives based on a subjective reading of the documentation?,"),
+               strong("Documented Alternatives")," - Who provided the alternatives based on the documentation of the MSE process?, and ",
+               strong("Subjective Alternatives")," - Who most likely provided the alternatives based on a subjective reading of the documentation? 
+               The x axis displays the percentage of MSEs in the set selected that include each participant type and the y-axis displays the 
+               participant types. The unknown participant type represents MSEs where the documentation was inexplicit."),
              ),
     #### Tab 3: Results - Tables ####
     tabPanel("Results - Tables", 
@@ -654,10 +655,10 @@ server <- function(input, output, session) {   # code to create output using ren
   })
    
   part.data_reviewed5 <- reactive({
-    neworder <- c("Process","Participants","Doc Objectives",
+    neworder <- c("Participants","Process","Doc Objectives",
                   "Sub Objectives","Doc Alternatives",
                   "Sub Alternatives")
-    newlabels <- c("Process","Participants","Documented Objectives",
+    newlabels <- c("Participants","Process","Documented Objectives",
                    "Subjective Objectives","Documented Alternatives",
                    "Subjective Alternatives")
     part.data_reviewed4() %>%
@@ -792,12 +793,14 @@ server <- function(input, output, session) {   # code to create output using ren
   output$Freq.plot <- renderPlot({
     ggplot(freq.data(),aes(Explicit,Percent))+
       geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
+      annotate("text",x = 2, y=75,label="Decision\nProcess",size=10)+
+      annotate("text",x = 6, y=75,label="Decision\nComponents",size=10)+
       coord_flip()+scale_y_continuous(limits=c(0,100))+xlab(NULL)+ylab("Percentage")+
       scale_x_discrete(
-          limits=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-                   "Objectives","Problem","Process"), 
-          labels=c("Adopted","Open Meetings","Roles","Decision","Tradeoffs",
-                   "Objectives","Problem","Process")) +
+          limits=c("Open Meetings","Roles","Process","Adopted","Decision","Tradeoffs",
+                   "Objectives","Problem"), 
+          labels=c("Open Meetings","Roles","Process","Adopted","Decision","Tradeoffs",
+                   "Objectives","Problem")) +
       theme_bw()+theme(text = element_text(size=18))
   },height=300,width=600)
   output$part.plot <- renderPlot({
