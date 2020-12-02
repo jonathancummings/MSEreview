@@ -277,10 +277,11 @@ ui <- fluidPage(
     #### Tab 2: Results - Figures ####
     tabPanel("Results - Figures", 
              h2("MSE Review Results - Figures"),
-             h3("What components are documented, who participates, and how?"),
-             p("The figures in this tab show what percentage of the components of a decision process were included in an MSE's documentation,  and who
-               participated and at particular stages in the decision process."),
+             p("The figures in the first section of this tab show what percentage of the components of a decision process were included in an MSE's documentation,  and who
+               participated and at particular stages in the decision process. The second section displays who authors MESs and where they are 
+               published. The third section displays how publications have changed through time."),
              hr(),
+             h3("What components are documented, who participates, and how?"),
              h4("Are the components of MSE decision processes explicit?"),
              p("For the set of MSEs selected, this figure displays the percentage of those MSEs that explicitly completed and documented the
                decision making components (top), and elements of a decision process (bottom)."),
@@ -308,14 +309,17 @@ ui <- fluidPage(
                strong("Subjective Alternatives")," - Who most likely provided the alternatives based on a subjective reading of the documentation? 
                The x axis displays the percentage of MSEs in the set selected that include each participant type and the y-axis displays the 
                participant types. The unknown participant type represents MSEs where the documentation was inexplicit."),
+             h3("Who authors MSEs and where are they published?"),
+             h3("How has MSe publication changed through time?"),
              ),
+    
     #### Tab 3: Results - Tables ####
     tabPanel("Results - Tables", 
              h2("Explict Process Documentation"),
              p("Table 1. The number and percentage of MSE processes that explicitly included each step in the process"),
              tableOutput("MSE.freq"),
              h2("Participation"),
-             p("Table 2. Number of MSEs in which each participant group participated by process stage"),
+             p("Table 2. Number of MSEs in which each participant group:"),
              tableOutput("MSE.part"),
              h2("System Drivers"),
              p("Table 3. Number of MSEs that included consideration of the following drivers in the system model"),
@@ -675,9 +679,17 @@ server <- function(input, output, session) {   # code to create output using ren
    
    part.data_table<-reactive({part.data_reviewed5() %>%
     as_tibble()  %>% 
-    select(Stage,Participants,Number)  %>% 
+    select(Stage,Participants,Number) %>%
     rename("Participant Group"="Participants") %>%
-    spread(Stage,Number,fill=0) 
+    spread(Stage,Number,fill=0) %>% 
+    mutate("Provided Objectives"=`Documented Objectives`+`Subjective Objectives`) %>% 
+    mutate("Provided Alternatives"=`Documented Alternatives`+`Subjective Alternatives`) %>% 
+    select(`Participant Group`,Process,Participants,`Provided Objectives`,`Provided Alternatives`) %>%
+    mutate(total=Process+Participants+`Provided Objectives`+`Provided Alternatives`) %>% 
+    arrange(-total) %>% 
+    select(`Participant Group`,Process,Participants,`Provided Objectives`,`Provided Alternatives`) %>%
+    rename("Participated in the Process"="Participants",
+           "Led the Process"="Process")
   })
 
   # What drivers are considered
@@ -789,7 +801,7 @@ server <- function(input, output, session) {   # code to create output using ren
                })
   )
 
-  ##### Tab 2 - Results - plots #####
+  ##### Tab 2 - Results - figures #####
   output$Freq.plot <- renderPlot({
     ggplot(freq.data(),aes(Explicit,Percent))+
       geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
@@ -814,28 +826,37 @@ server <- function(input, output, session) {   # code to create output using ren
       ylab("Percentage")+coord_flip()+xlab(NULL) +
       theme_bw()+theme(text = element_text(size=18))
   },height=600)
+  
   ##### Tab 3 - Results - tables #####
+  # Table 1. Documentation Frequency & Percentage
   output$MSE.freq <- renderTable({
     freq.data()
   },digits=0)
+  # Table 2. participation rate by group
   output$MSE.part <- renderTable({
     part.data_table()
   },digits=0)
+  # Table 3. System Drivers
   output$MSE.drive <- renderTable({
     drive.data()
   },digits=0)
+  # Table 4. objective Categories
   output$MSE.objcat <- renderTable({
     objcat.data()
   },digits=0)
+  # Table 5. Objective Definitions
   output$MSE.obj <- renderTable({
     obj.data_table1()
   })
+  # Table 6. Objective Category Combinations
   output$MSE.obj2 <- DT::renderDataTable({
     obj.data_table2()
   })
+  # Table 7. Management Proceedures
   output$MSE.alt <- renderTable({
     altcat.data()
   })
+  
   ##### Tab 4 #####
   output$MSE.Table <- DT::renderDataTable({
     data_reviewed()
