@@ -95,7 +95,7 @@ study<-study %>%
   unite(Citation,c(Authors,YearPub),sep=" ",remove=F)
 
 study.join<-study %>% 
-  select(ID,Citation)
+  select(ID,DOI,Citation)
 
 mgmt.join<-mgmt %>% 
   group_by(fkStudyID) %>%
@@ -110,6 +110,7 @@ obj.join<-obj %>%
 data<-full_join(study,mgmt.join,by=c("ID"="fkStudyID"))
 data<-full_join(data,obj.join,by=c("ID"="fkStudyID"))
 obj.data<-right_join(study.join,obj,by=c("ID"="fkStudyID"))
+alt.data<-right_join(study.join,mgmt,by=c("ID"="fkStudyID"))
 
 # Move comment column to the end
 data<-data %>% 
@@ -141,6 +142,7 @@ data_CC<-data_CC %>%
 
 data<-select(data,-c("ID"))
 obj.data<-select(obj.data,-c("ID","ID.y"))
+alt.data<-select(alt.data,-c("ID","ID.y"))
 
 # Get columns whose width needs editing
 targetsC<-match(c("Comments","ProblemDefinition"),names(data))
@@ -149,13 +151,22 @@ targetsSp<-match(c("Species","ObjElicitationMethod"),names(data))
 targetsSy<-match(c("System"),names(data))
 targetsL<-match(c("Location"),names(data))
 
+# Get columns for publication summary
+pub.col<-c("DOI",
+            "Citation",
+            "AllAuthors",
+            "Title",
+            "Journal",
+            "POC")
 # Get columns for study summary
-summary.col<-c("Citation",
-               "Species",
+summary.col<-c("DOI",
+               "Citation",
                "Location",
-               "System")
+               "System",
+               "Species")
 # Get columns for study drivers and problem
-prob.col<-c("Citation",
+prob.col<-c("DOI",
+            "Citation",
             "ProblemDefinition",
             "Drivers",
             "ConsequencePrediction",
@@ -199,6 +210,7 @@ ui <- fluidPage(
   tabsetPanel(
     #### Tab 1: About ####
     tabPanel("About", 
+      h1("BETA version"),
       h1("An Assessment of Management Strategy Evaluations"),# title of the page
       p("What can be learned from the Management Strategy Evaluation (MSE) literature? How have previous MSE processes been documented?"),
       hr(),
@@ -309,68 +321,90 @@ ui <- fluidPage(
                strong("Subjective Alternatives")," - Who most likely provided the alternatives based on a subjective reading of the documentation? 
                The x axis displays the percentage of MSEs in the set selected that include each participant type and the y-axis displays the 
                participant types. The unknown participant type represents MSEs where the documentation was inexplicit."),
+             hr(),
              h3("Who authors MSEs and where are they published?"),
-             h3("How has MSe publication changed through time?"),
+             hr(),
+             h3("How has MSE publication changed through time?"),
              ),
     
     #### Tab 3: Results - Tables ####
     tabPanel("Results - Tables", 
-             h2("Explict Process Documentation"),
-             p("Table 1. The number and percentage of MSE processes that explicitly included each step in the process"),
-             tableOutput("MSE.freq"),
-             h2("Participation"),
-             p("Table 2. Number of MSEs in which each participant group:"),
+             h2("MSE Review Results - Tables"),
+             p("The tables in this tab shows how often a participant type contributes to MSEs and what was accounted for
+               in the predictive models, as well as what and how objectives were considered, and what type of management
+               strategies were considered in MSEs."),
+             hr(),
+             h4("How often does a group participate in various stages of an MSE process?"),
+             textOutput("radio2"),
              tableOutput("MSE.part"),
-             h2("System Drivers"),
-             p("Table 3. Number of MSEs that included consideration of the following drivers in the system model"),
+             h4("What drivers of the system dynamics were included when predicting future conditions?"),
+             p("Table 2. Number and percentage of MSEs that included the following drivers in the system model"),
              tableOutput("MSE.drive"),
-             h2("Objective Categories"),
-             p("Table 4. Number of MSEs that included consideration of the following category of objectives in the evaluation"),
+             hr(),
+             h3("What objectives were considered?"),
+             h4("How often did MSEs consider each objective category?"),
+             p("Table 3. Number and percentage of MSEs that included the following objective categories"),
              tableOutput("MSE.objcat"),
-             h2("How were objectives defined?"),
-             p("Table 5. Number of, percentage of objectives, and Frequency per MSE of objective usage"),
+             h4("How were objectives defined?"),
+             p("Table 4. Number and percentage of objectives, as well as the number per MSE, by objective classification"),
              tableOutput("MSE.obj"),
-             p("Table 6. Frequency of objective usage combinations"),
-             DT::dataTableOutput("MSE.obj2"),
-             h2("What management procedures were evaluated?"),
-             p("Table 5. Number of, percentage of objectives, and Frequency per MSE of objective usage"),
+             hr(),
+             h3("What alternative management strategies were evaluated?"),
+             p("Table 5. Number and percentage of MSEs that evaluated each type of management strategy"),
              tableOutput("MSE.alt")
              ),
-    #### Tab 4: Data - All ####
-    tabPanel("Data - All",
-             h1("All of the MSE literature review data"),
-             h2("Study data"),
-             DT::dataTableOutput("MSE.Table"),
-             hr(),
-             h2("Objectives data"),
-             DT::dataTableOutput("MSE.Obj.Table"),
-             hr(),
-             h2("Field Descriptions"),
-             tableOutput("MSE.Fields")
-             ),
-    #### Tab 5: Data Tables - Subsets ####
-    tabPanel("Data Tables - Subsets",
-             h1("Selected columns of MSE literature review data"),
-             h2("Study Summaries"),
+    #### Tab 4: Data - Summaries ####
+    tabPanel("Data - Summaries",
+             h2("MSE Review Data - Data Summaries"),
+             p("The data tables in this tab summarize publication information, what systems the MSEs evaluated, and how the MSE problem was defined and
+             evaluated."),
+             h3("Publication Information"),
+             h4("What was published, by whom, and where?"),
+             # DT::dataTableOutput("MSE.pub"),
+             h3("Study System"),
+             h4("What location, system and species did the MSE evaluate?"),
              DT::dataTableOutput("MSE.summary"),
              hr(),
-             h2("Problem Components"),
+             h3("Problem Components"),
+             h4("How were problems defined, consequences predicted, tradeoffs evaluated, and what was decided?"),
              DT::dataTableOutput("MSE.problem")
-             ),
-    #### Tab 6: Data Tables - Summaries ####
-    tabPanel("Data Tables - Summaries",
-             # h1("Summary of all MSE processes"),
-             # h2("Study Summaries"),
-             # DT::dataTableOutput("imageSDM"),
-             # hr(),
-             # h2("Counts"),
-             # DT::dataTableOutput("MSEcounts")
     ),
-    #### Tab 7: Submit MSE - Data Entry Form ####
+    #### Tab 5: Data - All ####
+    tabPanel("Data - All",
+             h2("MSE Review Data - All Data Summaries"),
+             p("The data tables in this tab contain the complete data tables for each MSE. The objective and alternative tables contain
+             multiple rows for each MSE, 1 row per objective or alternative type included in the MSE."),
+             hr(),
+             h3("Study data"),
+             p("This table contains data on each MSE reviewed."),
+             DT::dataTableOutput("MSE.Table"),
+             p(class = 'text-center', downloadButton('MSE.Table.active', 'Download Filtered MSE Data')),
+             hr(),
+             h3("Objectives data"),
+             h4("What objectives were evaluated?"),
+             p("This table contains data on what objectives were evaluated and how those objectives were measured and
+             defined."),
+             DT::dataTableOutput("MSE.Obj.Table"),
+             p(class = 'text-center', downloadButton('MSE.Obj.active', 'Download Filtered Objectives Data')),
+             hr(),
+             h3("Alternatives data"),
+             h4("What alternative management strategies were evaluated?"),
+             p("This table contains data on what types of management strategies were evaluated and some details about
+               what those strategies were."),
+             DT::dataTableOutput("MSE.Alt.Table"),
+             p(class = 'text-center', downloadButton('MSE.Alt.active', 'Download Filtered Alternatives Data')),
+             hr(),
+             h3("Field Descriptions"),
+             h4("How was each data field (column) defined?"),
+             p("This table contains the meta data for this analysis, while the name, category, type, and description of
+               each field in the MSE review data tables."),
+             tableOutput("MSE.Fields")
+             ),
+    #### Tab 6: Submit MSE - Data Entry Form ####
     tabPanel("Submit MSE - Data Entry Form",
              # Application title
              titlePanel("Management Strategy Evaluation review data entry form"),
-             p(strong("Enter the data from your review in the forms below.")),
+             p("Enter the data from your review in the forms below."),
              
              # Data Entry Form
              fluidRow(style = "background-color: #d0d6d1;",
@@ -604,6 +638,11 @@ server <- function(input, output, session) {   # code to create output using ren
     }
   })
   
+  # Select publication summary data_reviewed
+  # pub.data<-reactive({data_reviewed() %>%
+  #     select(all_of(pub.col))
+  # })
+  
   # Select study summary data_reviewed
   summary.data<-reactive({data_reviewed() %>%
     select(all_of(summary.col))
@@ -611,7 +650,11 @@ server <- function(input, output, session) {   # code to create output using ren
 
   # Select study problem and driver data_reviewed
   prob.data<-reactive({data_reviewed() %>%
-    select(all_of(prob.col))
+    select(all_of(prob.col)) %>% 
+    rename("Problem Definition"="ProblemDefinition",
+           "Prediction Method"="ConsequencePrediction",
+           "Explicit Tradeoff Evaluation Method"="TradeOffMethod_Exp",
+           "Subjective Tradeoff Evaluation Method"="TradeOffMethod_Sub",)
   })
   
   # Frequency of method
@@ -759,7 +802,6 @@ server <- function(input, output, session) {   # code to create output using ren
     select(Var1,Freq) %>%
     rename("Management Type"="Var1","Number"="Freq") %>%
     mutate(Percent=sprintf("%.0f",round(Number/n_mse()*100,0))) %>%
-    mutate('Per MSE'=sprintf("%.2f",round(Number/n_mse(),2))) %>%
     arrange(desc(Number))
   })
 
@@ -770,7 +812,7 @@ server <- function(input, output, session) {   # code to create output using ren
     select(all_of(map.col))
   })
 
-  ##### Tab 1 - Filtering #####
+  ##### Tab 1: About #####
   output$MSEcounts <- renderTable({
     tibble("MSE type"=c("Published","Random Sample","Climate Change"),
            "Count"=c(154,30,16))
@@ -801,7 +843,7 @@ server <- function(input, output, session) {   # code to create output using ren
                })
   )
 
-  ##### Tab 2 - Results - figures #####
+  ##### Tab 2: Results - figures #####
   output$Freq.plot <- renderPlot({
     ggplot(freq.data(),aes(Explicit,Percent))+
       geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
@@ -827,56 +869,34 @@ server <- function(input, output, session) {   # code to create output using ren
       theme_bw()+theme(text = element_text(size=18))
   },height=600)
   
-  ##### Tab 3 - Results - tables #####
-  # Table 1. Documentation Frequency & Percentage
-  output$MSE.freq <- renderTable({
-    freq.data()
-  },digits=0)
-  # Table 2. participation rate by group
+  ##### Tab 3: Results - tables #####
+  # Table 1. participation rate by group
+  output$radio2 <-renderText(paste0("Table 1. Number of MSEs (out of ", nrow(data_reviewed()),
+                                                   ") in which each participant group:"))
   output$MSE.part <- renderTable({
     part.data_table()
   },digits=0)
-  # Table 3. System Drivers
+  # Table 2. System Drivers
   output$MSE.drive <- renderTable({
     drive.data()
   },digits=0)
-  # Table 4. objective Categories
+  # Table 3. objective Categories
   output$MSE.objcat <- renderTable({
     objcat.data()
   },digits=0)
-  # Table 5. Objective Definitions
+  # Table 4. Objective Definitions
   output$MSE.obj <- renderTable({
     obj.data_table1()
   })
-  # Table 6. Objective Category Combinations
-  output$MSE.obj2 <- DT::renderDataTable({
-    obj.data_table2()
-  })
-  # Table 7. Management Proceedures
+  # Table 5. Management Procedures
   output$MSE.alt <- renderTable({
     altcat.data()
   })
   
-  ##### Tab 4 #####
-  output$MSE.Table <- DT::renderDataTable({
-    data_reviewed()
-  },  options = list(autoWidth = TRUE,
-                     columnDefs = list(list(width = '1125px', targets = targetsC), # comments, ProblemDefinition
-                                       list(width = '700px', targets = targetsAE), # AlternativesEvaluated, FullCitation
-                                       list(width = '500px', targets = targetsSp),
-                                       list(width = '250px', targets = targetsSy),
-                                       list(width = '75px', targets = targetsL)),
-                     scrollX=TRUE)
-  )
-  output$MSE.Obj.Table <- DT::renderDataTable({
-    obj.data
-  }) # NEED TO FIX THIS TO FILTER BASED ON THE RESULTS RADIO BUTTON, I.E., ALL REVIEWS OR JUST REVIEWS FOR PUBLICATION
-  output$MSE.Fields <- renderTable({
-    mse.fields<-arrange(fields,Order) %>% 
-      select(-Order)
-    mse.fields
-  })
-  ##### Tab 5 #####
+  ##### Tab 4: Data - Summaries #####
+  # output$MSE.pub <- DT::renderDataTable({
+  #   arrange(pub.data(),Citation)
+  # })
   output$MSE.summary <- DT::renderDataTable({
     arrange(summary.data(),Citation)
   })
@@ -886,14 +906,48 @@ server <- function(input, output, session) {   # code to create output using ren
                     columnDefs = list(list(width = '800px', targets = targetsPD)), # comments, Problem Definition
                     scrollX=TRUE)
   )
-  ##### Tab 6 #####
+  ##### Tab 5: Data - All #####
+  output$MSE.Table <- DT::renderDataTable({
+    data_reviewed()
+  },  options = list(autoWidth = TRUE,
+                     columnDefs = list(list(width = '1125px', targets = targetsC), # comments, ProblemDefinition
+                                       list(width = '700px', targets = targetsAE), # AlternativesEvaluated, FullCitation
+                                       list(width = '500px', targets = targetsSp),
+                                       list(width = '250px', targets = targetsSy),
+                                       list(width = '75px', targets = targetsL)),
+                     scrollX=TRUE,filter="top")
+  )
+  output$MSE.Table.active = downloadHandler('MSEdata.csv', content = function(file) {
+    s = input$MSE.Table_rows_all
+    write.csv(study[s, , drop = FALSE], file)
+  })
+  output$MSE.Obj.Table <- DT::renderDataTable({
+    obj.data
+  }) # NEED TO FIX THIS TO FILTER BASED ON THE RESULTS RADIO BUTTON, I.E., ALL REVIEWS OR JUST REVIEWS FOR PUBLICATION
+  output$MSE.Obj.active = downloadHandler('MSE_Objectives.csv', content = function(file) {
+    s = input$MSE.Obj.Table_rows_all
+    write.csv(obj.data[s, , drop = FALSE], file)
+  })
+  output$MSE.Alt.Table <- DT::renderDataTable({
+    alt.data
+  }) # NEED TO FIX THIS TO FILTER BASED ON THE RESULTS RADIO BUTTON, I.E., ALL REVIEWS OR JUST REVIEWS FOR PUBLICATION
+  output$MSE.Alt.active = downloadHandler('MSE_Alternatives.csv', content = function(file) {
+    s = input$MSE.Alt.Table_rows_all
+    write.csv(alt.data[s, , drop = FALSE], file)
+  })
+  output$MSE.Fields <- renderTable({
+    mse.fields<-arrange(fields,Order) %>% 
+      select(-Order)
+    mse.fields
+  })
+
 #   output$imageSDM<-renderImage({
 #     filename<-normalizePath(file.path('./www',paste("SDMProcessFramework.png")))
 #     list(src=filename,
 #          width=400,
 #          height=275)},deleteFile = FALSE)
 
-  ##### Tab 7 #####
+  ##### Tab 6: Submit MSE - Data Entry Form#####
   # Whenever a field is filled, aggregate all form data
   reviewData <- reactive({
     data <- sapply(reviewFields, function(x) input[[x]]) %>%
