@@ -21,6 +21,8 @@ library(digest) # used to create unique file names
 library(googlesheets4) # link to Google sheets for storage
 library(shinyBS) # enable tooltips for form inputs
 library(googledrive) # enable connections to google drive
+library(reactable) # create interactive tables
+library(shinyWidgets) # create fancy inputs and outputs
 
 # Load data for app (data is obtained via the analysisexcel.R script)
 load("MSEreview.RData")
@@ -116,6 +118,13 @@ alt.data<-right_join(study.join,mgmt,by=c("ID"="fkStudyID"))
 data<-data %>% 
   select(-'Comments', 'Comments')
 
+names.data.tab5<-data %>% 
+  select(-c('Comments','FullCitation','RandomSample','UseInPublication','AlternativesEvaluated','ProblemDefinition',
+            'ObjElicitationMethod'))
+
+sticky_style <- list(position = "sticky", left = 0, background = "#fff", zIndex = 1,
+                     borderRight = "1px solid #eee")
+
 # Filter data to create separate pub and climate change objects
 data_pub<-filter(data,RandomSample==TRUE)
 data_CC<-filter(data,str_detect(Drivers,"Climate Change")&UseInPublication==TRUE)
@@ -153,11 +162,13 @@ targetsL<-match(c("Location"),names(data))
 
 # Get columns for publication summary
 pub.col<-c("DOI",
-            "Citation",
-            "AllAuthors",
-            "Title",
-            "Journal",
-            "POC")
+           "Citation") # place holder until other columns of data are added!!
+# pub.col<-c("DOI",
+#             "Citation",
+#             "AllAuthors",
+#             "Title",
+#             "Journal",
+#             "POC")
 # Get columns for study summary
 summary.col<-c("DOI",
                "Citation",
@@ -360,7 +371,7 @@ ui <- fluidPage(
              evaluated."),
              h3("Publication Information"),
              h4("What was published, by whom, and where?"),
-             # DT::dataTableOutput("MSE.pub"),
+             DT::dataTableOutput("MSE.pub"),
              h3("Study System"),
              h4("What location, system and species did the MSE evaluate?"),
              DT::dataTableOutput("MSE.summary"),
@@ -377,7 +388,11 @@ ui <- fluidPage(
              hr(),
              h3("Study data"),
              p("This table contains data on each MSE reviewed."),
-             DT::dataTableOutput("MSE.Table"),
+             pickerInput("select_MSE_rows", "Select columns to display", names(data), selected=names(names.data.tab5),
+                         options = list(`actions-box` = TRUE),multiple = T),
+             # selectInput("select_MSE_rows", "Select columns to display", names(data),selected =  multiple = TRUE),
+             reactableOutput("MSE.Table"),
+             # DT::dataTableOutput("MSE.Table"),
              p(class = 'text-center', downloadButton('MSE.Table.active', 'Download Filtered MSE Data')),
              hr(),
              h3("Objectives data"),
@@ -638,10 +653,17 @@ server <- function(input, output, session) {   # code to create output using ren
     }
   })
   
+  obj.data.selected<-reactive({
+    semi_join(obj.data,data_reviewed(),by=c("Citation"="Citation"))
+  })
+  alt.data.selected<-reactive({
+    semi_join(alt.data,data_reviewed(),by=c("Citation"="Citation"))
+  })
+  
   # Select publication summary data_reviewed
-  # pub.data<-reactive({data_reviewed() %>%
-  #     select(all_of(pub.col))
-  # })
+  pub.data<-reactive({data_reviewed() %>%
+      select(all_of(pub.col))
+  })
   
   # Select study summary data_reviewed
   summary.data<-reactive({data_reviewed() %>%
@@ -894,43 +916,55 @@ server <- function(input, output, session) {   # code to create output using ren
   })
   
   ##### Tab 4: Data - Summaries #####
-  # output$MSE.pub <- DT::renderDataTable({
-  #   arrange(pub.data(),Citation)
-  # })
+  output$MSE.pub <- DT::renderDataTable({
+    arrange(pub.data(),Citation)
+  })
   output$MSE.summary <- DT::renderDataTable({
     arrange(summary.data(),Citation)
-  })
+  }, filter="top")
   output$MSE.problem <- DT::renderDataTable({
     arrange(prob.data(),Citation)
   }, options = list(autoWidth = TRUE,
                     columnDefs = list(list(width = '800px', targets = targetsPD)), # comments, Problem Definition
-                    scrollX=TRUE)
+                    scrollX=TRUE),
+  filter="top"
   )
   ##### Tab 5: Data - All #####
-  output$MSE.Table <- DT::renderDataTable({
-    data_reviewed()
-  },  options = list(autoWidth = TRUE,
-                     columnDefs = list(list(width = '1125px', targets = targetsC), # comments, ProblemDefinition
-                                       list(width = '700px', targets = targetsAE), # AlternativesEvaluated, FullCitation
-                                       list(width = '500px', targets = targetsSp),
-                                       list(width = '250px', targets = targetsSy),
-                                       list(width = '75px', targets = targetsL)),
-                     scrollX=TRUE,filter="top")
-  )
+  output$MSE.Table <- renderReactable({
+    reactable(data_reviewed()[,input$select_MSE_rows,drop=FALSE],
+              searchable = TRUE, filterable = TRUE, resizable = TRUE, showPageSizeOptions = TRUE, pageSizeOptions = c(5, 10, 25),
+              striped = TRUE, showSortable = TRUE, onClick = "expand", highlight = TRUE,
+              columns = list(Citation = colDef(
+                  style = sticky_style,
+                  headerStyle = sticky_style)
+                  ))
+  })
+  # output$MSE.Table <- renderDT({
+  #   columns = names(data_reviewed())
+  #   if (!is.null(input$select_MSE_rows)) {
+  #     columns = input$select_MSE_rows
+  #   }
+  #   data_reviewed()[,columns,drop=FALSE]},
+  #   filter="top"
+  # )
   output$MSE.Table.active = downloadHandler('MSEdata.csv', content = function(file) {
     s = input$MSE.Table_rows_all
-    write.csv(study[s, , drop = FALSE], file)
+    columns = names(data_reviewed())
+    if (!is.null(input$select_MSE_rows)) {
+      columns = input$select_MSE_rows
+    }
+    write.csv(study[s, columns, drop = FALSE], file)
   })
-  output$MSE.Obj.Table <- DT::renderDataTable({
-    obj.data
-  }) # NEED TO FIX THIS TO FILTER BASED ON THE RESULTS RADIO BUTTON, I.E., ALL REVIEWS OR JUST REVIEWS FOR PUBLICATION
+  output$MSE.Obj.Table <- renderDataTable({
+    obj.data.selected()
+  })
   output$MSE.Obj.active = downloadHandler('MSE_Objectives.csv', content = function(file) {
     s = input$MSE.Obj.Table_rows_all
     write.csv(obj.data[s, , drop = FALSE], file)
   })
-  output$MSE.Alt.Table <- DT::renderDataTable({
-    alt.data
-  }) # NEED TO FIX THIS TO FILTER BASED ON THE RESULTS RADIO BUTTON, I.E., ALL REVIEWS OR JUST REVIEWS FOR PUBLICATION
+  output$MSE.Alt.Table <- renderDataTable({
+    alt.data.selected()
+  })
   output$MSE.Alt.active = downloadHandler('MSE_Alternatives.csv', content = function(file) {
     s = input$MSE.Alt.Table_rows_all
     write.csv(alt.data[s, , drop = FALSE], file)
