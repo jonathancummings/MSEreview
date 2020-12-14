@@ -116,7 +116,8 @@ alt.data<-right_join(study.join,mgmt,by=c("ID"="fkStudyID"))
 
 # Move comment column to the end
 data<-data %>% 
-  select(-'Comments', 'Comments')
+  select(-'Comments', 'Comments') %>% 
+  mutate(ConsequenceExplicit=ConsequencePrediction!="Unknown")
 
 names.data.tab5<-data %>% 
   select(-c('Comments','FullCitation','RandomSample','UseInPublication','AlternativesEvaluated','ProblemDefinition',
@@ -153,12 +154,12 @@ data<-select(data,-c("ID"))
 obj.data<-select(obj.data,-c("ID","ID.y"))
 alt.data<-select(alt.data,-c("ID","ID.y"))
 
-# Get columns whose width needs editing
-targetsC<-match(c("Comments","ProblemDefinition"),names(data))
-targetsAE<-match(c("AlternativesEvaluated","FullCitation"),names(data))
-targetsSp<-match(c("Species","ObjElicitationMethod"),names(data))
-targetsSy<-match(c("System"),names(data))
-targetsL<-match(c("Location"),names(data))
+# # Get columns whose width needs editing
+# targetsC<-match(c("Comments","ProblemDefinition"),names(data))
+# targetsAE<-match(c("AlternativesEvaluated","FullCitation"),names(data))
+# targetsSp<-match(c("Species","ObjElicitationMethod"),names(data))
+# targetsSy<-match(c("System"),names(data))
+# targetsL<-match(c("Location"),names(data))
 
 # Get columns for publication summary
 pub.col<-c("DOI",
@@ -190,6 +191,7 @@ freq.col<-c("ProcessExplicit",
             "ProblemDefinitionExplicit",
             "ObjectivesExplicit",
             "AlternativesExplicit",
+            "ConsequenceExplicit",
             "TradeOffsExplicit",
             "DecisionExplicit",
             "RoleSpecification",
@@ -309,11 +311,14 @@ ui <- fluidPage(
              p("For the set of MSEs selected, this figure displays the percentage of those MSEs that explicitly completed and documented the
                decision making components (top), and elements of a decision process (bottom)."),
              plotOutput("Freq.plot",height="100%"),
-             p("Figure 3. Percentage of MSEs that included: ", strong("Problem")," - Explicit documentation of the decision problem the MSE is attempting to address,",
+             p("Figure 3. Percentage of MSEs that included: ", 
+              strong("Problem")," - Explicit documentation of the decision problem the MSE is attempting to address,",
               strong("Objectives")," - Explicit documentation of the process used to produce the objectives and performance metrics to evaluate the 
-              management procedures,",
+              management strategies,",
+              strong("Alternatives")," - Explicit documentation of the process used to produce the alternative management strategies,",
+              strong("Consequences")," - Explicit documentation of the process used to predict management strategy performance,",
               strong("Tradeoffs")," - Explicit documentation of the tradeoff evaluation process,",
-              strong("Decision")," - Documentation of the alternative selected and implemented as the management procedure going forward,",
+              strong("Decision")," - Documentation of the alternative selected and implemented as the management strategy going forward,",
               strong("Adopted*")," - Explicit documentation of decision makers implementing the results of the MSE,",
               strong("Process")," - Explicit documentation of the decision making process used to conduct the MSE,",
               strong("Roles")," - Explicit documentation of the MSE participants' roles, and",
@@ -335,7 +340,7 @@ ui <- fluidPage(
              hr(),
              h3("Who authors MSEs and where are they published?"),
              hr(),
-             h3("How has MSE publication changed through time?"),
+             h3("How has MSE publication changed through time?")
              ),
     
     #### Tab 3: Results - Tables ####
@@ -359,10 +364,23 @@ ui <- fluidPage(
              h4("How were objectives defined?"),
              p("Table 4. Number and percentage of objectives, as well as the number per MSE, by objective classification"),
              tableOutput("MSE.obj"),
+             p(strong(em("Definitions"))),
+             p(
+              strong("Fundamental"), "- A primary objective of the management strategy",
+              strong("Means"), "- A means to achieving a fundamental objective of the management strategy",
+              strong("Constraint"), "- An objective that is either achieved or not, a binary metric",
+              strong("Maximize"), "- An objective that it better achieved as the value of the metric increases",
+              strong("Minimize"), "- An objective that it better achieved as the value of the metric decreases",
+              strong("Target"), "- An objective that it better achieved as the value of the metric approaches a target value",
+              strong("Utility"), "- A single metric that measures multiple objectives",
+              strong("Natural"), "- The metric measures the objective directly",
+              strong("Proxy"), "- The metric is highly correlated with the objective, but does not directly measure the objective",
+              strong("Constructred"), "- The metric formulated in place of a more direct natural or proxy measurement of the objective"
+              ),
              hr(),
              h3("What alternative management strategies were evaluated?"),
              p("Table 5. Number and percentage of MSEs that evaluated each type of management strategy"),
-             tableOutput("MSE.alt")
+             tableOutput("MSE.alt"),
              ),
     #### Tab 4: Data - Summaries ####
     tabPanel("Data - Summaries",
@@ -419,7 +437,11 @@ ui <- fluidPage(
     tabPanel("Submit MSE - Data Entry Form",
              # Application title
              titlePanel("Management Strategy Evaluation review data entry form"),
-             p("Enter the data from your review in the forms below."),
+             p("To submit a new MSE review enter the data from your review in the form below."),
+             hr(),
+             p("While we will review your submission prior to adding it to the database and this application please do your best to
+             complete all portions of the form. Hovering over a field in the form will bring up a tool tip with more detail about what
+             the field is asking for."),
              
              # Data Entry Form
              fluidRow(style = "background-color: #d0d6d1;",
@@ -522,9 +544,12 @@ ui <- fluidPage(
                              textAreaInput("elicitationObj","Objective Elicitation Process","Objectives were elicited by a facilitator.", width="1000px"),
                              bsTooltip(id = "elicitationObj", title = "What process was used to elicit objectives?", trigger = "hover"),),
              ), # end fluidRow
+             
              fluidRow(style = "background-color: #9faba0;",
                       column(width=12,
-                             p(em("Objectives: Individual Objective Entry"))),
+                             p(em("Objectives: Individual Objective Entry.")),
+                             p("Complete this portion of the form for each objective considered, adding each to the table by clicking the
+                               blue button below")),
                       column(width=3,
                              selectInput("objCategory","Category",choices = c("Conservation","Yield","Economic","Social","Utility"),multiple = F),
                              bsTooltip(id = "objCategory", title = "What category of objective is it?", trigger = "hover")),
@@ -569,9 +594,12 @@ ui <- fluidPage(
                                          multiple = T,width="450px"),
                              bsTooltip(id = "subAltSource", title = "If it was not explicitly documented, based on your subjective interpretation of the process Who provided the alternatives?", trigger = "hover")),
              ), #end fluidRow
+             
              fluidRow(style = "background-color: #9faba0;",
                       column(width=12,
-                             p(em("Alternatives: Individual Alternative Entry"))),
+                             p(em("Alternatives: Individual Alternative Type Entry")),
+                             p("Complete this portion of the form for each type of management tool considered, describing the alternatives  
+                             for each, adding them to the table by clicking the blue button below")),
                       column(width=4,
                              selectInput("altType","Management Tools",choices = c("Catch Limit","Effort Limit","Size Limit","Access Control",
                                                                                   "Share Allocation","Closure","Other"),multiple = F),
@@ -687,16 +715,17 @@ server <- function(input, output, session) {   # code to create output using ren
            "Problem"="ProblemDefinitionExplicit",
            "Objectives"="ObjectivesExplicit",
            "Alternatives"="AlternativesExplicit",
+           "Consequences"="ConsequenceExplicit",
            "Tradeoffs"="TradeOffsExplicit",
            "Decision"="DecisionExplicit",
            "Roles"="RoleSpecification",
            "Open Meetings"="OpenMeetings",
            "Adopted"="ResultsAdopted") %>%
-    summarise_all(sum) %>%
+    summarise_all(sum,na.rm=T) %>%
     gather(Explicit) %>%
     mutate(Percent=value/n_mse()*100) %>%
     mutate(Explicit=factor(Explicit,levels=
-                             c("Process","Problem","Objectives","Alternatives","Tradeoffs",
+                             c("Process","Problem","Objectives","Alternatives","Consequences","Tradeoffs",
                                "Decision","Roles","Open Meetings","Adopted"))) %>%
     rename("Number"="value")
     })
@@ -868,14 +897,14 @@ server <- function(input, output, session) {   # code to create output using ren
   ##### Tab 2: Results - figures #####
   output$Freq.plot <- renderPlot({
     ggplot(freq.data(),aes(Explicit,Percent))+
-      geom_col()+geom_vline(xintercept=3.5,linetype="dashed")+
-      annotate("text",x = 2, y=75,label="Decision\nProcess",size=10)+
-      annotate("text",x = 6, y=75,label="Decision\nComponents",size=10)+
+      geom_col()+geom_vline(xintercept=3.51,linetype="dashed")+
+      annotate("label",x = 2, y=75,label="Decision\nProcess",size=6)+
+      annotate("label",x = 7, y=75,label="Decision\nComponents",size=6)+
       coord_flip()+scale_y_continuous(limits=c(0,100))+xlab(NULL)+ylab("Percentage")+
       scale_x_discrete(
-          limits=c("Open Meetings","Roles","Process","Adopted","Decision","Tradeoffs",
+          limits=c("Open Meetings","Roles","Process","Adopted","Decision","Tradeoffs","Consequences","Alternatives",
                    "Objectives","Problem"), 
-          labels=c("Open Meetings","Roles","Process","Adopted","Decision","Tradeoffs",
+          labels=c("Open Meetings","Roles","Process","Adopted","Decision","Tradeoffs","Consequences","Alternatives",
                    "Objectives","Problem")) +
       theme_bw()+theme(text = element_text(size=18))
   },height=300,width=600)
