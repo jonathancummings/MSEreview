@@ -119,10 +119,12 @@ data<-data %>%
   select(-'Comments', 'Comments') %>% 
   mutate(ConsequenceExplicit=ConsequencePrediction!="Unknown")
 
+# create names object for use in selecting columns later on
 names.data.tab5<-data %>% 
   select(-c('Comments','FullCitation','RandomSample','UseInPublication','AlternativesEvaluated','ProblemDefinition',
             'ObjElicitationMethod'))
 
+# Establish formatting for a "sticky" always in view column in tables.
 sticky_style <- list(position = "sticky", left = 0, background = "#fff", zIndex = 1,
                      borderRight = "1px solid #eee")
 
@@ -185,6 +187,7 @@ prob.col<-c("DOI",
             "TradeOffMethod_Exp",
             "TradeOffMethod_Sub",
             "Decision")
+# Get column to assigne to an object to adjust column width later
 targetsPD<-match(c("ProblemDefinition"),prob.col)
 # Get columns for frequency analysis
 freq.col<-c("ProcessExplicit",
@@ -339,8 +342,10 @@ ui <- fluidPage(
                participant types. The unknown participant type represents MSEs where the documentation was inexplicit."),
              hr(),
              h3("Who authors MSEs and where are they published?"),
+             plotOutput("pub.plot",height="100%"),
              hr(),
-             h3("How has MSE publication changed through time?")
+             h3("How has MSE publication changed through time?"),
+             plotOutput("year.plot",height="100%")
              ),
     
     #### Tab 3: Results - Tables ####
@@ -858,9 +863,27 @@ server <- function(input, output, session) {   # code to create output using ren
 
   # Common components
 
-  # Where MSEs have occured
+  # Where MSEs have occurred
   map.data<-reactive({data_reviewed() %>%
     select(all_of(map.col))
+  })
+  
+  # When MSEs have been published
+  year.data<-reactive({data_reviewed() %>% 
+    select(YearPub) %>% 
+    bind_rows(study,.id="set") %>% 
+    select(set,YearPub) %>%
+    mutate(set = replace(set, set == 1, "Selected")) %>%
+    mutate(set = replace(set, set == 2, "All"))
+  })
+  
+  # Where MSEs have been published
+  pub.data2<-reactive({data_reviewed() %>% 
+      select(Journal) %>% 
+      bind_rows(study,.id="set") %>% 
+      select(set,Journal) %>%
+      mutate(set = replace(set, set == 1, "Selected")) %>%
+      mutate(set = replace(set, set == 2, "All"))
   })
 
   ##### Tab 1: About #####
@@ -918,6 +941,19 @@ server <- function(input, output, session) {   # code to create output using ren
       )+scale_y_continuous(limits=c(0,100)) +
       ylab("Percentage")+coord_flip()+xlab(NULL) +
       theme_bw()+theme(text = element_text(size=18))
+  },height=600)
+  output$pub.plot <- renderPlot({
+    ggplot(pub.data2(),x=reorder(Journal, n),y=n,color=set,fill=set)+
+    geom_col()+ +scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+
+    theme_bw()+labs(col="MSEs",fill="MSEs")+coord_flip()+
+    theme(legend.position = c(0.75, 0.125),axis.title.y=element_blank())+labs(y="Publication Count")+
+    theme(text = element_text(size=18),legend.text = element_text(size=18))
+  },height=600)
+  output$year.plot <- renderPlot({
+    ggplot(year.data(),aes(x=YearPub,color=set,fill=set))+
+    geom_histogram(stat="count",position = "identity")+scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+
+    theme_bw()+labs(col="MSEs",fill="MSEs",x="Publication Year")+theme(legend.position = c(0.1, 0.85))+
+    theme(text = element_text(size=18),legend.text = element_text(size=18))
   },height=600)
   
   ##### Tab 3: Results - tables #####
