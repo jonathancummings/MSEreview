@@ -25,7 +25,7 @@ library(mapdata) # basemap generation
 wd<-getwd()
 # Establish connection to Access database
 channel<-odbcDriverConnect(paste0("Driver={Microsoft Access Driver (*.mdb, *.accdb)};
-                           DBQ=",wd,"/DB files - Access/MSE Problem Framing_be.accdb"))
+                           DBQ=",wd,"/DB files - Access/MSE Problem Framing.accdb"))
 
 # Obtain data tables
 study<-as_tibble(sqlFetch(channel,sqtable = "tblStudy"))
