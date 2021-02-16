@@ -25,7 +25,7 @@ library(reactable) # create interactive tables
 library(shinyWidgets) # create fancy inputs and outputs
 
 # Load data for app (data is obtained via the LoadData.R script)
-load("MSEreview.RData")
+load("data/MSEreview.RData")
 
 # Get map background for plotting the map
 world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
