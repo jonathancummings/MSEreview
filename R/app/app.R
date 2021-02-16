@@ -24,7 +24,7 @@ library(googledrive) # enable connections to google drive
 library(reactable) # create interactive tables
 library(shinyWidgets) # create fancy inputs and outputs
 
-# Load data for app (data is obtained via the analysisexcel.R script)
+# Load data for app (data is obtained via the LoadData.R script)
 load("MSEreview.RData")
 
 # Get map background for plotting the map
