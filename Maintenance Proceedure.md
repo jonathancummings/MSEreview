@@ -6,7 +6,7 @@ This document describes the procedure used to maintain the shiny application and
 ## New reviews are entered
 There are two mechanisms by which an MSE review can be entered into this system, a user supplied review and an application management supplied review. 
 
-A user of the application can enter a review using the "Submit MSE - Data Entry Form" tab on the shiny application. When a review is entered this way the data is added to a Google sheet (https://docs.google.com/spreadsheets/d/1YjOTei_N7RS05rxXrVB6iuUptjYTDQC4xTLeoR-8fi8/edit#gid=0) and an email is sent to the application manager (currently Jonathan Cummings, jonathan.cummmings@gmail.com) to alert them that a new review has been added. 
+A user of the application can enter a review using the "Submit MSE - Data Entry Form" tab on the shiny application. When a review is entered this way the data is added to a [Google sheet](https://docs.google.com/spreadsheets/d/1YjOTei_N7RS05rxXrVB6iuUptjYTDQC4xTLeoR-8fi8/edit#gid=0) and an email is sent to the application manager (currently Jonathan Cummings, jonathan.cummmings@gmail.com) to alert them that a new review has been added. 
 
 
 ## Data is stored in the database
