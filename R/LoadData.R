@@ -6,6 +6,10 @@
 # Meta Data and setup
 # Description: Import excel file data to R to create a .RData file for use in other scripts
 
+# Clear environment
+rm(list = ls(all.names = TRUE)) # clear all objects includes hidden objects.
+gc() # free up memory and report the memory usage.
+
 # load libraries
 library(tidyverse) # upgrade to base R
 library(readxl) # read in excel files
