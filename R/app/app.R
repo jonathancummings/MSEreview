@@ -25,7 +25,7 @@ library(reactable) # create interactive tables
 library(shinyWidgets) # create fancy inputs and outputs
 
 # Load data for app (data is obtained via the LoadData.R script)
-load("data/MSEreview.RData")
+load(here("data/MSEreview.RData"))
 
 # Get map background for plotting the map
 world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
@@ -94,7 +94,7 @@ altFields <- c("altType","altAlternatives")
 
 # Edit tables for joining
 study<-study %>% 
-  unite(Citation,c(Authors,YearPub),sep=" ",remove=F)
+  unite(Citation,c(Author,YearPub),sep=" ",remove=F)
 
 study.join<-study %>% 
   select(ID,DOI,Citation)
@@ -944,7 +944,7 @@ server <- function(input, output, session) {   # code to create output using ren
   },height=600)
   output$pub.plot <- renderPlot({
     ggplot(pub.data2(),x=reorder(Journal, n),y=n,color=set,fill=set)+
-    geom_col()+ +scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+
+    geom_col()+scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+
     theme_bw()+labs(col="MSEs",fill="MSEs")+coord_flip()+
     theme(legend.position = c(0.75, 0.125),axis.title.y=element_blank())+labs(y="Publication Count")+
     theme(text = element_text(size=18),legend.text = element_text(size=18))
