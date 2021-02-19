@@ -3,6 +3,9 @@ library(tidyverse)
 library(statnet) # network statistics
 library(visNetwork) # network visualization
 library(igraph) # visNetwork requires this package
+library(tm) # text mining
+library(wordcloud2) # word cloud maker
+library(forcats) # categorical data
 
 # load data
 load("data/MSEreview.RData")
@@ -62,5 +65,54 @@ interactive
 # Report the top 20 MSE authors
 MSE_authors_count %>% 
   top_n(20,Freq)
+
+#### Journal visualization ####
+journal.plot<-study %>%
+  select(Journal) %>% 
+  drop_na(Journal) %>% 
+  ggplot(aes(x=fct_rev(fct_infreq(Journal)))) + geom_bar() + coord_flip() +
+  xlab("Journal") + ylab("Number of MSEs Published")
+
+#plot number of pubs with climate change based on journal 
+journals_cc <- ggplot(clim, aes(x=Journal)) + geom_bar() #Can't read labels
+journals_cc       
+
+#### Wordclouds ####
+wordplot.data<-function(data,remove.words=NULL){
+  docs<-Corpus(VectorSource(data)) %>% 
+    tm_map(content_transformer(tolower)) %>% 
+    tm_map(removeNumbers) %>% 
+    tm_map(removeWords, stopwords("english")) %>%
+    tm_map(removeWords, remove.words) %>% 
+    tm_map(removePunctuation) %>% 
+    tm_map(stripWhitespace)
+  
+  dtm <- TermDocumentMatrix(docs) 
+  matrix <- as.matrix(dtm) 
+  words <- sort(rowSums(matrix),decreasing=TRUE) 
+  df <- data.frame(word = names(words),freq=words)
+  
+  return(df)
+}
+
+wordplot.data(study$System,remove.words = "fishery") %>% 
+  wordcloud2()
+
+wordplot.data(study$Location) %>% 
+  wordcloud2()
+
+wordplot.data(study$Species,remove.words = "pacific") %>% 
+  wordcloud2()
+
+wordplot.data(study$Title) %>% 
+  wordcloud2()
+
+wordplot.data(study$ProblemDefinition) %>% 
+  wordcloud2()
+
+wordplot.data(study$Comments) %>% 
+  wordcloud2()
+
+
 
 
