@@ -24,8 +24,15 @@ MSE_authors_count<-MSE_authors%>%
 #### Create an author network diagram ####
 # Create matrix of authors (rows) in papers (columns)
 bipartiteEdges <- lapply(MSE_authors, function(x) {MSE_authors_count$Authors %in% x})
+# test<-data.frame(matrix(unlist(bipartiteEdges), nrow = length(bipartiteEdges),byrow = T))
 bipartiteEdges <- do.call("cbind", bipartiteEdges) # dimension is number of authors x number of papers
+# bipartiteEdges <- as.data.frame(bipartiteEdges)
 rownames(bipartiteEdges) <- MSE_authors_count$Authors
+
+
+bipartiteEdges2 <- tibble(sapply(MSE_authors, function(x) {MSE_authors_count$Authors %in% x})) %>% 
+  mutate(Authors=MSE_authors_count$Authors)
+rownames(bipartiteEdges2) <- MSE_authors_count$Authors
 
 # Create coauthor matrix of authors (rows) with coauthor (columns)
 coauthMat <- bipartiteEdges %*% t(bipartiteEdges) #bipartite to unimode
@@ -60,11 +67,6 @@ interactive <- visNetwork(nodes, edges, main = "MSE Co-Author Network", width = 
 
 # "print" interactive network plot
 interactive
-
-#### Author visualization ####
-# Report the top 20 MSE authors
-MSE_authors_count %>% 
-  top_n(20,Freq)
 
 #### Journal visualization ####
 journal.plot<-study %>%
@@ -113,6 +115,36 @@ wordplot.data(study$ProblemDefinition) %>%
 wordplot.data(study$Comments) %>% 
   wordcloud2()
 
+create.author.network<-function(author.list,author.names){
+  bipartiteEdges <- sapply(author.list, function(x) {author.names %in% x}) 
+  rownames(bipartiteEdges) <- author.names
+    
+  # Create coauthor matrix of authors (rows) with coauthor (columns)
+  coauthMat <- bipartiteEdges %*% t(bipartiteEdges) #bipartite to unimode
+  coauthMat <- coauthMat[order(rownames(coauthMat)), order(rownames(coauthMat))]
+  
+  # convert coauthor matrix to a network object
+  wosStatnet <- as.network(coauthMat, directed = FALSE, names.eval = "edge.lwd", ignore.eval = FALSE)
+  # wosStatnet # view network summary
+  
+  # I think this scales the size of the network?
+  wosStatnet%v%"size" = log(rowSums(coauthMat))
+  
+  # Create static network plot
+  # plot.network(wosStatnet, edge.col = "gray", edge.lwd = wosStatnet%e%"edge.lwd",
+  #              label = "vertex.names", label.cex = .5, label.pad = 0, label.pos = 1, vertex.cex = "size")
+  
+  # Get nodes and edges from the network object
+  nodes <- data.frame(id = 1:length(wosStatnet%v%"vertex.names"),
+                      label = wosStatnet%v%"vertex.names",
+                      title = wosStatnet%v%"vertex.names",
+                      size = 5*(2+wosStatnet%v%"size"))
+  
+  edges <- data.frame(from=data.frame(as.edgelist(wosStatnet))$X1, 
+                      to=data.frame(as.edgelist(wosStatnet))$X2)
+  
+  return(list(nodes=nodes,edges=edges))
+}
 
-
+x<-create.author.network(MSE_authors,MSE_authors_count$Authors)
 
