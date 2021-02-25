@@ -13,9 +13,9 @@ library(shinythemes) # web themes for Shiny
 library(DT) # Data Table
 library(ggmap) # map plotting
 library(mapdata) # basemap generation
-library(odbc) # database connection 
-library(RMySQL) # MySQL scripting in R
-library(DBI) # database interface
+# library(odbc) # database connection 
+# library(RMySQL) # MySQL scripting in R
+# library(DBI) # database interface
 library(here) # file directory assistance
 library(digest) # used to create unique file names
 library(googlesheets4) # link to Google sheets for storage
@@ -23,6 +23,12 @@ library(shinyBS) # enable tooltips for form inputs
 library(googledrive) # enable connections to google drive
 library(reactable) # create interactive tables
 library(shinyWidgets) # create fancy inputs and outputs
+library(statnet) # network statistics
+library(visNetwork) # network visualization
+library(igraph) # visNetwork requires this package
+library(tm) # text mining
+library(wordcloud2) # word cloud maker
+library(forcats) # categorical data wrangling
 
 # Load data for app (data is obtained via the LoadData.R script)
 load(here("data/MSEreview.RData"))
@@ -165,13 +171,11 @@ alt.data<-select(alt.data,-c("ID","ID.y"))
 
 # Get columns for publication summary
 pub.col<-c("DOI",
-           "Citation") # place holder until other columns of data are added!!
-# pub.col<-c("DOI",
-#             "Citation",
-#             "AllAuthors",
-#             "Title",
-#             "Journal",
-#             "POC")
+            "Citation",
+            "AllAuthors",
+            "Title",
+            "Journal",
+            "poc")
 # Get columns for study summary
 summary.col<-c("DOI",
                "Citation",
@@ -219,8 +223,100 @@ map.col<-c("Latitude",
            "Citation",
            "Drivers")
 
+## Wordcloud data processing function ##
+wordplot.data<-function(data,remove.words=NULL){
+  docs<-VCorpus(VectorSource(data)) %>%
+    tm_map(content_transformer(tolower)) %>%
+    tm_map(removeNumbers) %>%
+    tm_map(removeWords, stopwords("english")) %>%
+    tm_map(removeWords, remove.words) %>%
+    tm_map(removePunctuation) %>%
+    tm_map(stripWhitespace)
+
+  dtm <- TermDocumentMatrix(docs)
+  matrix <- as.matrix(dtm)
+  words <- sort(rowSums(matrix),decreasing=TRUE)
+  df <- data.frame(word = names(words),freq=words)
+
+  return(df)
+}
+
+wordcloud2a <- function (data, size = 1, minSize = 0, gridSize = 0, fontFamily = "Segoe UI", 
+                         fontWeight = "bold", color = "random-dark", backgroundColor = "white", 
+                         minRotation = -pi/4, maxRotation = pi/4, shuffle = TRUE, 
+                         rotateRatio = 0.4, shape = "circle", ellipticity = 0.65, 
+                         widgetsize = NULL, figPath = NULL, hoverFunction = NULL) 
+{
+  if ("table" %in% class(data)) {
+    dataOut = data.frame(name = names(data), freq = as.vector(data))
+  }
+  else {
+    data = as.data.frame(data)
+    dataOut = data[, 1:2]
+    names(dataOut) = c("name", "freq")
+  }
+  if (!is.null(figPath)) {
+    if (!file.exists(figPath)) {
+      stop("cannot find fig in the figPath")
+    }
+    spPath = strsplit(figPath, "\\.")[[1]]
+    len = length(spPath)
+    figClass = spPath[len]
+    if (!figClass %in% c("jpeg", "jpg", "png", "bmp", "gif")) {
+      stop("file should be a jpeg, jpg, png, bmp or gif file!")
+    }
+    base64 = base64enc::base64encode(figPath)
+    base64 = paste0("data:image/", figClass, ";base64,", 
+                    base64)
+  }
+  else {
+    base64 = NULL
+  }
+  weightFactor = size * 180/max(dataOut$freq)
+  settings <- list(word = dataOut$name, freq = dataOut$freq, 
+                   fontFamily = fontFamily, fontWeight = fontWeight, color = color, 
+                   minSize = minSize, weightFactor = weightFactor, backgroundColor = backgroundColor, 
+                   gridSize = gridSize, minRotation = minRotation, maxRotation = maxRotation, 
+                   shuffle = shuffle, rotateRatio = rotateRatio, shape = shape, 
+                   ellipticity = ellipticity, figBase64 = base64, hover = htmlwidgets::JS(hoverFunction))
+  chart = htmlwidgets::createWidget("wordcloud2", settings, 
+                                    width = widgetsize[1], height = widgetsize[2], sizingPolicy = htmlwidgets::sizingPolicy(viewer.padding = 0, 
+                                                                                                                            browser.padding = 0, browser.fill = TRUE))
+  chart
+}
+
+create.author.network<-function(author.list,author.names){
+  bipartiteEdges <- sapply(author.list, function(x) {author.names %in% x}) 
+  rownames(bipartiteEdges) <- author.names
+  
+  # Create coauthor matrix of authors (rows) with coauthor (columns)
+  coauthMat <- bipartiteEdges %*% t(bipartiteEdges) #bipartite to unimode
+  coauthMat <- coauthMat[order(rownames(coauthMat)), order(rownames(coauthMat))]
+  
+  # convert coauthor matrix to a network object
+  wosStatnet <- as.network(coauthMat, directed = FALSE, names.eval = "edge.lwd", ignore.eval = FALSE)
+  # wosStatnet # view network summary
+  
+  # I think this scales the size of the network?
+  wosStatnet%v%"size" = log(rowSums(coauthMat))
+  
+  # Create static network plot
+  # plot.network(wosStatnet, edge.col = "gray", edge.lwd = wosStatnet%e%"edge.lwd",
+  #              label = "vertex.names", label.cex = .5, label.pad = 0, label.pos = 1, vertex.cex = "size")
+  
+  # Get nodes and edges from the network object
+  nodes <- data.frame(id = 1:length(wosStatnet%v%"vertex.names"),
+                      label = wosStatnet%v%"vertex.names",
+                      title = wosStatnet%v%"vertex.names",
+                      size = 5*(2+wosStatnet%v%"size"))
+  
+  edges <- data.frame(from=data.frame(as.edgelist(wosStatnet))$X1, 
+                      to=data.frame(as.edgelist(wosStatnet))$X2)
+  
+  return(list(nodes=nodes,edges=edges))
+}
+
 ##### Shiny App #####
-##### UI #####
 ui <- fluidPage(
   theme = shinytheme("readable"),
   tabsetPanel(
@@ -269,7 +365,7 @@ ui <- fluidPage(
       radioButtons("data_filter",
          "Show results from:",
          choices = c(
-           "MESs reviewed for Cummings et. al. Publication, "="pub",
+           "MSEs reviewed for Cummings et. al. Publication, "="pub",
            "All MSEs (entered in the database to date)"="all",
            "MSEs including climate change as a driver"="CC"),
          width='400px'),
@@ -282,10 +378,10 @@ ui <- fluidPage(
       p("Hovering over a point on the map will give the associated citation below, while clicking and dragging to select an area will give all
         citations in the “brushed” map area. To learn more about those MSEs you can search for the citations in the “Data - All” or the
         “Data - Summary” tabs."),
-      plotOutput("mse.map",
+      addSpinner(plotOutput("mse.map",
         brush = brushOpts(id = "map_brush"),
         hover = hoverOpts("map_hover")
-      ),
+      ),spin = "fading-circle",color="#400080"),
       p("Figure 2. Map of MSE locations. Points represent the approximate center point of the fishery or management region evaluated in the MSE."),
       fluidRow(
         column(width = 6,
@@ -297,6 +393,10 @@ ui <- fluidPage(
           tableOutput("brush")
         )
       ),
+      hr(),
+      h4("Who are the top twenty MSE authors?"),
+      tableOutput("top.authors"),
+      visNetworkOutput("author.network"),
       hr(),
       h4("Comments and Feedback"),
       p("We welcome feedback and suggestions to improve this Shiny application and other comments. You can find contact information here:"),
@@ -342,7 +442,21 @@ ui <- fluidPage(
                participant types. The unknown participant type represents MSEs where the documentation was inexplicit."),
              hr(),
              h3("Who authors MSEs and where are they published?"),
-             plotOutput("pub.plot",height="100%"),
+             plotOutput("journal.plot",height="100%"),
+             hr(),
+             h3("Word Plots"),
+             p("What systems are most common in MSEs?"),
+             wordcloud2Output("wordplot.system"),
+             p("What locations are most common in MSEs?"),
+             wordcloud2Output("wordplot.location"),
+             p("What species are evalauted most commonly in MSEs?"),
+             wordcloud2Output("wordplot.species"),
+             p("What words are most common in MSE publication titles?"),
+             wordcloud2Output("wordplot.title"),
+             p("What words are most common in MSE problem definitions?"),
+             wordcloud2Output("wordplot.problem"),
+             p("What words are most common in our comments about MSEs?"),
+             wordcloud2Output("wordplot.comments"),
              hr(),
              h3("How has MSE publication changed through time?"),
              plotOutput("year.plot",height="100%")
@@ -667,7 +781,6 @@ ui <- fluidPage(
   )
 )
 
-##### Server #####
 # Shiny Server Section
 server <- function(input, output, session) {   # code to create output using render
   #####-- Data analysis --#####
@@ -878,14 +991,75 @@ server <- function(input, output, session) {   # code to create output using ren
   })
   
   # Where MSEs have been published
-  pub.data2<-reactive({data_reviewed() %>% 
-      select(Journal) %>% 
+  pub.data2<-reactive({pub.data() %>% 
+      select(Journal) %>%
+      drop_na(Journal) %>%
       bind_rows(study,.id="set") %>% 
       select(set,Journal) %>%
       mutate(set = replace(set, set == 1, "Selected")) %>%
-      mutate(set = replace(set, set == 2, "All"))
+      mutate(set = replace(set, set == 2, "All")) %>% 
+      drop_na() %>% 
+      arrange(set)
   })
+  
+  # Extract the individual authors from the column of authors
+  MSE_authors<-reactive({strsplit(data_reviewed()$AllAuthors,split="; ")})
+  
+  # count number publications by authors
+  MSE_authors_count<-reactive({MSE_authors()%>%
+    unlist() %>%
+    table() %>%
+    as.data.frame() %>%
+    rename("Authors"=".") %>%
+    arrange(-Freq)
+    })
 
+  ## Create an author network diagram ##
+  network.data<-reactive({create.author.network(MSE_authors(),MSE_authors_count()$Authors)
+    })
+  # Create matrix of authors (rows) in papers (columns)
+  # bipartiteEdges <- reactive({sapply(MSE_authors(), function(x) {MSE_authors_count()$Authors %in% x}) %>% 
+  #     cbind(as.character(MSE_authors_count()$Authors),.) %>%
+  #     as.data.frame() %>% 
+  #     column_to_rownames(var = "V1") %>% 
+  #     as.matrix() %>% 
+  #     matrix.mult()
+  #   })
+  
+
+  # %>%    mutate(Authors=MSE_authors_count()$Authors)
+  # bipartiteEdges <- reactive({rownames(bipartiteEdges())=MSE_authors_count()$Authors})
+  # bipartiteEdges <- reactive({do.call("cbind", bipartiteEdges())}) # dimension is number of authors x number of papers
+  # bipartiteEdges <- reactive({bipartiteEdges() %>%
+  #   cbind(MSE_authors_count()$Authors)
+  #   })
+
+  # # Create coauthor matrix of authors (rows) with coauthor (columns)
+  # coauthMat <- reactive({bipartiteEdges() %*% t(bipartiteEdges())}) #bipartite to unimode
+  # coauthMat <- reactive({coauthMat()[order(rownames(coauthMat())), order(rownames(coauthMat()))]})
+  # 
+  # # convert coauthor matrix to a network object
+  # wosStatnet <- reactive({as.network(coauthMat(), directed = FALSE, names.eval = "edge.lwd", ignore.eval = FALSE)})
+  # # wosStatnet # view network summary
+  # 
+  # # I think this scales the size of the network?
+  # wosStatnet()%v%"size" = reactive({log(rowSums(coauthMat()))})
+  # 
+  # # Create static network plot
+  # # plot.network(wosStatnet, edge.col = "gray", edge.lwd = wosStatnet%e%"edge.lwd",
+  # #              label = "vertex.names", label.cex = .5, label.pad = 0, label.pos = 1, vertex.cex = "size")
+  # 
+  # # Get nodes and edges from the network object
+  # nodes <- reactive({data.frame(id = 1:length(wosStatnet()%v%"vertex.names"),
+  #                     label = wosStatnet()%v%"vertex.names",
+  #                     title = wosStatnet()%v%"vertex.names",
+  #                     size = 5*(2+wosStatnet()%v%"size"))
+  # })
+  # 
+  # edges <- reactive({data.frame(from=data.frame(as.edgelist(wosStatnet()))$X1, 
+  #                     to=data.frame(as.edgelist(wosStatnet()))$X2)
+  # })
+  
   ##### Tab 1: About #####
   output$MSEcounts <- renderTable({
     tibble("MSE type"=c("Published","Random Sample","Climate Change"),
@@ -903,6 +1077,25 @@ server <- function(input, output, session) {   # code to create output using ren
       geom_point(color="red",size=3) + geom_point(size = 3, colour = "black", shape = 1) +
       theme_void()
   })
+  output$top.authors <- renderTable({
+    # Report the top 20 MSE authors
+    MSE_authors_count() %>%
+      filter(Freq>1) %>% 
+      top_n(20,Freq)
+  })
+  #### Add this to this tab ####
+  # Create interactive network visualization plot
+  output$temp <- renderTable({
+    bipartiteEdges()
+  })
+  output$author.network <- renderVisNetwork({
+    visNetwork(network.data()$nodes,network.data()$edges, main = "MSE Co-Author Network", width = 800, height = 800) %>%
+    visIgraphLayout(layout = "layout_nicely", type = "full") %>%
+    visNodes(color = list(background = "white", highlight = "red", hover = list(border = "red"))) %>%
+    visEdges(selectionWidth = 10, color = list(highlight = "#2B7CE9")) %>%
+    visOptions(nodesIdSelection = list(enabled  = TRUE, useLabels = TRUE, main = "Select by Author"))
+  })
+
   observeEvent(input$map_hover,
                output$hover <- renderTable({
                  nearPoints(data_reviewed(), input$map_hover,"Longitude","Latitude") %>% 
@@ -918,22 +1111,24 @@ server <- function(input, output, session) {   # code to create output using ren
   )
 
   ##### Tab 2: Results - figures #####
+  # Documentation
   output$Freq.plot <- renderPlot({
     ggplot(freq.data(),aes(Explicit,Percent))+
       geom_col()+geom_vline(xintercept=3.51,linetype="dashed")+
-      annotate("label",x = 2, y=75,label="Decision\nProcess",size=6)+
-      annotate("label",x = 7, y=75,label="Decision\nComponents",size=6)+
       coord_flip()+scale_y_continuous(limits=c(0,100))+xlab(NULL)+ylab("Percentage")+
       scale_x_discrete(
-          limits=c("Open Meetings","Roles","Process","Adopted","Decision","Tradeoffs","Consequences","Alternatives",
-                   "Objectives","Problem"), 
-          labels=c("Open Meetings","Roles","Process","Adopted","Decision","Tradeoffs","Consequences","Alternatives",
-                   "Objectives","Problem")) +
-      theme_bw()+theme(text = element_text(size=18))
-  },height=300,width=600)
+        limits=c("Open Meetings","Roles","Process","Adopted","Decision","Tradeoffs","Consequences","Alternatives",
+                 "Objectives","Problem"),
+        labels=c("Open Meetings","Roles","Process","Adopted","Decision","Tradeoffs","Consequences","Alternatives",
+                 "Objectives","Problem")) +
+      theme_bw()+theme(text = element_text(size=18))+
+      ggplot2::annotate("label",x = 2, y=75,label="Decision\nProcess",size=6)+
+      ggplot2::annotate("label",x = 7, y=75,label="Decision\nComponents",size=6)
+    },height=300,width=600)
+  # Participants
   output$part.plot <- renderPlot({
     ggplot(part.data_reviewed5(),aes(x=order,y=Percent)) +
-      facet_wrap(~Stage,scale="free",ncol=2) + geom_col(width=0.8) +  
+      facet_wrap(~Stage,scales="free",ncol=2) + geom_col(width=0.8) +  
       scale_x_continuous(
         breaks = part.data_reviewed5()$order,
         labels = part.data_reviewed5()$Participants,
@@ -942,20 +1137,59 @@ server <- function(input, output, session) {   # code to create output using ren
       ylab("Percentage")+coord_flip()+xlab(NULL) +
       theme_bw()+theme(text = element_text(size=18))
   },height=600)
-  output$pub.plot <- renderPlot({
-    ggplot(pub.data2(),x=reorder(Journal, n),y=n,color=set,fill=set)+
-    geom_col()+scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+
-    theme_bw()+labs(col="MSEs",fill="MSEs")+coord_flip()+
-    theme(legend.position = c(0.75, 0.125),axis.title.y=element_blank())+labs(y="Publication Count")+
-    theme(text = element_text(size=18),legend.text = element_text(size=18))
-  },height=600)
+  # Authorship visualization
+  # output$author.network <- renderPlot({
+  # },height=600)
+  # 
+  # Journal visualization
+  output$journal.plot<-renderPlot({pub.data2() %>% 
+    ggplot(aes(x=fct_rev(fct_infreq(Journal)),color=set,fill=set)) + 
+    geom_bar(stat="count",position = "identity") + coord_flip() +
+    scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+
+    labs(col="MSEs",fill="MSEs")+theme(legend.position = c(0.1, 0.85))+
+    xlab("Journal") + ylab("Number of MSEs Published")+theme_bw()+
+    theme(text = element_text(size=18))
+    },height=600)
+
+  #Year visualization
   output$year.plot <- renderPlot({
     ggplot(year.data(),aes(x=YearPub,color=set,fill=set))+
-    geom_histogram(stat="count",position = "identity")+scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+
-    theme_bw()+labs(col="MSEs",fill="MSEs",x="Publication Year")+theme(legend.position = c(0.1, 0.85))+
-    theme(text = element_text(size=18),legend.text = element_text(size=18))
+      geom_bar(stat="count",position = "identity")+scale_color_grey()+scale_fill_manual(values=c("gray35","gray50"))+
+      theme_bw()+labs(col="MSEs",fill="MSEs",x="Publication Year")+theme(legend.position = c(0.1, 0.85))+
+      theme(text = element_text(size=18),legend.text = element_text(size=18))
   },height=600)
   
+  # Wordplots
+  output$wordplot.system <- renderWordcloud2({
+  wordplot.data(data_reviewed()$System,remove.words = "fishery") %>%
+    wordcloud2a()
+  })
+  
+  output$wordplot.location <- renderWordcloud2({
+    wordplot.data(data_reviewed()$Location) %>%
+      wordcloud2a()
+  })
+  
+  output$wordplot.species <- renderWordcloud2({
+    wordplot.data(data_reviewed()$Species,remove.words = "pacific") %>%
+      wordcloud2a()
+  })
+  
+  output$wordplot.title <- renderWordcloud2({
+    wordplot.data(data_reviewed()$Title) %>%
+      wordcloud2a()
+  })
+  
+  output$wordplot.problem <- renderWordcloud2({
+    wordplot.data(data_reviewed()$ProblemDefinition) %>%
+      wordcloud2a()
+  })
+  
+  output$wordplot.comments <- renderWordcloud2({
+    wordplot.data(data_reviewed()$Comments) %>%
+      wordcloud2a()
+  })
+
   ##### Tab 3: Results - tables #####
   # Table 1. participation rate by group
   output$radio2 <-renderText(paste0("Table 1. Number of MSEs (out of ", nrow(data_reviewed()),
