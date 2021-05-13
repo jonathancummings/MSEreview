@@ -1,6 +1,6 @@
 # MSE Problem Framing 
 # Literature Review Data Analysis
-# 4/9/2020, JWC
+# 5/13/2020, JWC
 
 ##### Meta Data and setup #####
 # Description: Display results of MSE documentation review, display MSe reposity info, and enable MSE reviews to be submitted
@@ -31,8 +31,8 @@ library(wordcloud2) # word cloud maker
 library(forcats) # categorical data wrangling
 
 # Load data for app (data is obtained via the LoadData.R script)
-# load(here("./MSEreview.RData")) # for publication
-load(here("data/MSEreview.RData")) # for local testing
+load(here("./MSEreview.RData")) # for publication
+# load(here("data/MSEreview.RData")) # for local testing
 
 # Get map background for plotting the map
 world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
