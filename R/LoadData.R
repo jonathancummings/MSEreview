@@ -24,3 +24,4 @@ fields<-read_xlsx("data/DB files - Excel/tblStudyFields.xlsx")
 
 # save .RData file
 save.image(file = "data/MSEreview.RData")
+save.image(file = "R/app/MSEreview.RData")
