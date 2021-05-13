@@ -31,7 +31,8 @@ library(wordcloud2) # word cloud maker
 library(forcats) # categorical data wrangling
 
 # Load data for app (data is obtained via the LoadData.R script)
-load(here("data/MSEreview.RData"))
+# load(here("./MSEreview.RData")) # for publication
+load(here("data/MSEreview.RData")) # for local testing
 
 # Get map background for plotting the map
 world <- borders("world", colour="gray50", fill="gray50", alpha=0.75) # create a layer of borders
@@ -354,53 +355,39 @@ ui <- fluidPage(
       imageOutput("imageSDM",
                    width=400,
                    height=275),
-      p(em("Figure 1. A depiction of the Structured Decision Making process framework and the components used to review MSE processes")),
+      p("Figure 1. A depiction of the Structured Decision Making process framework and the components used to review MSE processes",
+        style="font-family:helvetica"),
       p("We searched the MSE literature via Web of Science, searching for “management strategy evaluation” by topic across all years on
         January 8th, 2019. This search produced 154 MSEs. While the initial search returned 264 results, 154 remained after removing articles that were
         reviews, meta-analyses, or simply cited other MSEs. A random sample of 30 of these 154 articles were reviewed for our forthcoming Cummings et. al.
         publication."),
       h4("Explore the Results"),
-      p("Select the results you would like to examine using the radio buttons below. The figures and tables in this application are updated by your
-        selection."),
+      p("By default this application displays results associated with the MSEs selected and reviewed in the 
+        Cummings et al. publication. That is, by default the Results and Data tabs display those results.
+        You may change what is displayed on those tabs by selecting one of the other radio button options below.
+        Selecting 'All MSEs' will display the results from every MSE entered into the database. Note that only 
+        summary information is entered for many of these MSEs, so the results displayed for some elements of the
+        reviews will come from only the subset of MSEs for which that element was reviewed. Selecting 'MSEs 
+        including climate change as a driver' will display results just for the set of MSEs that included
+        climate change as a factor influencing the state of the modeled system."),
       radioButtons("data_filter",
          "Show results from:",
          choices = c(
-           "MSEs reviewed for Cummings et. al. Publication, "="pub",
+           "MSEs reviewed for the Cummings et al. publication "="pub",
            "All MSEs (entered in the database to date)"="all",
            "MSEs including climate change as a driver"="CC"),
          width='400px'),
         textOutput("radio"),
+      hr(),
       h4("Submit a Review"),
       p("To build a more complete MSE repository we encourage you to submit reviews of any MSEs that have not yet been reviewed. To do so click on
         the “Submit MSE - Data Entry Form” tab above."),
       hr(),
-      h4("Where have management strategy evaluations occurred?"),
-      p("Hovering over a point on the map will give the associated citation below, while clicking and dragging to select an area will give all
-        citations in the “brushed” map area. To learn more about those MSEs you can search for the citations in the “Data - All” or the
-        “Data - Summary” tabs."),
-      addSpinner(plotOutput("mse.map",
-        brush = brushOpts(id = "map_brush"),
-        hover = hoverOpts("map_hover")
-      ),spin = "fading-circle",color="#400080"),
-      p("Figure 2. Map of MSE locations. Points represent the approximate center point of the fishery or management region evaluated in the MSE."),
-      fluidRow(
-        column(width = 6,
-          h5("Hovered points"),
-          tableOutput("hover")
-        ),
-        column(width = 6,
-          h5("Brushed points"),
-          tableOutput("brush")
-        )
-      ),
-      hr(),
-      h4("Who are the top twenty MSE authors?"),
-      tableOutput("top.authors"),
-      visNetworkOutput("author.network"),
-      hr(),
       h4("Comments and Feedback"),
-      p("We welcome feedback and suggestions to improve this Shiny application and other comments. You can find contact information here:"),
-      tags$a(href="https://drjonathancummings.com/", "drjonathancummings.com")
+      p("We welcome feedback and suggestions to improve this Shiny application and other comments. You can find contact information here:",
+        tags$a(href="https://drjonathancummings.com/", "drjonathancummings.com")),
+      hr(),
+      p()
     ),
     #### Tab 2: Results - Figures ####
     tabPanel("Results - Figures", 
@@ -409,58 +396,99 @@ ui <- fluidPage(
                participated and at particular stages in the decision process. The second section displays who authors MESs and where they are 
                published. The third section displays how publications have changed through time."),
              hr(),
+             h4("Where have management strategy evaluations occurred?"),
+             p("Hovering over a point on the map will give the associated citation below, while clicking and dragging to select an area will give all
+        citations in the “brushed” map area. To learn more about those MSEs you can search for the citations in the “Data - All” or the
+        “Data - Summary” tabs."),
+             addSpinner(plotOutput("mse.map",
+                                   brush = brushOpts(id = "map_brush"),
+                                   hover = hoverOpts("map_hover")
+             ),spin = "fading-circle",color="#400080"),
+             p("Figure 2. Map of MSE locations. Points represent the approximate center point of the fishery or management region evaluated in the MSE.",
+               style="font-family:helvetica"),
+             fluidRow(
+               column(width = 6,
+                      h5("Hovered points"),
+                      tableOutput("hover")
+               ),
+               column(width = 6,
+                      h5("Brushed points"),
+                      tableOutput("brush")
+               )
+             ),
+             hr(),
              h3("What components are documented, who participates, and how?"),
              h4("Are the components of MSE decision processes explicit?"),
              p("For the set of MSEs selected, this figure displays the percentage of those MSEs that explicitly completed and documented the
                decision making components (top), and elements of a decision process (bottom)."),
              plotOutput("Freq.plot",height="100%"),
              p("Figure 3. Percentage of MSEs that included: ", 
-              strong("Problem")," - Explicit documentation of the decision problem the MSE is attempting to address,",
-              strong("Objectives")," - Explicit documentation of the process used to produce the objectives and performance metrics to evaluate the 
+               strong("Problem")," - Explicit documentation of the decision problem the MSE is attempting to address,",
+               strong("Objectives")," - Explicit documentation of the process used to produce the objectives and performance metrics to evaluate the 
               management strategies,",
-              strong("Alternatives")," - Explicit documentation of the process used to produce the alternative management strategies,",
-              strong("Consequences")," - Explicit documentation of the process used to predict management strategy performance,",
-              strong("Tradeoffs")," - Explicit documentation of the tradeoff evaluation process,",
-              strong("Decision")," - Documentation of the alternative selected and implemented as the management strategy going forward,",
-              strong("Adopted*")," - Explicit documentation of decision makers implementing the results of the MSE,",
-              strong("Process")," - Explicit documentation of the decision making process used to conduct the MSE,",
-              strong("Roles")," - Explicit documentation of the MSE participants' roles, and",
-              strong("Open Meetings")," - Meetings open to the public or those outside of the set of MSE participants."),
+               strong("Alternatives")," - Explicit documentation of the process used to produce the alternative management strategies,",
+               strong("Consequences")," - Explicit documentation of the process used to predict management strategy performance,",
+               strong("Tradeoffs")," - Explicit documentation of the tradeoff evaluation process,",
+               strong("Decision")," - Documentation of the alternative selected and implemented as the management strategy going forward,",
+               strong("Adopted*")," - Explicit documentation of decision makers implementing the results of the MSE,",
+               strong("Process")," - Explicit documentation of the decision making process used to conduct the MSE,",
+               strong("Roles")," - Explicit documentation of the MSE participants' roles, and",
+               strong("Open Meetings")," - Meetings open to the public or those outside of the set of MSE participants.",
+               style="font-family:helvetica"),
              p(em("*note that the results of an MSE may have been adopted but not documented because the adoption occurred following
-                  completing of the associated literature")),
+                  completion of the associated publication"),style="font-family:helvetica"),
              h4("Who is involved, and participates in, MSEs?"),
              p("For the set of MSEs selected, this figure displays the percentage of those MSEs that included each type of participant for different
                stages in the process."),
-             plotOutput("part.plot",height="100%"),
-             p("Figure 4. ", strong("Participants")," - Who participated at any stage of the MSE process?,",
-               strong("Process")," - Who initiated and lead the MSE process?,",
+             addSpinner(plotOutput("part.plot",height="100%"),spin = "fading-circle",color="#400080"),
+             p("Figure 4. ", strong("Participants")," - Who participated at any stage of the MSE process?",
+               strong("Process")," - Who initiated and led the MSE process?,",
                strong("Documented Objectives")," - Who provided the objectives based on the documentation of the MSE process?,",
                strong("Subjective Objectives")," - Who most likely provided the objectives based on a subjective reading of the documentation?,",
                strong("Documented Alternatives")," - Who provided the alternatives based on the documentation of the MSE process?, and ",
                strong("Subjective Alternatives")," - Who most likely provided the alternatives based on a subjective reading of the documentation? 
                The x axis displays the percentage of MSEs in the set selected that include each participant type and the y-axis displays the 
-               participant types. The unknown participant type represents MSEs where the documentation was inexplicit."),
+               participant types. The unknown participant type represents MSEs where the documentation was inexplicit.",
+               style="font-family:helvetica"),
              hr(),
-             h3("Who authors MSEs and where are they published?"),
-             plotOutput("journal.plot",height="100%"),
-             hr(),
-             h3("Word Plots"),
-             p("What systems are most common in MSEs?"),
-             wordcloud2Output("wordplot.system"),
-             p("What locations are most common in MSEs?"),
-             wordcloud2Output("wordplot.location"),
-             p("What species are evalauted most commonly in MSEs?"),
-             wordcloud2Output("wordplot.species"),
-             p("What words are most common in MSE publication titles?"),
-             wordcloud2Output("wordplot.title"),
-             p("What words are most common in MSE problem definitions?"),
-             wordcloud2Output("wordplot.problem"),
-             p("What words are most common in our comments about MSEs?"),
-             wordcloud2Output("wordplot.comments"),
+             h3("Who authors MSEs? and where are they published?"),
+             h4("Who are the top twenty MSE authors?"),
+             fluidRow(
+               column(width = 4,
+                      p("Table 1. Top twenty MSE authors."),
+                      tableOutput("top.authors")),
+               column(width = 8,
+                      visNetworkOutput("author.network"),
+                      p("Figure 5. Network diagram depicting the co-authorship links between authors. Clicking
+                        on a node will highlight the connections to that author's coauthors. You can also select
+                        an author using the dropdown to explore their connections.",style="font-family:helvetica"))
+             ),
+             addSpinner(plotOutput("journal.plot",height="100%"),spin = "fading-circle",color="#400080"),
+             p("Figure 6. MSE journal outlets. The lighter grey shows the number of MSE pubilications per journal in
+               the selected set, and the darker grey shows the number of MSE publications per journal in total. ",
+               style="font-family:helvetica"),
              hr(),
              h3("How has MSE publication changed through time?"),
-             plotOutput("year.plot",height="100%")
-             ),
+             addSpinner(plotOutput("year.plot",height="100%"),spin = "fading-circle",color="#400080"),
+             hr(),
+             h3("Word Plots"),
+             h6("The size of each word in these word plots corresponds with the word's frequency in the analyzed
+                text."),
+             # p("What systems are most common in MSEs?"),
+             # addSpinner(wordcloud2Output("wordplot.system"),spin = "fading-circle",color="#400080"),
+             # p("What locations are most common in MSEs?"),
+             # addSpinner(wordcloud2Output("wordplot.location"),spin = "fading-circle",color="#400080"),
+             p("What species are evalauted most commonly in MSEs?"),
+             addSpinner(wordcloud2Output("wordplot.species"),spin = "fading-circle",color="#400080"),
+             hr(),
+             p("What words are most common in MSE publication titles?"),
+             addSpinner(wordcloud2Output("wordplot.title"),spin = "fading-circle",color="#400080"),
+             hr(),
+             p("What words are most common in MSE problem definitions?"),
+             addSpinner(wordcloud2Output("wordplot.problem"),spin = "fading-circle",color="#400080")
+             # p("What words are most common in our comments about MSEs?"),
+             # addSpinner(wordcloud2Output("wordplot.comments"),spin = "fading-circle",color="#400080"),
+             ), # end tabPanel
     
     #### Tab 3: Results - Tables ####
     tabPanel("Results - Tables", 
@@ -499,7 +527,7 @@ ui <- fluidPage(
              hr(),
              h3("What alternative management strategies were evaluated?"),
              p("Table 5. Number and percentage of MSEs that evaluated each type of management strategy"),
-             tableOutput("MSE.alt"),
+             tableOutput("MSE.alt")
              ),
     #### Tab 4: Data - Summaries ####
     tabPanel("Data - Summaries",
@@ -1081,7 +1109,8 @@ server <- function(input, output, session) {   # code to create output using ren
     # Report the top 20 MSE authors
     MSE_authors_count() %>%
       filter(Freq>1) %>% 
-      top_n(20,Freq)
+      top_n(20,Freq) %>% 
+      rename("Author"="Authors")
   })
   #### Add this to this tab ####
   # Create interactive network visualization plot
@@ -1160,15 +1189,15 @@ server <- function(input, output, session) {   # code to create output using ren
   },height=600)
   
   # Wordplots
-  output$wordplot.system <- renderWordcloud2({
-  wordplot.data(data_reviewed()$System,remove.words = "fishery") %>%
-    wordcloud2a()
-  })
+  # output$wordplot.system <- renderWordcloud2({
+  # wordplot.data(data_reviewed()$System,remove.words = "fishery") %>%
+  #   wordcloud2a()
+  # })
   
-  output$wordplot.location <- renderWordcloud2({
-    wordplot.data(data_reviewed()$Location) %>%
-      wordcloud2a()
-  })
+  # output$wordplot.location <- renderWordcloud2({
+  #   wordplot.data(data_reviewed()$Location) %>%
+  #     wordcloud2a(hoverFunction = NULL)
+  # })
   
   output$wordplot.species <- renderWordcloud2({
     wordplot.data(data_reviewed()$Species,remove.words = "pacific") %>%
@@ -1185,10 +1214,10 @@ server <- function(input, output, session) {   # code to create output using ren
       wordcloud2a()
   })
   
-  output$wordplot.comments <- renderWordcloud2({
-    wordplot.data(data_reviewed()$Comments) %>%
-      wordcloud2a()
-  })
+  # output$wordplot.comments <- renderWordcloud2({
+  #   wordplot.data(data_reviewed()$Comments) %>%
+  #     wordcloud2a()
+  # })
 
   ##### Tab 3: Results - tables #####
   # Table 1. participation rate by group
